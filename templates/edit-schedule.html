@@ -1,0 +1,85 @@
+{% extends 'layout.html' %}
+{% block content %}
+<section>
+    <div class="grid grid-cols-3 gap-4">
+
+        <h1 class="col-span-3">
+            Edit Weekly Schedule
+            <p>Click on a day to edit the Workout</p>
+        </h1>
+
+        <a href="#" class="card col-span-3">
+            <div class="grid grid-cols-7 gap-1">
+                <button class="dayBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Mon</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="dayBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Tue</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="dayBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Wed</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="dayBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Thu</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="dayBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Fri</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="dayBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Sat</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="dayBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Sun</h3>
+                    <p>Workout Name</p>
+                </button>
+            </div>
+        </a>
+
+        <!-- Modal toggle -->
+        <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" type="button">
+            Toggle modal
+        </button>
+        
+        <!-- Main modal -->
+        <div id="editScheduleModal-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div class="relative p-4 w-full max-w-md max-h-full">
+                <!-- Modal content -->
+                <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+                        <h3 class="text-lg font-medium text-heading">
+                            Edit Day
+                        </h3>
+                        <button type="button" class="text-body bg-transparent hover:bg-neutral-tertiary hover:text-heading rounded-base text-sm w-9 h-9 ms-auto inline-flex justify-center items-center" data-modal-hide="crud-modal">
+                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
+                            <span class="sr-only">Close</span>
+                        </button>
+                    </div>
+                    <!-- Modal body -->
+                    <form action="#">
+                        
+                    </form>
+                </div>
+            </div>
+        </div> 
+
+        <a href="#" class="card col-span-3">
+            <h3>Find Schedules</h3>
+        </a>
+
+    </div>
+</section>
+{% endblock %}
