@@ -273,7 +273,6 @@
     --spacing-8xl: 90rem;
     --leading-9: 36px;
     --leading-6: 24px;
-    --leading-5: 20px;
     --radius-base: 12px;
     --color-body: var(--color-gray-600);
     --color-body-subtle: var(--color-gray-400);
@@ -1194,9 +1193,6 @@
   .ml-auto {
     margin-left: auto;
   }
-  .box-border {
-    box-sizing: border-box;
-  }
   .datatable-pagination-list-item-link {
     .datatable-wrapper .datatable-bottom .datatable-pagination & {
       display: flex;
@@ -1487,6 +1483,9 @@
   .resize {
     resize: both;
   }
+  .grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
   .grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1737,6 +1736,9 @@
       background-color: color-mix(in oklab, var(--color-dark-backdrop) 70%, transparent);
     }
   }
+  .bg-default {
+    background-color: var(--color-default);
+  }
   .bg-gray-100 {
     background-color: var(--color-gray-100);
   }
@@ -1918,6 +1920,9 @@
   .text-center {
     text-align: center;
   }
+  .text-left {
+    text-align: left;
+  }
   .text-base {
     font-size: var(--text-base);
     line-height: var(--tw-leading, var(--text-base--line-height));
@@ -1979,10 +1984,6 @@
       color: var(--color-body);
       font-size: 0.875rem;
     }
-  }
-  .leading-5 {
-    --tw-leading: var(--leading-5);
-    line-height: var(--leading-5);
   }
   .leading-6 {
     --tw-leading: var(--leading-6);
@@ -2074,10 +2075,6 @@
   }
   .shadow-sm {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .shadow-xs {
-    --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .outline {
@@ -2627,7 +2624,7 @@
   .grid {
     padding: calc(var(--spacing) * 10);
   }
-  .card {
+  .baseCard {
     display: block;
     border-radius: var(--radius-base);
     border-style: var(--tw-border-style);
@@ -2638,18 +2635,7 @@
     --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
-  .quickAction {
-    display: block;
-    border-radius: var(--radius-base);
-    border-style: var(--tw-border-style);
-    border-width: 4px;
-    border-color: var(--color-default);
-    background-color: var(--color-white);
-    padding: calc(var(--spacing) * 6);
-    --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .dayBtn {
+  .baseBtn {
     display: block;
     border-radius: var(--radius-base);
     border-style: var(--tw-border-style);
@@ -2662,7 +2648,15 @@
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 }
-@layer utilities;
+@layer utilities {
+  .centreScreen {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+}
 @layer base {
   .tooltip-arrow,.tooltip-arrow:before {
     position: absolute;

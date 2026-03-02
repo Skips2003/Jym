@@ -49,19 +49,18 @@
     .grid{
         @apply p-10;
     }
-    .card {
+    
+    .baseCard{
         @apply bg-white block p-6 border-4 border-default rounded-base shadow-xs;
     }
 
-    .quickAction{
-        @apply bg-white block p-6 border-4 border-default rounded-base shadow-xs;
-    }
-
-    .dayBtn{
+    .baseBtn{
         @apply bg-white block p-6 border-4 border-default rounded-base shadow-xs text-center;
     }
 }
 
 @layer utilities{
-
+    .centreScreen{
+        @apply h-screen w-full flex justify-center items-center;
+    }
 }
