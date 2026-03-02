@@ -8,7 +8,7 @@ def home():
 
 @app.route('/profile')
 def profile():
-    return ('profile.html')
+    return render_template('profile.html')
 
 @app.route('/editSchedule')
 def editSchedule():
@@ -16,15 +16,15 @@ def editSchedule():
 
 @app.route('/signIn')
 def signIn():
-    return ('signIn.hmtl')
+    return render_template('signIn.hmtl')
 
 @app.route('/signUp')
 def signUp():
-    return ('signUp.html')
+    return render_template('signUp.html')
 
 @app.route('/admin')
 def admin():
-    return ('admin.html')
+    return render_template('admin.html')
 
 if __name__ == '__main__':
     app.run(host='localhost', port = 5000, debug=True)
