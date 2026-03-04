@@ -7,10 +7,11 @@
 @theme {
     /* default color */
     --color-default: var(--color-gray-800);
+    --color-default-subtle: var(--color-gray-200);
 
     /* main text color */
-    --color-body: var(--color-gray-600);
-    --color-body-subtle: var(--color-gray-400);
+    --color-body: var(--color-black-600);
+    --color-body-subtle: var(--color-black-400);
 
     /* text heading colors */
     --color-heading: var(--color-gray-800);

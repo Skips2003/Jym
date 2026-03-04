@@ -2,5 +2,110 @@
 {% block content %}
 <section>
 
+    <div class="grid grid-cols-3 gap-4">
+
+        <a href="#" class="baseCard col-span-3">
+            <img class="col-span-1" src="" alt="User PFP"/>
+            <h1>User Name Here</h1>
+            <p>Member since: 2013      Followers: 114</p>
+            <div class="baseCard bg-default-subtle">
+                <p>Hello this is my bio!</p>
+            </div>
+        </a>
+
+        <h1 class="col-span-3">Stats Overview</h1>
+
+        <a href="#" class="baseCard">
+            <h1>4</h1>                    
+            <p>This is a stat</p>
+        </a>
+        <a href="#" class="baseCard">
+            <h1>12</h1>
+            <p>This is another stat</p>
+        </a>
+        <a href="#" class="baseCard">
+            <h1>140</h1>
+            <p>This is another another stat</p>
+        </a>
+
+        <h1 class="text-left col-span-3">Current Schedule <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>Save</h3></button></h1>
+
+        <a href="#" class="baseCard col-span-3">
+            <div class="grid grid-cols-7 gap-1">
+                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Mon</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Tue</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Wed</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Thu</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Fri</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Sat</h3>
+                    <p>Workout Name</p>
+                </button>
+                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                    <img src="./images/logoSmall">
+                    <h3>Sun</h3>
+                    <p>Workout Name</p>
+                </button>
+            </div>
+        </a>
+
+        <h1 class="col-span-3">Personal Records & Recent Activity</h1>
+
+        <a href="#" class="baseCard col-span-2">
+            <h3>PBs</h3>
+        </a>
+
+        <a href="#" class="baseCard col-span-1">
+            <h3>Recent Workouts</h3>
+            <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                <img src="./images/logoSmall">
+                <h3>Sun</h3>
+                <p>Workout Name</p>
+            </button>
+            <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                <img src="./images/logoSmall">
+                <h3>Sun</h3>
+                <p>Workout Name</p>
+            </button>
+        </a>
+
+        <h1 class="col-span-3">Shared Schedules</h1>
+        <a class="baseCard col-span-3">
+            <h3>Shared Schedules</h3>
+            <div class="baseCard">
+                <h3>Schedule Name</h3>
+                <p>Schedule Description</p>
+                <hr class="border-top: 8px solid bg-default border-radius: 5px">
+                <div class="grid grid-rows-1 gap-2">
+                    <img src="./images/like"><p>Likes</p>
+                    <img src="./images/bookmark"><p>Bookmarks</p>
+                    <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>Bookmark</h3></button>
+                    <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>View</h3></button>
+                </div>
+            </div>
+        </a>
+
+    </div>
 </section>
 {% endblock %}
