@@ -3,77 +3,111 @@
 <section>
     <div class="grid grid-cols-3 gap-4">
 
-        <h1 class="col-span-3">
-            Edit Weekly Schedule
-            <p>Click on a day to edit the Workout</p>
-        </h1>
+        <h1 class="col-span-3">Edit Weekly Schedule</h1>
+        <p>Click on a day to edit the Workout</p>
 
-        <a href="#" class="baseCard col-span-3">
+        <div class="baseCard col-span-3">
+            <!-- Instead of using Modals I thought we could just update the information on the page when the user clicks one of these buttons? -->
             <div class="grid grid-cols-7 gap-1">
-                <button class="baseBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                <button class="baseBtn col-span-1">
                     <img src="./images/logoSmall">
                     <h3>Mon</h3>
                     <p>Workout Name</p>
                 </button>
-                <button class="baseBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                <button class="baseBtn col-span-1">
                     <img src="./images/logoSmall">
                     <h3>Tue</h3>
                     <p>Workout Name</p>
                 </button>
-                <button class="baseBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                <button class="baseBtn col-span-1">
                     <img src="./images/logoSmall">
                     <h3>Wed</h3>
                     <p>Workout Name</p>
                 </button>
-                <button class="baseBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                <button class="baseBtn col-span-1">
                     <img src="./images/logoSmall">
                     <h3>Thu</h3>
                     <p>Workout Name</p>
                 </button>
-                <button class="baseBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                <button class="baseBtn col-span-1">
                     <img src="./images/logoSmall">
                     <h3>Fri</h3>
                     <p>Workout Name</p>
                 </button>
-                <button class="baseBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                <button class="baseBtn col-span-1">
                     <img src="./images/logoSmall">
                     <h3>Sat</h3>
                     <p>Workout Name</p>
                 </button>
-                <button class="baseBtn" data-modal-target="editScheduleModal-modal" data-modal-toggle="editScheduleModal-modal">
+                <button class="baseBtn col-span-1">
                     <img src="./images/logoSmall">
                     <h3>Sun</h3>
                     <p>Workout Name</p>
                 </button>
             </div>
-        </a>
-        
-        <!-- Main modal -->
-        <div id="editScheduleModal-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative p-4 w-full max-w-md max-h-full">
-                <!-- Modal content -->
-                <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
-                    <!-- Modal header -->
-                    <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
-                        <h3 class="text-lg font-medium text-heading">
-                            Edit Day
-                        </h3>
-                        <button type="button" class="text-body bg-transparent hover:bg-neutral-tertiary hover:text-heading rounded-base text-sm w-9 h-9 ms-auto inline-flex justify-center items-center" data-modal-hide="crud-modal">
-                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
-                            <span class="sr-only">Close</span>
-                        </button>
-                    </div>
-                    <!-- Modal body -->
-                    <form action="#">
-                        
-                    </form>
-                </div>
-            </div>
-        </div> 
 
-        <a href="#" class="baseCard col-span-3">
+            <hr class="border-top: 12px solid bg-default border-radius: 10px">
+
+            
+            <div class="grid grid-cols-4 grid-rows-7 gap-1">
+                <h1 class="col-span-2 row-span-1">Edit Day</h1>
+                <h1 class="col-span-2 row-span-1">Muscles Worked</h1>
+                <h3 class="col-span-2 row-span-1">Workout Name</h3>
+
+                <!-- Diagram of muscles worked based on exercises selected will go here -->
+                <div class="baseCard col-span-2 row-span-6">
+
+                </div>
+
+                <!-- Current workout name as placeholder, allow user to change workout name here -->
+                <input type="text" placeholder="Workout Name Here" name="text" class="input col-span-2 row-span-1">
+                <button class="baseBtn col-span-1">Import Template</button>
+                <button class="baseBtn col-span-1">Save as Template</button>
+                <p class="col-span-2 row-span-1">Current Exercises</p>
+
+                <!-- Table of exercises currently on selected day -->
+                <!-- TH are Exercise (Name of Exercise), Sets (Number of sets), Reps (Number of Reps) and Weight (As a percentage of one rep max) -->
+                <!-- Maybe add option for personal schedule to use users specified weight in kg/lbs? keep shared schedules as the percentages tho, much more useful -->
+                <table class="col-span-2 row-span-1">
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Sets</th>
+                        <th>Reps</th>
+                        <th>Weight</th>
+                    </tr>
+                    <tr>
+                        <td>Barbell Squats</td>
+                        <td>3</td>
+                        <td>5</td>
+                        <td>80%</td>
+                    </tr>
+                    <tr>
+                        <td>Romanian Deadlift</td>
+                        <td>3</td>
+                        <td>8</td>
+                        <td>75%</td>
+                    </tr>
+                    <tr>
+                        <td>Calf Raises</td>
+                        <td>3</td>
+                        <td>15</td>
+                        <td>60%</td>
+                    </tr>
+                </table>
+                <button class="darkBtn col-span-2 row-span-1">Find Exercises</button>
+            </div>
+
+            <hr class="border-top: 12px solid bg-default border-radius: 10px">
+            <div class="grid grid-cols-3 gap-1">
+                <button class="baseBtn col-span-1">Cancel</button>
+                <button class="baseBtn col-span-1">Load Schedule</button>
+                <button class="darkBtn col-span-1">Save Changes</button>
+            </div>
+        </div>
+
+        <div class="baseCard col-span-3">
             <h3>Find Schedules</h3>
-        </a>
+        </div>
 
     </div>
 </section>
