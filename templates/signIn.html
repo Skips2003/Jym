@@ -11,11 +11,25 @@
                 <button class="baseBtn">Sign In With Google</button>
                 <button class="baseBtn">Sign In With Facebook</button>
                 <hr class="border-top: 8px solid bg-default border-radius: 5px">
-                <h3 class="text-left">Email</h3>
-                <input type="text" placeholder="Type here..." name="text" class="input">
-                <h3 class="text-left">Password</h3>
-                <input type="text" placeholder="Type here..." name="text" class="input">
-                <button class="baseBtn">Sign In</button>
+                <form action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <p>
+                        {{ form.username.label }}<br>
+                        {{ form.username(size=32) }}<br>
+                        {% for error in form.username.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form.password.label }}<br>
+                        {{ form.password(size=32) }}<br>
+                        {% for error in form.password.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>{{ form.rememberMe() }} {{ form.rememberMe.label }}</p>
+                    <p>{{ form.submit() }}</p>
+                </form>
             </div>
         </div>
       </div>

@@ -1,10 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, flash, redirect
+from config import Config
+from forms import LoginForm
 
 app = Flask(__name__)
+app.config.from_object(Config)
+
+user = {'username': 'Jonny'}
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('home.html', user=user)
 
 @app.route('/profile')
 def profile():
@@ -14,9 +19,14 @@ def profile():
 def editSchedule():
     return render_template('edit-schedule.html')
 
-@app.route('/signIn')
+@app.route('/signIn', methods=['GET', 'POST'])
 def signIn():
-    return render_template('signIn.html')
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash('Login requested for user {}, remember_me={}'.format(
+            form.username.data, form.rememberMe.data))
+        return redirect('/index')
+    return render_template('signIn.html', title='Sign In', form=form)
 
 @app.route('/signUp')
 def signUp():
