@@ -26,6 +26,10 @@ def signUp():
 def admin():
     return render_template('admin.html')
 
+@app.route('/manage')
+def manage():
+    return render_template('manage.html')
+
 if __name__ == '__main__':
     app.run(host='localhost', port = 5000, debug=True)
     print('flask app is running')
