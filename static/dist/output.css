@@ -272,7 +272,9 @@
     --radius: 8px;
     --spacing-8xl: 90rem;
     --leading-9: 36px;
+    --leading-8: 32px;
     --leading-6: 24px;
+    --leading-5: 20px;
     --radius-base: 12px;
     --color-body: var(--color-black-600);
     --color-body-subtle: var(--color-black-400);
@@ -448,6 +450,9 @@
   }
 }
 @layer utilities {
+  .pointer-events-none {
+    pointer-events: none;
+  }
   .collapse {
     visibility: collapse;
   }
@@ -789,8 +794,20 @@
   .inset-0 {
     inset: calc(var(--spacing) * 0);
   }
+  .inset-y-0 {
+    inset-block: calc(var(--spacing) * 0);
+  }
   .start-0 {
     inset-inline-start: calc(var(--spacing) * 0);
+  }
+  .start-100 {
+    inset-inline-start: calc(var(--spacing) * 100);
+  }
+  .end-1\.5 {
+    inset-inline-end: calc(var(--spacing) * 1.5);
+  }
+  .end-10 {
+    inset-inline-end: calc(var(--spacing) * 10);
   }
   .top-0 {
     top: calc(var(--spacing) * 0);
@@ -800,6 +817,9 @@
   }
   .bottom-0 {
     bottom: calc(var(--spacing) * 0);
+  }
+  .bottom-1\.5 {
+    bottom: calc(var(--spacing) * 1.5);
   }
   .bottom-\[60px\] {
     bottom: 60px;
@@ -821,6 +841,18 @@
   }
   .z-50 {
     z-index: 50;
+  }
+  .col-2 {
+    grid-column: 2;
+  }
+  .col-6 {
+    grid-column: 6;
+  }
+  .col-10 {
+    grid-column: 10;
+  }
+  .col-12 {
+    grid-column: 12;
   }
   .col-span-1 {
     grid-column: span 1 / span 1;
@@ -866,6 +898,12 @@
   }
   .mx-auto {
     margin-inline: auto;
+  }
+  .me-2 {
+    margin-inline-end: calc(var(--spacing) * 2);
+  }
+  .me-3 {
+    margin-inline-end: calc(var(--spacing) * 3);
   }
   .me-4 {
     margin-inline-end: calc(var(--spacing) * 4);
@@ -1163,6 +1201,15 @@
   .mb-2 {
     margin-bottom: calc(var(--spacing) * 2);
   }
+  .mb-2\.5 {
+    margin-bottom: calc(var(--spacing) * 2.5);
+  }
+  .mb-3 {
+    margin-bottom: calc(var(--spacing) * 3);
+  }
+  .mb-5 {
+    margin-bottom: calc(var(--spacing) * 5);
+  }
   .apexcharts-xaxistooltip {
     .apexcharts-canvas & {
       color: var(--color-body) !important;
@@ -1196,6 +1243,9 @@
   }
   .ml-auto {
     margin-left: auto;
+  }
+  .box-border {
+    box-sizing: border-box;
   }
   .datatable-pagination-list-item-link {
     .datatable-wrapper .datatable-bottom .datatable-pagination & {
@@ -1284,6 +1334,9 @@
   }
   .h-10 {
     height: calc(var(--spacing) * 10);
+  }
+  .h-100 {
+    height: calc(var(--spacing) * 100);
   }
   .h-\[calc\(100\%-1rem\)\] {
     height: calc(100% - 1rem);
@@ -1380,6 +1433,9 @@
   .w-64 {
     width: calc(var(--spacing) * 64);
   }
+  .w-100 {
+    width: calc(var(--spacing) * 100);
+  }
   .w-full {
     width: 100%;
   }
@@ -1388,6 +1444,12 @@
   }
   .max-w-7xl {
     max-width: var(--container-7xl);
+  }
+  .max-w-md {
+    max-width: var(--container-md);
+  }
+  .max-w-sm {
+    max-width: var(--container-sm);
   }
   .datatable-input {
     .datatable-wrapper .datatable-search & {
@@ -1731,6 +1793,9 @@
   .bg-brand {
     background-color: var(--color-brand);
   }
+  .bg-dark {
+    background-color: var(--color-dark);
+  }
   .bg-dark-backdrop\/70 {
     background-color: color-mix(in srgb, oklch(13% 0.028 261.692) 70%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -1751,6 +1816,9 @@
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-gray-900) 50%, transparent);
     }
+  }
+  .bg-light {
+    background-color: var(--color-light);
   }
   .bg-neutral-primary {
     background-color: var(--color-neutral-primary);
@@ -1858,6 +1926,9 @@
   .p-2\.5 {
     padding: calc(var(--spacing) * 2.5);
   }
+  .p-3 {
+    padding: calc(var(--spacing) * 3);
+  }
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
@@ -1876,6 +1947,9 @@
   .px-5 {
     padding-inline: calc(var(--spacing) * 5);
   }
+  .py-1\.5 {
+    padding-block: calc(var(--spacing) * 1.5);
+  }
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
   }
@@ -1884,6 +1958,12 @@
   }
   .py-3 {
     padding-block: calc(var(--spacing) * 3);
+  }
+  .ps-3 {
+    padding-inline-start: calc(var(--spacing) * 3);
+  }
+  .ps-9 {
+    padding-inline-start: calc(var(--spacing) * 9);
   }
   .pt-2 {
     padding-top: calc(var(--spacing) * 2);
@@ -1924,6 +2004,13 @@
   .text-left {
     text-align: left;
   }
+  .align-top {
+    vertical-align: top;
+  }
+  .text-2xl {
+    font-size: var(--text-2xl);
+    line-height: var(--tw-leading, var(--text-2xl--line-height));
+  }
   .text-base {
     font-size: var(--text-base);
     line-height: var(--tw-leading, var(--text-base--line-height));
@@ -1939,6 +2026,10 @@
   .text-xl {
     font-size: var(--text-xl);
     line-height: var(--tw-leading, var(--text-xl--line-height));
+  }
+  .text-xs {
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
   }
   .apexcharts-datalabels {
     .apexcharts-canvas & .apexcharts-text.apexcharts-pie-label {
@@ -1986,9 +2077,17 @@
       font-size: 0.875rem;
     }
   }
+  .leading-5 {
+    --tw-leading: var(--leading-5);
+    line-height: var(--leading-5);
+  }
   .leading-6 {
     --tw-leading: var(--leading-6);
     line-height: var(--leading-6);
+  }
+  .leading-8 {
+    --tw-leading: var(--leading-8);
+    line-height: var(--leading-8);
   }
   .leading-9 {
     --tw-leading: var(--leading-9);
@@ -2005,6 +2104,10 @@
   .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
+  }
+  .tracking-tight {
+    --tw-tracking: var(--tracking-tight);
+    letter-spacing: var(--tracking-tight);
   }
   .whitespace-nowrap {
     white-space: nowrap;
@@ -2054,6 +2157,9 @@
   .text-heading {
     color: var(--color-heading);
   }
+  .text-light {
+    color: var(--color-light);
+  }
   .text-white {
     color: var(--color-white);
   }
@@ -2076,6 +2182,10 @@
   }
   .shadow-sm {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-xs {
+    --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .outline {
@@ -2107,6 +2217,11 @@
   .ease-out {
     --tw-ease: var(--ease-out);
     transition-timing-function: var(--ease-out);
+  }
+  .placeholder\:text-body {
+    &::placeholder {
+      color: var(--color-body);
+    }
   }
   .hover\:border-default {
     &:hover {
@@ -2140,6 +2255,13 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-gray-200);
+      }
+    }
+  }
+  .hover\:bg-neutral-secondary-medium {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-neutral-secondary-medium);
       }
     }
   }
@@ -2204,6 +2326,11 @@
       z-index: 10;
     }
   }
+  .focus\:border-brand {
+    &:focus {
+      border-color: var(--color-brand);
+    }
+  }
   .focus\:ring-2 {
     &:focus {
       --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
@@ -2219,6 +2346,11 @@
   .focus\:ring-blue-300 {
     &:focus {
       --tw-ring-color: var(--color-blue-300);
+    }
+  }
+  .focus\:ring-brand {
+    &:focus {
+      --tw-ring-color: var(--color-brand);
     }
   }
   .focus\:ring-brand-medium {
@@ -3160,6 +3292,10 @@
   syntax: "*";
   inherits: false;
 }
+@property --tw-tracking {
+  syntax: "*";
+  inherits: false;
+}
 @property --tw-shadow {
   syntax: "*";
   inherits: false;
@@ -3313,6 +3449,7 @@
       --tw-border-style: solid;
       --tw-leading: initial;
       --tw-font-weight: initial;
+      --tw-tracking: initial;
       --tw-shadow: 0 0 #0000;
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
