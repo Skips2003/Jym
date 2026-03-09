@@ -5,3 +5,4 @@ uses:
 flask
 flask-wtf
 flask-sqlalchemy
+flask-migrate
