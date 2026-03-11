@@ -6,3 +6,5 @@ flask
 flask-wtf
 flask-sqlalchemy
 flask-migrate
+flask-login
+psycopg2
