@@ -11,8 +11,20 @@
                 <button class="baseBtn">Sign Up With Google</button>
                 <button class="baseBtn">Sign Up With Facebook</button>
                 <hr class="border-top: 8px solid bg-default border-radius: 5px">
-                <form action="" method="post" novalidate>
+                <form method="post" action="" novalidate>
                     {{ form.hidden_tag() }}
+                    <p>
+                        {{ form.firstName.label }}<br>
+                        {{ form.firstName(size=32) }}<br>
+                        {% for error in form.firstName.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                        {{ form.lastName.label }}<br>
+                        {{ form.lastName(size=32) }}<br>
+                        {% for error in form.lastName.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
                     <p>
                         {{ form.email.label }}<br>
                         {{ form.email(size=32) }}<br>

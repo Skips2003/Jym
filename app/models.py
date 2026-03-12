@@ -1,12 +1,12 @@
 from typing import Optional
-from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from app import db
 
-class Users(db.Model):
+class Users(db.Model, UserMixin):
 
-    UID: so.Mapped[int] = so.mapped_column(primary_key=True, unique=True)
+    id: so.Mapped[int] = so.mapped_column(primary_key=True, unique=True)
     email: so.Mapped[str] = so.mapped_column(sa.String(120), unique=True)
     password: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
     firstName: so.Mapped[str]

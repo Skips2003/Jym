@@ -14,6 +14,8 @@ class SignUpForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=20)])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=3, max=20)])
     confirmPassword = PasswordField('Confirm Password', validators=[DataRequired(), Length(min=3, max=20)])
+    firstName = StringField('First Name', validators=[DataRequired()])
+    lastName = StringField('Last Name', validators=[DataRequired()])
     rememberMe = BooleanField('Remember Me')
     submit = SubmitField('Sign Up')
 
@@ -22,3 +24,9 @@ class SignUpForm(FlaskForm):
 
         if existingUsername:
             raise ValidationError("That username is already in use, Please select a different one.")
+        
+    def validateEmail(self, email):
+        existingEmail = Users.query.filter_by(email=email.data).first()
+
+        if existingEmail:
+            raise ValidationError("That email is already in use, Please select a different one.")
