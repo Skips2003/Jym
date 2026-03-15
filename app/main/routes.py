@@ -14,12 +14,12 @@ def loaduser(userID):
 def home():
     return render_template('home.html')
 
-@bp.route('/profile')
+@bp.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     return render_template('profile.html')
 
-@bp.route('/editSchedule')
+@bp.route('/editSchedule', methods=['GET', 'POST'])
 @login_required
 def editSchedule():
     return render_template('edit-schedule.html')
@@ -54,10 +54,10 @@ def signOut():
     logout_user()
     return redirect(url_for('main.signIn'))
 
-@bp.route('/admin')
+@bp.route('/admin', methods=['GET', 'POST'])
 def admin():
     return render_template('admin.html')
 
-@bp.route('/manage')
+@bp.route('/manage', methods=['GET', 'POST'])
 def manage():
     return render_template('manage.html')

@@ -16,7 +16,7 @@ class Users(db.Model, UserMixin):
     username: so.Mapped[str] = so.mapped_column(sa.String(64), unique=True)
     public: so.Mapped[bool]
     bio: so.Mapped[str] = so.mapped_column(sa.String(300))
-    dateJoined: so.Mapped[str] = so.mapped_column(sa.String(300))
+    dateJoined: so.Mapped[str] = so.mapped_column(sa.Date())
     followers: so.Mapped[int]
     following: so.Mapped[int]
     currentScheduleID: so.Mapped[int] = so.mapped_column(sa.ForeignKey("Schedules.id"))
