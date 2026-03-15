@@ -13,8 +13,6 @@ def createApp(configClass = Config):
     app.config.from_object(configClass)
     db.init_app(app)
     bcrypt.init_app(app)
-    with app.app_context():
-        db.create_all()
 
     loginManager.init_app(app)
     loginManager.login_view = "main.signIn"
