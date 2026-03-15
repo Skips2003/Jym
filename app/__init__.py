@@ -13,9 +13,11 @@ def createApp(configClass = Config):
     app.config.from_object(configClass)
     db.init_app(app)
     bcrypt.init_app(app)
+    with app.app_context():
+        db.create_all()
 
     loginManager.init_app(app)
-    loginManager.login_view = "login"
+    loginManager.login_view = "main.signIn"
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)

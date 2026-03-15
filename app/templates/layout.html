@@ -26,21 +26,25 @@
                 <!-- Dropdown menu -->
                 <div class="z-50 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44" id="user-dropdown">
                 <div class="px-4 py-3 text-sm border-b border-default">
-                    <span class="block text-heading font-medium">User's Name Here</span>
-                    <span class="block text-body truncate">name@flowbite.com</span>
+                    <span class="block text-heading font-medium">{{ current_user.username }}</span>
+                    <span class="block text-body truncate">{{ current_user.email }}</span>
                 </div>
                 <ul class="p-2 text-sm text-body font-medium" aria-labelledby="user-menu-button">
                     <li>
-                    <a href="/" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Home</a>
+                        <a href="/" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Home</a>
                     </li>
                     <li>
-                    <a href="/editSchedule" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Edit-Schedule</a>
+                        <a href="/editSchedule" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Edit-Schedule</a>
                     </li>
                     <li>
-                    <a href="/profile" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Following</a>
+                        <a href="/profile" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Following</a>
                     </li>
                     <li>
-                    <a href="/signIn" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Sign out</a>
+                        {% if current_user.is_anonymous %}
+                        <a class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded" href="{{ url_for('main.signIn') }}">Sign In</a>
+                        {% else %}
+                        <a class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded" href="{{ url_for('main.signOut') }}">Sign Out</a>
+                        {% endif %}
                     </li>
                 </ul>
                 </div>
@@ -62,6 +66,13 @@
                 </li>
                 <li>
                 <a href="/signUp" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Settings</a>
+                </li>
+                <li>
+                    {% if current_user.is_anonymous %}
+                    <a class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent" href="{{ url_for('main.signIn') }}">Sign In</a>
+                    {% else %}
+                    <a class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent" href="{{ url_for('main.signOut') }}">Sign Out</a>
+                    {% endif %}
                 </li>
             </ul>
             </div>

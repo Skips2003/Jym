@@ -5,8 +5,6 @@ from app.main.forms import LoginForm, SignUpForm
 from app.main import bp
 from app import db, bcrypt, loginManager
 
-user = {'username': 'Jonny'}
-
 @loginManager.user_loader
 def loaduser(userID):
     return Users.query.get(int(userID))
@@ -14,13 +12,15 @@ def loaduser(userID):
 @bp.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-    return render_template('home.html', user=user)
+    return render_template('home.html')
 
 @bp.route('/profile')
+@login_required
 def profile():
     return render_template('profile.html')
 
 @bp.route('/editSchedule')
+@login_required
 def editSchedule():
     return render_template('edit-schedule.html')
 
@@ -29,7 +29,6 @@ def signIn():
     form = LoginForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(username=form.username.data).first()
-        print(user)
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)

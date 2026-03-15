@@ -1,7 +1,4 @@
-import sqlalchemy as sa
-import sqlalchemy.orm as so
-from app import createApp, db
-from app.models import Users
+from app import createApp
 
 app = createApp()
 
