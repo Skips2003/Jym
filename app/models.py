@@ -14,18 +14,17 @@ class Users(db.Model, UserMixin):
     firstName: so.Mapped[str]
     lastName: so.Mapped[str]
     username: so.Mapped[str] = so.mapped_column(sa.String(64), unique=True)
-    public: so.Mapped[bool]
-    bio: so.Mapped[str] = so.mapped_column(sa.String(300))
-    dateJoined: so.Mapped[str] = so.mapped_column(sa.Date())
-    followers: so.Mapped[int]
-    following: so.Mapped[int]
-    currentScheduleID: so.Mapped[int] = so.mapped_column(sa.ForeignKey("Schedules.id"))
-    sessionsInRow: so.Mapped[int]
-    bigThreeTotal: so.Mapped[int]
-    quickStatThree: so.Mapped[int]
-    benchPress: so.Mapped[int]
-    deadLift: so.Mapped[int]
-    squat: so.Mapped[int]
+    public: so.Mapped[bool] = so.mapped_column(default=True)
+    bio: so.Mapped[str] = so.mapped_column(sa.String(300), default='Default-Bio')
+    followers: so.Mapped[int] = so.mapped_column(default=0)
+    following: so.Mapped[int] = so.mapped_column(default=0)
+    currentScheduleID: so.Mapped[int] = so.mapped_column(sa.ForeignKey("Schedules.id"), default=None)
+    sessionsInRow: so.Mapped[int] = so.mapped_column(default=0)
+    bigThreeTotal: so.Mapped[int] = so.mapped_column(default=0)
+    quickStatThree: so.Mapped[int] = so.mapped_column(default=0)
+    benchPress: so.Mapped[int] = so.mapped_column(default=0)
+    deadLift: so.Mapped[int] = so.mapped_column(default=0)
+    squat: so.Mapped[int] = so.mapped_column(default=0)
 
 class Schedules(db.Model):
 
@@ -34,7 +33,7 @@ class Schedules(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True, unique=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(120), unique=True)
     description: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
-    public: so.Mapped[bool]
+    public: so.Mapped[bool] = so.mapped_column(default=True)
 
     days = db.relationship('ScheduleDays')
 
@@ -45,7 +44,7 @@ class Workouts(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True, unique=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(120), unique=True)
     description: so.Mapped[str] = so.mapped_column(sa.String(120), unique=True)
-    public: so.Mapped[bool]
+    public: so.Mapped[bool] = so.mapped_column(default=True)
 
     days = db.relationship('ScheduleDays')
 
@@ -54,12 +53,12 @@ class Exercises(db.Model):
     __tablename__ = 'Exercises'
 
     id: so.Mapped[int] = so.mapped_column(primary_key=True, unique=True)
-    exerciseName: so.Mapped[str]
-    reps: so.Mapped[int]
-    sets: so.Mapped[int]
-    weight: so.Mapped[int]
-    primaryMuscles: so.Mapped[str]
-    secondaryMuscles: so.Mapped[str]
+    exerciseName: so.Mapped[str] = so.mapped_column(default='Default-Name')
+    reps: so.Mapped[int] = so.mapped_column(default=0)
+    sets: so.Mapped[int] = so.mapped_column(default=0)
+    weight: so.Mapped[int] = so.mapped_column(default=0)
+    primaryMuscles: so.Mapped[str] = so.mapped_column(default=None)
+    secondaryMuscles: so.Mapped[str] = so.mapped_column(default=None)
 
 class ScheduleDays(db.Model):
 
@@ -67,7 +66,7 @@ class ScheduleDays(db.Model):
 
     scheduleID: so.Mapped[int] = so.mapped_column(sa.ForeignKey("Schedules.id"), primary_key=True)
     workoutID: so.Mapped[int] = so.mapped_column(sa.ForeignKey("Workouts.id"), primary_key=True)
-    day: so.Mapped[int]
+    day: so.Mapped[int] = so.mapped_column(default=0)
 
     schedule = db.relationship('Schedules')
     workout = db.relationship('Workouts')
