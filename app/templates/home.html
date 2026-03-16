@@ -4,7 +4,7 @@
     
     <!-- Welcome message which will use users first name/username -->
     <div class="grid grid-cols-3 grid-rows-2">
-        <h1 class="col-span-3">Welcome back, User's name here</h1>
+        <h1 class="col-span-3">Welcome back, {{ current_user.firstName }}</h1>
         <p>Ready to crush your next workout today?</p>
     </div>
 
@@ -14,15 +14,15 @@
         <h1 class="col-span-3">Stats Overview</h1>
 
         <div class="baseCard">
-            <h1>4</h1>                    
+            <h1>{{ current_user.sessionsInRow }}</h1>                    
             <p>This is a stat</p>
         </div>
         <div class="baseCard">
-            <h1>12</h1>
+            <h1>{{ current_user.bigThreeTotal }}</h1>
             <p>This is another stat</p>
         </div>
         <div class="baseCard">
-            <h1>140</h1>
+            <h1>{{ current_user.quickStatThree }}</h1>
             <p>This is another another stat</p>
         </div>
 

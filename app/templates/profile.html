@@ -6,25 +6,25 @@
 
         <div class="baseCard col-span-3">
             <img class="col-span-1" src="" alt="User PFP"/>
-            <h1>User Name Here</h1>
-            <p>Member since: 2013      Followers: 114</p>
+            <h1>{{ current_user.username }}</h1>
+            <p>Member since: {{ current_user.dateJoined }}      Followers: {{ current_user.followers }}</p>
             <div class="baseCard bg-default-subtle">
-                <p>Hello this is my bio!</p>
+                <p>{{ current_user.bio }}</p>
             </div>
         </div>
 
         <h1 class="col-span-3">Stats Overview</h1>
 
         <div class="baseCard">
-            <h1>4</h1>                    
+            <h1>{{ current_user.sessionsInRow }}</h1>                    
             <p>This is a stat</p>
         </div>
         <div class="baseCard">
-            <h1>12</h1>
+            <h1>{{ current_user.bigThreeTotal }}</h1>
             <p>This is another stat</p>
         </div>
         <div class="baseCard">
-            <h1>140</h1>
+            <h1>{{ current_user.quickStatThree }}</h1>
             <p>This is another another stat</p>
         </div>
 
