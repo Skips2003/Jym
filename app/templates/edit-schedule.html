@@ -47,7 +47,6 @@
             </div>
 
             <hr class="border-top: 12px solid bg-default border-radius: 10px">
-
             
             <div class="grid grid-cols-4 grid-rows-7 gap-1">
                 <h1 class="col-span-2 row-span-1">Edit Day</h1>
@@ -94,7 +93,43 @@
                         <td>60%</td>
                     </tr>
                 </table>
-                <button class="darkBtn col-span-2 row-span-1">Find Exercises</button>
+                <button class="darkBtn col-span-2 row-span-1" data-modal-target="searchExercises-modal" data-modal-toggle="searchExercises-modal" >Find Exercises</button>
+            </div>
+
+            <!-- Main modal -->
+            <div id="searchExercises-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div>
+                    <!-- Modal content -->
+                    <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+                        <!-- Modal header -->
+                        <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+                            <h1>
+                                Search for Exercises
+                            </h1>
+                        </div>
+                        <form method="post" action="" novalidate>
+                            {{ form.hidden_tag() }}
+                            <p>
+                                {{ form.search(size=32) }}<br>
+                                {% for error in form.search.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                            <p>{{ form.submit() }}</p>
+                        </form>
+                        <!-- Modal body -->
+                        <form action="#">
+                            <div class="grid grid-cols-3 gap-4">
+                                <button type="submit" class="darkBtn col-span-1">
+                                    Add Exercise
+                                </button>
+                                <button data-modal-hide="searchExercises-modal" class="darkBtn col-span-1">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <hr class="border-top: 12px solid bg-default border-radius: 10px">
