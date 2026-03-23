@@ -53,7 +53,18 @@ def loaduser(userID):
 @login_required
 def home():
     print('home')
-    return render_template('home.html')
+
+    schedule = Schedules.query.filter_by(id=current_user.currentScheduleID).first()
+
+    if not schedule:
+        print("no schedule found for user, setting to default schedule")
+        Users.query.filter_by(id=current_user.id).first().currentScheduleID = 1
+        db.session.commit()
+
+    print("schedule found for user")
+    workoutDays = loadWorkoutsFromSchedule(schedule.id)
+
+    return render_template('home.html', title='Home Page', schedule=schedule, workoutDays=workoutDays, daysOfTheWeek=daysOfTheWeek)
 
 @bp.route('/profile', methods=['GET', 'POST'])
 @login_required

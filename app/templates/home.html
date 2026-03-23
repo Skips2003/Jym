@@ -49,41 +49,19 @@
         <!-- When clicked a modal should appear showing the exercises scheduled for the selected day and whether or not they were completed -->
         <div class="baseCard col-span-3">
             <div class="grid grid-cols-7 gap-1">
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Mon</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Tue</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Wed</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Thu</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Fri</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Sat</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Sun</h3>
-                    <p>Workout Name</p>
-                </button>
+                {% for i in range(7) %}
+                    <button class="baseBtn col-span-1">
+                        <img src="./images/logoSmall">
+                        <h3>{{daysOfTheWeek[i]}}</h3>
+                        <p>{{workoutDays[i].name}}</p>
+                    </button>
+                {% else %}
+                    <button class="baseBtn col-span-1">
+                        <img src="./images/logoSmall">
+                        <h3>{{daysOfTheWeek[i]}}</h3>
+                        <p>Rest Day!</p>
+                    </button>
+                {% endfor %}
             </div>
         </div>
 
