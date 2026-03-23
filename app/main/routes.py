@@ -1,10 +1,35 @@
 from flask import render_template, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
-from app.models import Users
+from app.models import Users, Schedules, ScheduleDays, Exercises, Workouts, WorkoutExercises
 from app.main.forms import LoginForm, SignUpForm, SearchExercise
 from app.main import bp
 from app import db, bcrypt, loginManager
 import requests
+
+daysOfTheWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+def searchExerciseAPIString(query):
+    url = "https://exercisedb.dev/api/v1/exercises/search"
+
+    querystring = {"q": query}
+
+    print("User Searching for: " , querystring)
+
+    headers = {
+                "Accept": "application/json"
+            }
+
+    results = requests.get(url, headers=headers, params=querystring).json()
+
+    return results
+
+def searchExerciseAPIID(id):
+    url = "https://exercisedb.dev/api/v1/exercises/" + id
+
+    result = requests.get(url).json()
+
+    return result
+
 
 @loginManager.user_loader
 def loaduser(userID):
@@ -26,29 +51,37 @@ def profile():
 @bp.route('/editSchedule', methods=['GET', 'POST'])
 @login_required
 def editSchedule():
+
+    print('Loading edit-schedule ...')
+
     form = SearchExercise()
-    print('edit-schedule')
+    schedule = Schedules.query.filter_by(id=current_user.currentScheduleID).first()
+    scheduleDays = []
+
+    if not schedule:
+        print('no schedule found for user, setting to default schedule')
+        Users.query.filter_by(id=current_user.id).first().currentScheduleID = 1
+        db.session.commit()
+
+    print('schedule found for user')
+    for i in range(1,8):
+        scheduleDay = ScheduleDays.query.filter_by(scheduleID=schedule.id, day=i).first()
+        if scheduleDay:
+            scheduleDays.append(Workouts.query.filter_by(id=scheduleDay.workoutID).first())
+        else:
+            scheduleDays.append(Workouts.query.filter_by(id=1).first())
+
     if form.is_submitted():
-        print('form validated')
-        print('searching for exercises')
+        print('form submitted')
+        print('searching for exercises ...')
 
-        url = "https://edb-with-videos-and-images-by-ascendapi.p.rapidapi.com/api/v1/exercises/search"
+        response = searchExerciseAPIString(form.search.data)['data']
 
-        querystring = {"search": form.search.data}
+        if response:
+            print('exercises found')
+            return render_template('edit-schedule.html', title='Edit-Schedule', form=form, query=form.search.data, results=response, schedule=schedule, scheduleDays=scheduleDays, daysOfTheWeek=daysOfTheWeek)
 
-        print(querystring)
-
-        headers = {
-                    "x-rapidapi-key": "4b0ef871b2msh66491918fb044ddp1ea25ejsn79c935d7b3b6",
-                    "x-rapidapi-host": "edb-with-videos-and-images-by-ascendapi.p.rapidapi.com",
-                    "Content-Type": "application/json"
-                }
-        
-        response = requests.get(url, headers=headers, params=querystring)
-
-        print(response.json())
-
-    return render_template('edit-schedule.html', title='Edit-Schedule', form=form)
+    return render_template('edit-schedule.html', title='Edit-Schedule', form=form, schedule=schedule, scheduleDays=scheduleDays, daysOfTheWeek=daysOfTheWeek) 
 
 @bp.route('/signIn', methods=['GET', 'POST'])
 def signIn():
@@ -75,7 +108,7 @@ def signUp():
         print('form validated')
         print('creating user')
         hashedPassword = bcrypt.generate_password_hash(form.password.data).decode('utf8')
-        newUser = Users(username=form.username.data, password=hashedPassword, email=form.email.data, firstName=form.firstName.data, lastName=form.lastName.data)
+        newUser = Users(username=form.username.data, password=hashedPassword, email=form.email.data, firstName=form.firstName.data, lastName=form.lastName.data, currentScheduleID=1)
         db.session.add(newUser)
         db.session.commit()
         return redirect(url_for('main.signIn'))
