@@ -30,3 +30,7 @@ class SignUpForm(FlaskForm):
 
         if existingEmail:
             raise ValidationError("That email is already in use, Please select a different one.")
+        
+class SearchExercise(FlaskForm):
+    search = StringField(validators=[DataRequired()], render_kw={"placeholder": "Search By Exercise Name"})
+    submit = SubmitField('Search')

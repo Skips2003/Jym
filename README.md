@@ -8,4 +8,5 @@ flask-sqlalchemy
 flask-migrate
 flask-login
 flask_bcrypt
+flask-meld
 psycopg2

@@ -3,51 +3,28 @@
 <section>
     <div class="grid grid-cols-3 gap-4">
 
-        <h1 class="col-span-3">Edit Weekly Schedule</h1>
+        <h1 class="col-span-3">Edit Current Schedule: {{schedule.name}}</h1>
         <p>Click on a day to edit the Workout</p>
 
         <div class="baseCard col-span-3">
             <!-- Instead of using Modals I thought we could just update the information on the page when the user clicks one of these buttons? -->
             <div class="grid grid-cols-7 gap-1">
-                <button class="baseBtn col-span-1">
-                    <img src="./images/logoSmall">
-                    <h3>Mon</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn col-span-1">
-                    <img src="./images/logoSmall">
-                    <h3>Tue</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn col-span-1">
-                    <img src="./images/logoSmall">
-                    <h3>Wed</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn col-span-1">
-                    <img src="./images/logoSmall">
-                    <h3>Thu</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn col-span-1">
-                    <img src="./images/logoSmall">
-                    <h3>Fri</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn col-span-1">
-                    <img src="./images/logoSmall">
-                    <h3>Sat</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn col-span-1">
-                    <img src="./images/logoSmall">
-                    <h3>Sun</h3>
-                    <p>Workout Name</p>
-                </button>
+                {% for i in range(7) %}
+                    <button class="baseBtn col-span-1">
+                        <img src="./images/logoSmall">
+                        <h3>{{daysOfTheWeek[i]}}</h3>
+                        <p>{{workoutDays[i].name}}</p>
+                    </button>
+                {% else %}
+                    <button class="baseBtn col-span-1">
+                        <img src="./images/logoSmall">
+                        <h3>{{daysOfTheWeek[i]}}</h3>
+                        <p>Rest Day!</p>
+                    </button>
+                {% endfor %}
             </div>
 
             <hr class="border-top: 12px solid bg-default border-radius: 10px">
-
             
             <div class="grid grid-cols-4 grid-rows-7 gap-1">
                 <h1 class="col-span-2 row-span-1">Edit Day</h1>
@@ -94,7 +71,54 @@
                         <td>60%</td>
                     </tr>
                 </table>
-                <button class="darkBtn col-span-2 row-span-1">Find Exercises</button>
+                <button class="darkBtn col-span-2 row-span-1" data-modal-target="searchExercises-modal" data-modal-toggle="searchExercises-modal" >Find Exercises</button>
+            </div>
+
+            <!-- Main modal -->
+            <div id="searchExercises-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div>
+                    <!-- Modal content -->
+                    <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+                        <!-- Modal header -->
+                        <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+                            <h1>
+                                Search for Exercises
+                            </h1>
+                        </div>
+                        <form method="post" action="/editSchedule" novalidate>
+                            {{ form.hidden_tag() }}
+                            <p>
+                                {{ form.search(size=32) }}<br>
+                                {% for error in form.search.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                            <p>{{ form.submit() }}</p>
+                        </form>
+                        <!-- Modal body -->
+                        <h3>Showing Results For: {{ query }}</h3>
+                        <table>
+                            {% for exercise in results %}
+                                <tr>
+                                    <td>{{ exercise.name }}</td>
+                                    <td>{{ exercise.bodyparts }}</td>
+                                    <td>{{ exercise.equipments }}</td>
+                                    <td>{{ exercise.secondaryMuscles }}</td>
+                                    <td><button>Add Exercise</button></td>
+                                </tr>
+                            {% else %}
+                                <tr><td>No exercises found.</td></tr>
+                            {% endfor %}
+                        </table>
+                        <form action="#">
+                            <div class="grid grid-cols-3 gap-4">
+                                <button data-modal-hide="searchExercises-modal" class="darkBtn col-span-1">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <hr class="border-top: 12px solid bg-default border-radius: 10px">

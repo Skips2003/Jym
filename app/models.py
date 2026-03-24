@@ -53,12 +53,10 @@ class Exercises(db.Model):
     __tablename__ = 'Exercises'
 
     id: so.Mapped[int] = so.mapped_column(primary_key=True, unique=True)
-    exerciseName: so.Mapped[str] = so.mapped_column(default='Default-Name')
+    exerciseSearchID: so.Mapped[str]
     reps: so.Mapped[int] = so.mapped_column(default=0)
     sets: so.Mapped[int] = so.mapped_column(default=0)
     weight: so.Mapped[int] = so.mapped_column(default=0)
-    primaryMuscles: so.Mapped[str] = so.mapped_column(default=None)
-    secondaryMuscles: so.Mapped[str] = so.mapped_column(default=None)
 
 class ScheduleDays(db.Model):
 
