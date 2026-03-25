@@ -1,77 +1,53 @@
 {% extends 'layout.html' %}
 {% block content %}
 <section>
+    <script src="{{ url_for('static', filename='js/schedules.js') }}"></script>
     <div class="grid grid-cols-3 gap-4">
-
         <h1 class="col-span-3">Edit Current Schedule: {{schedule.name}}</h1>
         <p>Click on a day to edit the Workout</p>
 
         <div class="baseCard col-span-3">
-            <!-- Instead of using Modals I thought we could just update the information on the page when the user clicks one of these buttons? -->
-            <div class="grid grid-cols-7 gap-1">
-                {% for i in range(7) %}
-                    <button class="baseBtn col-span-1">
-                        <img src="./images/logoSmall">
-                        <h3>{{daysOfTheWeek[i]}}</h3>
-                        <p>{{workoutDays[i].name}}</p>
-                    </button>
-                {% else %}
-                    <button class="baseBtn col-span-1">
-                        <img src="./images/logoSmall">
-                        <h3>{{daysOfTheWeek[i]}}</h3>
-                        <p>Rest Day!</p>
-                    </button>
-                {% endfor %}
-            </div>
+            {% if workoutDays %}
+                <main id="scheduleContainer" class="grid grid-cols-7 gap-1">
+                        <!-- News articles will be injected here dynamically -->
+                </main>
+                <script>
+                    const container = document.getElementById("scheduleContainer");
+                    container.innerHTML = "";
+                    let dayCount = 0;
+                    workouts = {{ workoutDays|tojson }}
+                    console.log(workouts)
 
+                    workouts.forEach(day => {;
+                        container.appendChild(createDayCard(day, daysOfTheWeek[dayCount], dayCount));
+                        console.log(day);
+                        dayCount++;
+                    });
+
+                </script>
+            {% endif %}
+            <!-- Instead of using Modals I thought we could just update the information on the page when the user clicks one of these buttons? -->
             <hr class="border-top: 12px solid bg-default border-radius: 10px">
             
             <div class="grid grid-cols-4 grid-rows-7 gap-1">
                 <h1 class="col-span-2 row-span-1">Edit Day</h1>
                 <h1 class="col-span-2 row-span-1">Muscles Worked</h1>
-                <h3 class="col-span-2 row-span-1">Workout Name</h3>
+                <h3 class="col-span-2 row-span-1" id="workoutName">Workout Name</h3>
 
                 <!-- Diagram of muscles worked based on exercises selected will go here -->
                 <div class="baseCard col-span-2 row-span-6">
 
                 </div>
 
-                <!-- Current workout name as placeholder, allow user to change workout name here -->
-                <input type="text" placeholder="Workout Name Here" name="text" class="input col-span-2 row-span-1">
-                <button class="baseBtn col-span-1">Import Template</button>
-                <button class="baseBtn col-span-1">Save as Template</button>
-                <p class="col-span-2 row-span-1">Current Exercises</p>
-
                 <!-- Table of exercises currently on selected day -->
                 <!-- TH are Exercise (Name of Exercise), Sets (Number of sets), Reps (Number of Reps) and Weight (As a percentage of one rep max) -->
                 <!-- Maybe add option for personal schedule to use users specified weight in kg/lbs? keep shared schedules as the percentages tho, much more useful -->
-                <table class="col-span-2 row-span-1">
-                    <tr>
-                        <th>Exercise</th>
-                        <th>Sets</th>
-                        <th>Reps</th>
-                        <th>Weight</th>
-                    </tr>
-                    <tr>
-                        <td>Barbell Squats</td>
-                        <td>3</td>
-                        <td>5</td>
-                        <td>80%</td>
-                    </tr>
-                    <tr>
-                        <td>Romanian Deadlift</td>
-                        <td>3</td>
-                        <td>8</td>
-                        <td>75%</td>
-                    </tr>
-                    <tr>
-                        <td>Calf Raises</td>
-                        <td>3</td>
-                        <td>15</td>
-                        <td>60%</td>
-                    </tr>
+                <table id="exerciseTable"class="col-span-2 row-span-1">
+
                 </table>
                 <button class="darkBtn col-span-2 row-span-1" data-modal-target="searchExercises-modal" data-modal-toggle="searchExercises-modal" >Find Exercises</button>
+                <button class="baseBtn col-span-1">Import Template</button>
+                <button class="baseBtn col-span-1">Save as Template</button>
             </div>
 
             <!-- Main modal -->

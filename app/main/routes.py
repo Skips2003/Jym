@@ -6,6 +6,7 @@ from app.main import bp
 from app import db, bcrypt, loginManager
 import requests
 
+# Remove after home page has been updated to JS
 daysOfTheWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 def searchExerciseAPIString(query):
@@ -36,11 +37,37 @@ def loadWorkoutsFromSchedule(scheduleID):
 
     workoutDays = []
     for i in range(1,8):
+        
         scheduleDay = ScheduleDays.query.filter_by(scheduleID=scheduleID, day=i).first()
+
         if scheduleDay:
-            workoutDays.append(Workouts.query.filter_by(id=scheduleDay.workoutID).first())
+            temp = WorkoutExercises.query.filter_by(workoutID=scheduleDay.workoutID).all()
+            exercises = []
+
+            for exercise in temp:
+                exercises.append({
+                    "id": Exercises.query.filter_by(exercise.exerciseID).first().id,
+                    "exerciseSearchID": Exercises.query.filter_by(exercise.exerciseID).first().exerciseSearchID,
+                    "reps": Exercises.query.filter_by(exercise.exerciseID).first().reps,
+                    "sets": Exercises.query.filter_by(exercise.exerciseID).first().sets,
+                    "weight": Exercises.query.filter_by(exercise.exerciseID).first().weight,
+                })
+
+            workoutDays.append({
+            "id": scheduleDay.workoutID,
+            "name": Workouts.query.filter_by(id=scheduleDay.workoutID).first().name,
+            "description": Workouts.query.filter_by(id=scheduleDay.workoutID).first().description,
+            "public": Workouts.query.filter_by(id=scheduleDay.workoutID).first().public,
+            "exercises": exercises
+            })
         else:
-            workoutDays.append(Workouts.query.filter_by(id=1).first())
+            workoutDays.append({
+            "id": Workouts.query.filter_by(id=1).first().id,
+            "name": Workouts.query.filter_by(id=1).first().name,
+            "description": Workouts.query.filter_by(id=1).first().description,
+            "public": Workouts.query.filter_by(id=1).first().public,
+            "exercises": None
+            })
     
     return workoutDays
 
@@ -97,9 +124,9 @@ def editSchedule():
 
         if response:
             print("exercises found")
-            return render_template('edit-schedule.html', title='Edit-Schedule', form=form, query=form.search.data, results=response, schedule=schedule, workoutDays=workoutDays, daysOfTheWeek=daysOfTheWeek)
+            return render_template('edit-schedule.html', title='Edit-Schedule', form=form, query=form.search.data, results=response, schedule=schedule, workoutDays=workoutDays)
 
-    return render_template('edit-schedule.html', title='Edit-Schedule', form=form, schedule=schedule, workoutDays=workoutDays, daysOfTheWeek=daysOfTheWeek) 
+    return render_template('edit-schedule.html', title='Edit-Schedule', form=form, schedule=schedule, workoutDays=workoutDays) 
 
 @bp.route('/signIn', methods=['GET', 'POST'])
 def signIn():
