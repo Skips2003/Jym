@@ -26,6 +26,10 @@ def signUp():
 def admin():
     return render_template('admin.html')
 
+@app.route('/admin_members')
+def admin_members():
+    return render_template('admin_members.html')
+
 @app.route('/manage')
 def manage():
     return render_template('manage.html')
