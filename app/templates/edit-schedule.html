@@ -61,30 +61,11 @@
                                 Search for Exercises
                             </h1>
                         </div>
-                        <form method="post" action="/editSchedule" novalidate>
-                            {{ form.hidden_tag() }}
-                            <p>
-                                {{ form.search(size=32) }}<br>
-                                {% for error in form.search.errors %}
-                                <span style="color: red;">[{{ error }}]</span>
-                                {% endfor %}
-                            </p>
-                            <p>{{ form.submit() }}</p>
-                        </form>
+                        <input type="text" id="exerciseSearchInput" class="baseInput mt-4 mb-4" placeholder="Search for exercises...">
+                        <button class="baseBtn mb-4" onclick="searchExercises()">Search</button>
                         <!-- Modal body -->
-                        <h3>Showing Results For: {{ query }}</h3>
-                        <table>
-                            {% for exercise in results %}
-                                <tr>
-                                    <td>{{ exercise.name }}</td>
-                                    <td>{{ exercise.bodyparts }}</td>
-                                    <td>{{ exercise.equipments }}</td>
-                                    <td>{{ exercise.secondaryMuscles }}</td>
-                                    <td><button>Add Exercise</button></td>
-                                </tr>
-                            {% else %}
-                                <tr><td>No exercises found.</td></tr>
-                            {% endfor %}
+                        <table id="exerciseSearchTable"class="col-span-2 row-span-1">
+
                         </table>
                         <form action="#">
                             <div class="grid grid-cols-3 gap-4">
