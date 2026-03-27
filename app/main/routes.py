@@ -3,9 +3,9 @@ from flask_login import login_user, login_required, logout_user, current_user
 from app.models import Users
 from app.main.forms import LoginForm, SignUpForm, SearchExercise
 from app.main import bp
-from app import db, bcrypt, loginManager, mongo
-import requests
+from app import db, bcrypt, loginManager, mongo, api
 from bson.objectid import ObjectId
+import requests
 
 # Remove after home page has been updated to JS
 daysOfTheWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
