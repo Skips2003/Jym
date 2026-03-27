@@ -24,6 +24,8 @@ def signUp():
 
 @app.route('/admin')
 def admin():
+    #members=Members.query.all()                  database name Members?
+    #return render_template('admin.html',members=members)
     return render_template('admin.html')
 
 @app.route('/admin_members')
