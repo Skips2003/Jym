@@ -1,11 +1,15 @@
+import json
 from flask import render_template, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
-from app.models import Users, Schedules, ScheduleDays, Exercises, Workouts, WorkoutExercises
+from app.models import Users
 from app.main.forms import LoginForm, SignUpForm, SearchExercise
 from app.main import bp
-from app import db, bcrypt, loginManager
+from app import db, bcrypt, loginManager, mongo, api
+from bson import json_util
+from bson.objectid import ObjectId
 import requests
 
+# Remove after home page has been updated to JS
 daysOfTheWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 def searchExerciseAPIString(query):
@@ -30,17 +34,16 @@ def searchExerciseAPIID(id):
 
     return result
 
-def loadWorkoutsFromSchedule(scheduleID):
+def loadScheduleDays(schedule):
 
-    print("loading schedule days for scheduleID: ", scheduleID, "userID: ", current_user.id)
+    print("loading schedule days for scheduleID: ", schedule['_id'], "userID: ", current_user.id)
+
+    temp = list(schedule['days'])
 
     workoutDays = []
-    for i in range(1,8):
-        scheduleDay = ScheduleDays.query.filter_by(scheduleID=scheduleID, day=i).first()
-        if scheduleDay:
-            workoutDays.append(Workouts.query.filter_by(id=scheduleDay.workoutID).first())
-        else:
-            workoutDays.append(Workouts.query.filter_by(id=1).first())
+
+    for i in range(len(temp)):
+        workoutDays.append(json.loads(json_util.dumps(mongo.db.Workouts.find_one({ "_id" : ObjectId(schedule['days'][temp[i]]) }))))
     
     return workoutDays
 
@@ -54,15 +57,19 @@ def loaduser(userID):
 def home():
     print('home')
 
-    schedule = Schedules.query.filter_by(id=current_user.currentScheduleID).first()
+    print(current_user.currentScheduleID)
+
+    schedule = json.loads(json_util.dumps(mongo.db.Schedules.find_one({ "_id" : ObjectId(current_user.currentScheduleID) })))
 
     if not schedule:
         print("no schedule found for user, setting to default schedule")
-        Users.query.filter_by(id=current_user.id).first().currentScheduleID = 1
+        Users.query.filter_by(id=current_user.id).first().currentScheduleID = '69c44bc4735131196e47244d'
         db.session.commit()
+    else:
+        print("schedule found for user")
 
-    print("schedule found for user")
-    workoutDays = loadWorkoutsFromSchedule(schedule.id)
+    workoutDays = loadScheduleDays(schedule)
+    print("workout days: ", workoutDays)
 
     return render_template('home.html', title='Home Page', schedule=schedule, workoutDays=workoutDays, daysOfTheWeek=daysOfTheWeek)
 
@@ -79,15 +86,17 @@ def editSchedule():
     print("Loading edit-schedule ...")
 
     form = SearchExercise()
-    schedule = Schedules.query.filter_by(id=current_user.currentScheduleID).first()
+    schedule = json.loads(json_util.dumps(mongo.db.Schedules.find_one({ "_id" : ObjectId(current_user.currentScheduleID) })))
 
     if not schedule:
         print("no schedule found for user, setting to default schedule")
-        Users.query.filter_by(id=current_user.id).first().currentScheduleID = 1
+        Users.query.filter_by(id=current_user.id).first().currentScheduleID = '69c44bc4735131196e47244d'
         db.session.commit()
+    else:
+        print("schedule found for user")
 
-    print("schedule found for user")
-    workoutDays = loadWorkoutsFromSchedule(schedule.id)
+    workoutDays = loadScheduleDays(schedule)
+    print("workout days: ", workoutDays)
 
     if form.is_submitted():
         print("form submitted")
@@ -97,9 +106,9 @@ def editSchedule():
 
         if response:
             print("exercises found")
-            return render_template('edit-schedule.html', title='Edit-Schedule', form=form, query=form.search.data, results=response, schedule=schedule, workoutDays=workoutDays, daysOfTheWeek=daysOfTheWeek)
+            return render_template('edit-schedule.html', title='Edit-Schedule', form=form, query=form.search.data, results=response, schedule=schedule, workoutDays=workoutDays)
 
-    return render_template('edit-schedule.html', title='Edit-Schedule', form=form, schedule=schedule, workoutDays=workoutDays, daysOfTheWeek=daysOfTheWeek) 
+    return render_template('edit-schedule.html', title='Edit-Schedule', form=form, schedule=schedule, workoutDays=workoutDays) 
 
 @bp.route('/signIn', methods=['GET', 'POST'])
 def signIn():
@@ -126,7 +135,7 @@ def signUp():
         print("form validated")
         print("creating user")
         hashedPassword = bcrypt.generate_password_hash(form.password.data).decode('utf8')
-        newUser = Users(username=form.username.data, password=hashedPassword, email=form.email.data, firstName=form.firstName.data, lastName=form.lastName.data, currentScheduleID=1)
+        newUser = Users(username=form.username.data, password=hashedPassword, email=form.email.data, firstName=form.firstName.data, lastName=form.lastName.data, currentScheduleID='69c44bc4735131196e47244d')
         db.session.add(newUser)
         db.session.commit()
         return redirect(url_for('main.signIn'))
