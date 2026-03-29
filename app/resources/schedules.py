@@ -2,37 +2,45 @@ from bson import ObjectId
 from app import db, mongo
 from flask import jsonify, request
 from flask_restful import Resource
-from app.resources.auth import requireApiKey
+from app.resources.auth import validateRequest
 from app.models import Schedules
 
 # Add options for filtering the output e.g. just return the different Days/specific days or just the name and description
 
 class SchedulesAPI(Resource):
-    @requireApiKey  # Apply middleware to GET requests
+    @validateRequest  # Apply middleware to GET requests
     def get(self, scheduleID=None, scheduleName=None):
         if scheduleID:
             schedule = mongo.db.Schedules.find_one({"_id": ObjectId(scheduleID)})
             if not schedule:
                 return {"message": "Not found"}, 404
-            return jsonify(self.formatSchedule(schedule))
+            return jsonify(self.formatSchedule(schedule, includeID=True))
         elif scheduleName:
             schedule = mongo.db.Schedules.find_one({"name": scheduleName})
+            schedule.pop('_id', None) # Remove the MongoDB ID as it wasn't requested and could be a security risk to return
             if not schedule:
                 return {"message": "Not found"}, 404
-            return jsonify(self.formatSchedule(schedule))
+            return jsonify(self.formatSchedule(schedule , includeID=False))
         else:
             schedules = mongo.db.Schedules.find()
-            output = [self.formatSchedule(s) for s in schedules]
+            output = [self.formatSchedule(s, includeID=False) for s in schedules] # Remove the MongoDB ID from all schedules as it wasn't requested and could be a security risk to return
             return jsonify(output)
         
     # curl command to test: curl -X GET -H "x-api-key: your_api_key_here" http://localhost:5000/api/schedules
 
-    def formatSchedule(self, schedule):
+    def formatSchedule(self, schedule, includeID=False):
         # Prepare the base dictionary
-        result = {
-            "name": schedule['name'],
-            "description": schedule['description']
-        }
+        if includeID:
+            result = {
+                "_id": str(schedule['_id']),
+                "name": schedule['name'],
+                "description": schedule['description']
+            }
+        else:
+            result = {
+                "name": schedule['name'],
+                "description": schedule['description']
+            }
         
         # Map the day IDs to the actual workout data
         for day, workoutID in schedule['days'].items():
@@ -46,9 +54,13 @@ class SchedulesAPI(Resource):
                 
         return result
 
-    @requireApiKey  # Apply middleware to POST requests
+    @validateRequest  # Apply middleware to POST requests
     def post(self):
         data = request.json
+
+        data = data["schedule"]
+
+        print(data)
 
         daysDefault = {
             "mondayID": "69c44e2b735131196e472458",
@@ -62,21 +74,16 @@ class SchedulesAPI(Resource):
 
         # check if the days provided in the request are valid day keys (e.g., "mondayID", "tuesdayID", etc.) and that the workout IDs provided for each day are valid workout IDs in the Workouts collection
 
-        for day in data.get("days", {}):
-            if day not in daysDefault:
-                return {"error": f"Invalid day key: {day}. Valid keys are: {list(daysDefault.keys())}"}, 400
-            daycheck = mongo.db.Workouts.find_one({"_id": ObjectId(data["days"][day])})
-            if not daycheck:
-                return {"error": f"Invalid workout ID for {day}: {data['days'][day]}"}, 400
+        result = mongo.db.Schedules.insert_one(Schedules(name=data.get("name", "Default-Schedule"), description=data.get("description", "Default-Schedule"), public=data.get("public", True), days=data.get("days", daysDefault)))
+        print("Adding schedule: ", data.get("name"), " and description: ", data.get("description"), " and days: ", data.get("days") )
 
-        mongo.db.Schedules.insert_one(Schedules(name=data["name"], description=data["description"], public=data.get("public", True), days=data.get("days", daysDefault)))
-        print("Adding schedule with name: ", data["name"], " and description: ", data["description"], " and days: ", data.get("days", daysDefault) )
+        newID = str(result.inserted_id)
 
         # curl command to test: curl -X POST -H "Content-Type: application/json" -H "x-api-key: your_api_key_here" -d '{"name": "Test Schedule", "description": "This is a test schedule."}' http://localhost:5000/api/schedules
 
-        return {"message": "Schedule added successfully!"}
+        return {"message": "Schedule added successfully!", "_id": newID}
 
-    @requireApiKey  # Apply middleware to PUT requests
+    @validateRequest  # Apply middleware to PUT requests
     def put(self, scheduleID=None):
         data = request.json
 
@@ -109,7 +116,7 @@ class SchedulesAPI(Resource):
         
         return {"message": "Schedule updated successfully!"}
 
-    @requireApiKey  # Apply middleware to DELETE requests
+    @validateRequest  # Apply middleware to DELETE requests
     def delete(self, scheduleID=None):
         data = request.json
 

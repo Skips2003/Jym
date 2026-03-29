@@ -1,9 +1,11 @@
+import json
 from flask import render_template, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models import Users
 from app.main.forms import LoginForm, SignUpForm, SearchExercise
 from app.main import bp
 from app import db, bcrypt, loginManager, mongo, api
+from bson import json_util
 from bson.objectid import ObjectId
 import requests
 
@@ -41,7 +43,7 @@ def loadScheduleDays(schedule):
     workoutDays = []
 
     for i in range(len(temp)):
-        workoutDays.append(mongo.db.Workouts.find_one({ "_id" : ObjectId(schedule['days'][temp[i]]) }))
+        workoutDays.append(json.loads(json_util.dumps(mongo.db.Workouts.find_one({ "_id" : ObjectId(schedule['days'][temp[i]]) }))))
     
     return workoutDays
 
@@ -57,7 +59,7 @@ def home():
 
     print(current_user.currentScheduleID)
 
-    schedule = mongo.db.Schedules.find_one({ "_id" : ObjectId(current_user.currentScheduleID) })
+    schedule = json.loads(json_util.dumps(mongo.db.Schedules.find_one({ "_id" : ObjectId(current_user.currentScheduleID) })))
 
     if not schedule:
         print("no schedule found for user, setting to default schedule")
@@ -84,7 +86,7 @@ def editSchedule():
     print("Loading edit-schedule ...")
 
     form = SearchExercise()
-    schedule = mongo.db.Schedules.find_one({ "_id" : ObjectId(current_user.currentScheduleID) })
+    schedule = json.loads(json_util.dumps(mongo.db.Schedules.find_one({ "_id" : ObjectId(current_user.currentScheduleID) })))
 
     if not schedule:
         print("no schedule found for user, setting to default schedule")

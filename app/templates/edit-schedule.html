@@ -9,30 +9,35 @@
         <div class="baseCard col-span-3">
             {% if workoutDays %}
                 <main id="scheduleContainer" class="grid grid-cols-7 gap-1">
-                        <!-- News articles will be injected here dynamically -->
+                    <!-- day cards inserted here by JS-->
                 </main>
                 <script>
                     const container = document.getElementById("scheduleContainer");
                     container.innerHTML = "";
-                    let dayCount = 0;
-                    workouts = {{ workoutDays|tojson }}
-                    console.log(workouts)
 
-                    workouts.forEach(day => {;
-                        container.appendChild(createDayCard(day, daysOfTheWeek[dayCount], dayCount));
-                        console.log(day);
-                        dayCount++;
-                    });
+                    let dayCount = 0;
+                    const currentSchedule = {{ schedule|tojson|safe }};
+                    console.log(currentSchedule)
+                    const workouts = {{ workoutDays|tojson|safe }};
+                    console.log(workouts)
+                    const unchangedWorkouts = {{workoutDays|tojson|safe}};
+                    console.log(unchangedWorkouts)
+                    const UID = {{current_user.id}};
+
+                    var currentDay = workouts[0];
+
+                    loadPage();
 
                 </script>
             {% endif %}
             <!-- Instead of using Modals I thought we could just update the information on the page when the user clicks one of these buttons? -->
             <hr class="border-top: 12px solid bg-default border-radius: 10px">
-            
+
             <div class="grid grid-cols-4 grid-rows-7 gap-1">
                 <h1 class="col-span-2 row-span-1">Edit Day</h1>
                 <h1 class="col-span-2 row-span-1">Muscles Worked</h1>
-                <h3 class="col-span-2 row-span-1" id="workoutName">Workout Name</h3>
+                <p input="col-span-2 row-span-1" id="workoutName">Workout Name</p>
+                <input type="text" id="changeWorkoutNameInput" class="baseInput" placeholder="Change Workout Name...">
 
                 <!-- Diagram of muscles worked based on exercises selected will go here -->
                 <div class="baseCard col-span-2 row-span-6">
@@ -45,14 +50,14 @@
                 <table id="exerciseTable"class="col-span-2 row-span-1">
 
                 </table>
-                <button class="darkBtn col-span-2 row-span-1" data-modal-target="searchExercises-modal" data-modal-toggle="searchExercises-modal" >Find Exercises</button>
+                <button class="darkBtn col-span-2 row-span-1" data-modal-target="searchExercises-modal" data-modal-toggle="searchExercises-modal">Find Exercises</button>
                 <button class="baseBtn col-span-1">Import Template</button>
                 <button class="baseBtn col-span-1">Save as Template</button>
             </div>
 
             <!-- Main modal -->
-            <div id="searchExercises-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div>
+            <div id="searchExercises-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
+                <div class="overflow-auto">
                     <!-- Modal content -->
                     <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
                         <!-- Modal header -->
@@ -61,10 +66,10 @@
                                 Search for Exercises
                             </h1>
                         </div>
-                        <input type="text" id="exerciseSearchInput" class="baseInput mt-4 mb-4" placeholder="Search for exercises...">
-                        <button class="baseBtn mb-4" onclick="searchExercises()">Search</button>
+                        <input type="text" id="exerciseSearchInput" class="baseInput" placeholder="Search for exercises...">
+                        <button class="baseBtn" onclick="searchExercises()">Search</button>
                         <!-- Modal body -->
-                        <table id="exerciseSearchTable"class="col-span-2 row-span-1">
+                        <table id="exerciseSearchTable">
 
                         </table>
                         <form action="#">
@@ -82,7 +87,7 @@
             <div class="grid grid-cols-3 gap-1">
                 <button class="baseBtn col-span-1">Cancel</button>
                 <button class="baseBtn col-span-1">Load Schedule</button>
-                <button class="darkBtn col-span-1">Save Changes</button>
+                <button class="darkBtn col-span-1" onclick="saveChanges(workouts, currentSchedule, unchangedWorkouts, UID)">Save Changes</button>
             </div>
         </div>
 

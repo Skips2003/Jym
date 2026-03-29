@@ -5,12 +5,14 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_pymongo import PyMongo
 from flask_restful import Api
+from flask_wtf import CSRFProtect
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 loginManager = LoginManager()
 mongo = PyMongo()
 api = Api()
+csrf = CSRFProtect()
 
 # adding API resources
 from app.resources.users import UsersAPI
@@ -28,6 +30,7 @@ def createApp(configClass = Config):
     bcrypt.init_app(app)
     mongo.init_app(app)
     api.init_app(app)
+    csrf.init_app(app)
 
 
     loginManager.init_app(app)

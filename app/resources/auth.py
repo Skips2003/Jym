@@ -2,11 +2,15 @@ from functools import wraps
 from flask import request, jsonify
 from app import db
 from app.models import APIKey
+from flask_login import current_user
 
 # Middleware to check API key
-def requireApiKey(f):
+def validateRequest(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+
+        if current_user.is_authenticated:
+            return f(*args, **kwargs)
         
         apiKey = request.headers.get('X-API-KEY')
 
@@ -20,6 +24,7 @@ def requireApiKey(f):
         keyEntry.request_count += 1
         db.session.commit()
 
+        setattr(request, 'csrf_exempt', True)
         return f(*args, **kwargs)
 
     return decorated_function

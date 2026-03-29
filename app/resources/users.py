@@ -2,17 +2,22 @@ from app.models import Users
 from app import db, bcrypt
 from flask import jsonify, request
 from flask_restful import Resource
-from app.resources.auth import requireApiKey
+from app.resources.auth import validateRequest
 
 # Add options for filtering the output e.g. just return the different stats or just the username and bio
 
 class UsersAPI(Resource):
-    @requireApiKey  # Apply middleware to GET requests
+    @validateRequest  # Apply middleware to GET requests
     def get(self, userID=None, username=None):
         if userID:
             user = Users.query.filter_by(id=userID).first()
+
+            if not user:
+                return {"error": "User not found."}, 404
+
             if user.public == True:
                 return jsonify({
+                    "id": user.id, # User ID returned because request already specifies the userID, so it is not a security risk and can be useful for the client to have
                     "username": user.username,
                     "bio": user.bio,
                     "followers": user.followers,
@@ -26,9 +31,14 @@ class UsersAPI(Resource):
                 })
         elif username:
             user = Users.query.filter_by(username=username).first()
+
+            if not user:
+                return {"error": "User not found."}, 404
+            
             if user.public == True:
                 return jsonify({
-                    "username": user.username,
+                    # User ID not returned because request specifies the username, so it could be a security risk to return the userID and is not necessary for the client to have
+                    "username": user.username, 
                     "bio": user.bio,
                     "followers": user.followers,
                     "following": user.following,
@@ -45,6 +55,7 @@ class UsersAPI(Resource):
             for u in users:
                 if u.public == True:
                     output.append({
+                        # User ID not returned because request does not specify the userID, so it could be a security risk to return the userID and is not necessary for the client to have
                         "username": u.username,
                         "bio": u.bio,
                         "followers": u.followers,
@@ -58,7 +69,7 @@ class UsersAPI(Resource):
                     })
             return jsonify(output)
 
-    @requireApiKey  # Apply middleware to POST requests
+    @validateRequest  # Apply middleware to POST requests
     def post(self):
         data = request.json
         newUser = Users(
@@ -81,11 +92,14 @@ class UsersAPI(Resource):
         )
         db.session.add(newUser)
         db.session.commit()
-        return {"message": "User added successfully!"}
+        return {"message": "User added successfully!"}, 201
 
-    @requireApiKey  # Apply middleware to PUT requests
+    @validateRequest  # Apply middleware to PUT requests
     def put(self, userID=None, username=None):
+
         data = request.json
+
+        print(data)
 
         if not userID and not username:
             userID = data["id"]
@@ -96,7 +110,7 @@ class UsersAPI(Resource):
             user = Users.query.get(userID)
 
         if not user:
-            return {"error": "User not found."}
+            return {"error": "User not found."}, 404
 
         if "firstName" in data: user.firstName=data["firstName"]
         if "lastName" in data: user.lastName=data["lastName"]
@@ -109,9 +123,10 @@ class UsersAPI(Resource):
         if "squat" in data: user.squat=data["squat"]
 
         db.session.commit()
-        return {"message": "User updated successfully!"}
+        print("User: " + userID + " updated!" + data["currentScheduleID"])
+        return {"message": "User updated successfully!"}, 200
 
-    @requireApiKey  # Apply middleware to DELETE requests
+    @validateRequest  # Apply middleware to DELETE requests
     def delete(self, userID=None):
         data = request.json
 
@@ -121,8 +136,8 @@ class UsersAPI(Resource):
         user = Users.query.get(userID)
 
         if not user:
-            return {"error": "User not found."}
+            return {"error": "User not found."}, 404
 
         db.session.delete(user)
         db.session.commit()
-        return {"message": "User deleted successfully!"}
+        return {"message": "User deleted successfully!"}, 200
