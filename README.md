@@ -9,4 +9,5 @@ flask-migrate
 flask-login
 flask_bcrypt
 flask-pymongo
+flask-restful
 psycopg2
