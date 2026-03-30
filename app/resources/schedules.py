@@ -74,7 +74,7 @@ class SchedulesAPI(Resource):
 
         # check if the days provided in the request are valid day keys (e.g., "mondayID", "tuesdayID", etc.) and that the workout IDs provided for each day are valid workout IDs in the Workouts collection
 
-        result = mongo.db.Schedules.insert_one(Schedules(name=data.get("name", "Default-Schedule"), description=data.get("description", "Default-Schedule"), public=data.get("public", True), days=data.get("days", daysDefault)))
+        result = mongo.db.Schedules.insert_one(Schedules(name=data.get("name", "Default-Schedule"), description=data.get("description", "Default-Schedule"), shared=data.get("shared", True), days=data.get("days", daysDefault)))
         print("Adding schedule: ", data.get("name"), " and description: ", data.get("description"), " and days: ", data.get("days") )
 
         newID = str(result.inserted_id)
@@ -87,8 +87,13 @@ class SchedulesAPI(Resource):
     def put(self, scheduleID=None):
         data = request.json
 
+        data = data["schedule"]
+
+        print(data)
+
         if not scheduleID:
             scheduleID = data.get("_id")
+            print (scheduleID)
 
         if scheduleID == "69c44bc4735131196e47244d":
             return {"error": "Cannot edit default schedule."}, 400

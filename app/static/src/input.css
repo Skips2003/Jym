@@ -34,11 +34,11 @@
 
 @layer base{
     h1 {
-        @apply text-default text-4xl font-medium;
+        @apply text-default text-2xl font-medium;
     }
 
     h3 {
-        @apply text-default text-xl font-medium;
+        @apply text-default text-lg font-medium;
     }
 
     p {
@@ -46,7 +46,19 @@
     }
 
     th {
-        @apply text-left text-default
+        @apply text-sm text-body bg-default-subtle border-b border-default;
+    }
+
+    tr {
+        @apply bg-default-subtle border-b border-default hover:bg-neutral-secondary-medium
+    }
+
+    table {
+        @apply w-full text-sm text-left rtl:text-right text-body;
+    }
+
+    hr {
+        @apply border-top: 12px solid bg-default border-radius: 10px p-0.5
     }
 }
 
@@ -56,15 +68,15 @@
     }
     
     .baseCard{
-        @apply bg-white block p-6 border-4 border-default rounded-base shadow-xs;
+        @apply bg-white block p-1 border-4 border-default rounded-base shadow-xs;
     }
 
     .baseBtn{
-        @apply bg-white block p-6 border-4 border-default rounded-base shadow-xs text-center;
+        @apply bg-white block p-4 border-4 border-default rounded-base shadow-xs text-center;
     }
 
     .darkBtn{
-        @apply bg-default block p-6 border-4 border-gray-900 rounded-base shadow-xs text-center text-white;
+        @apply bg-default block p-4 border-4 border-gray-900 rounded-base shadow-xs text-center text-white;
     }
 }
 
