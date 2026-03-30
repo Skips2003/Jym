@@ -2,48 +2,32 @@ import json
 from flask import render_template, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models import Users
-from app.main.forms import LoginForm, SignUpForm, SearchExercise
+from app.main.forms import LoginForm, SignUpForm
 from app.main import bp
 from app import db, bcrypt, loginManager, mongo, api
 from bson import json_util
 from bson.objectid import ObjectId
-import requests
 
 # Remove after home page has been updated to JS
 daysOfTheWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
-def searchExerciseAPIString(query):
-    url = "https://exercisedb.dev/api/v1/exercises/search"
+def cleanMongoData(data):
 
-    querystring = {"q": query}
+    data['_id'] = data['_id']['$oid']
 
-    print("User Searching for: " , querystring)
-
-    headers = {
-                "Accept": "application/json"
-            }
-
-    results = requests.get(url, headers=headers, params=querystring).json()
-
-    return results
-
-def searchExerciseAPIID(id):
-    url = "https://exercisedb.dev/api/v1/exercises/" + id
-
-    result = requests.get(url).json()
-
-    return result
+    return data
 
 def loadScheduleDays(schedule):
 
-    print("loading schedule days for scheduleID: ", schedule['_id'], "userID: ", current_user.id)
+    print("loading schedule days for scheduleID: ", schedule, "userID: ", current_user.id)
 
     temp = list(schedule['days'])
 
     workoutDays = []
 
     for i in range(len(temp)):
-        workoutDays.append(json.loads(json_util.dumps(mongo.db.Workouts.find_one({ "_id" : ObjectId(schedule['days'][temp[i]]) }))))
+        day = json.loads(json_util.dumps(mongo.db.Workouts.find_one({ "_id" : ObjectId(schedule['days'][temp[i]]) })))
+        workoutDays.append(cleanMongoData(day))
     
     return workoutDays
 
@@ -59,7 +43,8 @@ def home():
 
     print(current_user.currentScheduleID)
 
-    schedule = json.loads(json_util.dumps(mongo.db.Schedules.find_one({ "_id" : ObjectId(current_user.currentScheduleID) })))
+    temp = json.loads(json_util.dumps(mongo.db.Schedules.find_one({ "_id" : ObjectId(current_user.currentScheduleID) })))
+    schedule = cleanMongoData(temp)
 
     if not schedule:
         print("no schedule found for user, setting to default schedule")
@@ -71,7 +56,7 @@ def home():
     workoutDays = loadScheduleDays(schedule)
     print("workout days: ", workoutDays)
 
-    return render_template('home.html', title='Home Page', schedule=schedule, workoutDays=workoutDays, daysOfTheWeek=daysOfTheWeek)
+    return render_template('home.html', title='Home Page', schedule=schedule, workoutDays=workoutDays)
 
 @bp.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -85,8 +70,8 @@ def editSchedule():
 
     print("Loading edit-schedule ...")
 
-    form = SearchExercise()
-    schedule = json.loads(json_util.dumps(mongo.db.Schedules.find_one({ "_id" : ObjectId(current_user.currentScheduleID) })))
+    temp = json.loads(json_util.dumps(mongo.db.Schedules.find_one({ "_id" : ObjectId(current_user.currentScheduleID) })))
+    schedule = cleanMongoData(temp)
 
     if not schedule:
         print("no schedule found for user, setting to default schedule")
@@ -98,17 +83,7 @@ def editSchedule():
     workoutDays = loadScheduleDays(schedule)
     print("workout days: ", workoutDays)
 
-    if form.is_submitted():
-        print("form submitted")
-        print("searching for exercises ...")
-
-        response = searchExerciseAPIString(form.search.data)['data']
-
-        if response:
-            print("exercises found")
-            return render_template('edit-schedule.html', title='Edit-Schedule', form=form, query=form.search.data, results=response, schedule=schedule, workoutDays=workoutDays)
-
-    return render_template('edit-schedule.html', title='Edit-Schedule', form=form, schedule=schedule, workoutDays=workoutDays) 
+    return render_template('edit-schedule.html', title='Edit-Schedule', schedule=schedule, workoutDays=workoutDays) 
 
 @bp.route('/signIn', methods=['GET', 'POST'])
 def signIn():

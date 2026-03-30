@@ -23,8 +23,6 @@ class UsersAPI(Resource):
                     "followers": user.followers,
                     "following": user.following,
                     "sessions_in_row": user.sessionsInRow,
-                    "big_three_total": user.bigThreeTotal,
-                    "quick_stat_three": user.quickStatThree,
                     "bench_press": user.benchPress,
                     "dead_lift": user.deadLift,
                     "squat": user.squat,
@@ -43,8 +41,6 @@ class UsersAPI(Resource):
                     "followers": user.followers,
                     "following": user.following,
                     "sessions_in_row": user.sessionsInRow,
-                    "big_three_total": user.bigThreeTotal,
-                    "quick_stat_three": user.quickStatThree,
                     "bench_press": user.benchPress,
                     "dead_lift": user.deadLift,
                     "squat": user.squat,
@@ -61,8 +57,6 @@ class UsersAPI(Resource):
                         "followers": u.followers,
                         "following": u.following,
                         "sessions_in_row": u.sessionsInRow,
-                        "big_three_total": u.bigThreeTotal,
-                        "quick_stat_three": u.quickStatThree,
                         "bench_press": u.benchPress,
                         "dead_lift": u.deadLift,
                         "squat": u.squat,
@@ -84,8 +78,6 @@ class UsersAPI(Resource):
             following=data.get("following", 0),  # Default to 0 if not provided
             currentScheduleID=data.get("currentScheduleID", "69c44bc4735131196e47244d"),  # Default schedule ID if not provided
             sessionsInRow=data.get("sessionsInRow", 0),  # Default to 0 if not provided
-            bigThreeTotal=data.get("bigThreeTotal", 0),  # Default to 0 if not provided
-            quickStatThree=data.get("quickStatThree", 0),  # Default to 0 if not provided
             benchPress=data.get("benchPress", 0),  # Default to 0 if not provided
             deadLift=data.get("deadLift", 0),  # Default to 0 if not provided
             squat=data.get("squat", 0)  # Default to 0 if not provided

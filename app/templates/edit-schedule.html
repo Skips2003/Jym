@@ -1,58 +1,63 @@
 {% extends 'layout.html' %}
 {% block content %}
 <section>
-    <script src="{{ url_for('static', filename='js/schedules.js') }}"></script>
-    <div class="grid grid-cols-3 gap-4">
-        <h1 class="col-span-3">Edit Current Schedule: {{schedule.name}}</h1>
+    <script src="{{ url_for('static', filename='js/edit-schedules.js') }}"></script>
+    <div class="flex flex-col gap-1">
+        <h1>Edit Current Schedule:</h1>
+        <h1 id="scheduleName">{{schedule.name}}</h1>
+        <h3 id="scheduleDescription">{{schedule.description}}</h3>
+        <button class="darkBtn w-full" id="editScheduleStringsBtn" onclick="editScheduleDetails()">Edit Schedule Name/Description</button>
         <p>Click on a day to edit the Workout</p>
-
-        <div class="baseCard col-span-3">
+        <div class="baseCard w-full">
             {% if workoutDays %}
-                <main id="scheduleContainer" class="grid grid-cols-7 gap-1">
-                    <!-- day cards inserted here by JS-->
-                </main>
-                <script>
-                    const container = document.getElementById("scheduleContainer");
-                    container.innerHTML = "";
+            <main id="scheduleContainer" class="grid grid-cols-7">
+                <!-- day cards inserted here by JS-->
+            </main>
+            <script>
+                const container = document.getElementById("scheduleContainer");
+                container.innerHTML = "";
 
-                    let dayCount = 0;
-                    const currentSchedule = {{ schedule|tojson|safe }};
-                    console.log(currentSchedule)
-                    const workouts = {{ workoutDays|tojson|safe }};
-                    console.log(workouts)
-                    const unchangedWorkouts = {{workoutDays|tojson|safe}};
-                    console.log(unchangedWorkouts)
-                    const UID = {{current_user.id}};
+                let dayCount = 0;
+                const unchangedSchedule = {{ schedule|tojson|safe }};
+                console.log(unchangedSchedule);
+                const unchangedWorkouts = {{workoutDays|tojson|safe}};
+                console.log(unchangedWorkouts);
+                let workouts = {{ workoutDays|tojson|safe }};
+                console.log(workouts);
+                let currentSchedule ={{ schedule|tojson|safe }};
+                console.log(currentSchedule)
+                const UID = {{current_user.id}};
 
-                    var currentDay = workouts[0];
+                var currentDay = 0;
 
-                    loadPage();
+                loadSchedulePage();
 
-                </script>
+            </script>
             {% endif %}
-            <!-- Instead of using Modals I thought we could just update the information on the page when the user clicks one of these buttons? -->
-            <hr class="border-top: 12px solid bg-default border-radius: 10px">
+        </div>
 
-            <div class="grid grid-cols-4 grid-rows-7 gap-1">
-                <h1 class="col-span-2 row-span-1">Edit Day</h1>
-                <h1 class="col-span-2 row-span-1">Muscles Worked</h1>
-                <p input="col-span-2 row-span-1" id="workoutName">Workout Name</p>
-                <input type="text" id="changeWorkoutNameInput" class="baseInput" placeholder="Change Workout Name...">
+        <div class="baseCard w-full">
 
-                <!-- Diagram of muscles worked based on exercises selected will go here -->
-                <div class="baseCard col-span-2 row-span-6">
-
+            <div class="flex gap-1">
+                <!-- Left column -->
+                <div class="flex flex-col gap-1 basis-1/2">
+                    <p id="workoutName">Workout Name</p>
+                    <p id="workoutDescription">Workout Description</p>
+                    <button class="darkBtn w-full" id="editWorkoutStringsBtn" onclick="editWorkoutDetails()">Edit Workout Name/Description</button>
+                    <h1>Edit Day</h1>
+                    <table id="exerciseTable" class="w-full"></table>
+                    <button class="darkBtn w-full" data-modal-target="searchExercises-modal" data-modal-toggle="searchExercises-modal">Find Exercises</button>
+                    <div class="flex gap-1">
+                        <button class="baseBtn flex-1">Import Template</button>
+                        <button class="baseBtn flex-1">Save as Template</button>
+                    </div>
                 </div>
-
-                <!-- Table of exercises currently on selected day -->
-                <!-- TH are Exercise (Name of Exercise), Sets (Number of sets), Reps (Number of Reps) and Weight (As a percentage of one rep max) -->
-                <!-- Maybe add option for personal schedule to use users specified weight in kg/lbs? keep shared schedules as the percentages tho, much more useful -->
-                <table id="exerciseTable"class="col-span-2 row-span-1">
-
-                </table>
-                <button class="darkBtn col-span-2 row-span-1" data-modal-target="searchExercises-modal" data-modal-toggle="searchExercises-modal">Find Exercises</button>
-                <button class="baseBtn col-span-1">Import Template</button>
-                <button class="baseBtn col-span-1">Save as Template</button>
+            
+                <!-- Right column: Muscles Worked -->
+                <div class="flex flex-col gap-1 basis-1/2">
+                    <h1>Muscles Worked</h1>
+                    <div class="baseCard flex-1"></div>
+                </div>
             </div>
 
             <!-- Main modal -->
@@ -69,12 +74,12 @@
                         <input type="text" id="exerciseSearchInput" class="baseInput" placeholder="Search for exercises...">
                         <button class="baseBtn" onclick="searchExercises()">Search</button>
                         <!-- Modal body -->
-                        <table id="exerciseSearchTable">
+                        <table id="exerciseSearchTable" class="table-auto">
 
                         </table>
                         <form action="#">
-                            <div class="grid grid-cols-3 gap-4">
-                                <button data-modal-hide="searchExercises-modal" class="darkBtn col-span-1">
+                            <div class="flex gap-1">
+                                <button data-modal-hide="searchExercises-modal" class="darkBtn basis-1/3">
                                     Cancel
                                 </button>
                             </div>
@@ -84,16 +89,20 @@
             </div>
 
             <hr class="border-top: 12px solid bg-default border-radius: 10px">
-            <div class="grid grid-cols-3 gap-1">
-                <button class="baseBtn col-span-1">Cancel</button>
-                <button class="baseBtn col-span-1">Load Schedule</button>
-                <button class="darkBtn col-span-1" onclick="saveChanges(workouts, currentSchedule, unchangedWorkouts, UID)">Save Changes</button>
+            <div class="flex gap-1">
+                <button class="baseBtn basis-1/3">Cancel</button>
+                <button class="baseBtn basis-1/3">Load Schedule</button>
+                <button class="darkBtn basis-1/3" onclick="saveChanges(workouts, currentSchedule, unchangedWorkouts, unchangedSchedule, UID)">Save Changes</button>
             </div>
         </div>
 
-        <div class="baseCard col-span-3">
+        <div class="baseCard w-full">
             <h3>Find Schedules</h3>
         </div>
+
+        <script>
+            selectDayEdit(currentDay)
+        </script>
 
     </div>
 </section>

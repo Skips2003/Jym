@@ -24,8 +24,6 @@ class Users(db.Model, UserMixin):
     following: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
     currentScheduleID: so.Mapped[str] = so.mapped_column(sa.String, default="69c44bc4735131196e47244d")
     sessionsInRow: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
-    bigThreeTotal: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
-    quickStatThree: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
     benchPress: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
     deadLift: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
     squat: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
@@ -46,12 +44,12 @@ class Schedules(TypedDict):
     _id: ObjectId
     name: str
     description: int
-    public: bool
+    shared: bool
     days: dict[str, str]
 
 class Workouts(TypedDict):
     _id: ObjectId
     name: str
     description: int
-    public: bool
+    shared: bool
     exercises: list[dict[str, str]]
