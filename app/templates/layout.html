@@ -10,7 +10,7 @@
         const profileUrlBase = "{{ url_for('main.profile', username='') }}".slice(0, -1);
         const UID = {{current_user.id}};
     </script>
-    <script src="{{ url_for('static', filename='js/searchUsers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/searches.js') }}"></script>
     <title>StrengthTracker</title>
     <meta id="csrf-token" name="csrf-token" content="{{ csrf_token() }}">
 </head>

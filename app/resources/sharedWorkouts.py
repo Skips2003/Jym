@@ -1,48 +1,50 @@
-from bson import ObjectId
+from bson import ObjectId, json_util
 from app import mongo
-from flask import jsonify, request
+from flask import request
 from flask_restful import Resource
 from flask_login import current_user
 from app.resources.auth import validateRequest, webOnly
 from app.models import SharedWorkouts, Users
- 
+import json
+
 class SharedWorkoutsAPI(Resource):
- 
     @validateRequest
     def get(self, workoutID=None, workoutName=None, authorUsername=None):
- 
+        print(workoutID)
+        print(workoutName)
+        print(authorUsername)
         # Return specific workout by ID
         if workoutID:
             workout = mongo.db.SharedWorkouts.find_one({"_id": ObjectId(workoutID)})
             if not workout:
                 return {"error": "workout not found"}, 404
-            return jsonify(workout), 200
+            return json.loads(json_util.dumps(workout)), 200
  
         # Return all Workouts by authorUsername only
         if authorUsername and not workoutName:
             workouts = list(mongo.db.SharedWorkouts.find({"authorUsername": authorUsername}))
             if not workouts:
                 return {"error": "No workouts found for this author"}, 404
-            return jsonify(workouts), 200
+            return json.loads(json_util.dumps(workouts)), 200
  
         # Fuzzy search by workoutName only
         if workoutName and not authorUsername:
             workouts = list(mongo.db.SharedWorkouts.find({
-                "workoutName": {"$regex": workoutName, "$options": "i"}
+                "name": {"$regex": workoutName, "$options": "i"}
             }))
             if not workouts:
                 return {"error": "No workouts found matching that name"}, 404
-            return jsonify(workouts), 200
+            return json.loads(json_util.dumps(workouts)), 200
  
         # Fuzzy search by workoutName, filtered by authorUsername
         if authorUsername and workoutName:
             workouts = list(mongo.db.SharedWorkouts.find({
                 "authorUsername": authorUsername,
-                "workoutName": {"$regex": workoutName, "$options": "i"}
+                "name": {"$regex": workoutName, "$options": "i"}
             }))
             if not workouts:
                 return {"error": "No workouts found for this author matching that name"}, 404
-            return jsonify(workouts), 200
+            return json.loads(json_util.dumps(workouts)), 200
  
         return {"error": "No valid query parameters provided"}, 400
  

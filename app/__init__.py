@@ -33,7 +33,7 @@ api.add_resource(SavedWorkoutsAPI, '/api/savedworkouts', '/api/savedworkouts/<st
 
 api.add_resource(SavedSchedulesAPI, '/api/savedschedules', '/api/savedschedules/<string:scheduleID>', '/api/savedschedules/userID/<string:userID>')
 
-api.add_resource(SharedWorkoutsAPI, '/api/sharedworkouts', '/api/sharedworkouts/<string:workoutID>', '/api/sharedworkouts/authorUsername/<string:authorUsername>', '/api/sharedschedules/workoutName/<string:workoutName>')
+api.add_resource(SharedWorkoutsAPI, '/api/sharedworkouts', '/api/sharedworkouts/<string:workoutID>', '/api/sharedworkouts/authorUsername/<string:authorUsername>', '/api/sharedworkouts/workoutName/<string:workoutName>')
 
 api.add_resource(SharedSchedulesAPI, '/api/sharedschedules', '/api/sharedschedules/<string:workoutID>', '/api/sharedschedules/authorUsername/<string:authorUsername>', '/api/sharedschedules/scheduleName/<string:scheduleName>')
 

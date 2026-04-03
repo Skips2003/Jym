@@ -1,14 +1,15 @@
-from bson import ObjectId
+from bson import ObjectId, json_util
 from app import mongo
-from flask import jsonify, request
+from flask import request
 from flask_restful import Resource
 from flask_login import current_user
 from app.resources.auth import validateRequest, webOnly
 from app.models import SharedSchedules, Users
- 
- 
+import json
+
+
 class SharedSchedulesAPI(Resource):
- 
+
     @validateRequest
     def get(self, scheduleID=None, scheduleName=None, authorUsername=None):
  
@@ -17,36 +18,36 @@ class SharedSchedulesAPI(Resource):
             schedule = mongo.db.SharedSchedules.find_one({"_id": ObjectId(scheduleID)})
             if not schedule:
                 return {"error": "Schedule not found"}, 404
-            return jsonify(schedule), 200
+            return json.loads(json_util.dumps(schedule)), 200
  
         # Return all schedules by authorUsername only
         if authorUsername and not scheduleName:
             schedules = list(mongo.db.SharedSchedules.find({"authorUsername": authorUsername}))
             if not schedules:
                 return {"error": "No schedules found for this author"}, 404
-            return jsonify(schedules), 200
+            return json.loads(json_util.dumps(schedules)), 200
  
         # Fuzzy search by scheduleName only
         if scheduleName and not authorUsername:
             schedules = list(mongo.db.SharedSchedules.find({
-                "scheduleName": {"$regex": scheduleName, "$options": "i"}
+                "name": {"$regex": scheduleName, "$options": "i"}
             }))
             if not schedules:
                 return {"error": "No schedules found matching that name"}, 404
-            return jsonify(schedules), 200
+            return json.loads(json_util.dumps(schedules)), 200
  
         # Fuzzy search by scheduleName, filtered by authorUsername
         if authorUsername and scheduleName:
             schedules = list(mongo.db.SharedSchedules.find({
                 "authorUsername": authorUsername,
-                "scheduleName": {"$regex": scheduleName, "$options": "i"}
+                "name": {"$regex": scheduleName, "$options": "i"}
             }))
             if not schedules:
                 return {"error": "No schedules found for this author matching that name"}, 404
-            return jsonify(schedules), 200
+            return json.loads(json_util.dumps(schedules)), 200
  
         return {"error": "No valid query parameters provided"}, 400
- 
+
     @validateRequest
     def post(self):
         data = request.json
