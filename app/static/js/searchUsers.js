@@ -9,6 +9,7 @@ function debounce(func, delay) {
     };
 }
 
+// search users database for users with mathcing usernames with tolerence of 0.3
 async function searchByUsername(){
 
     var userSearchTable = document.getElementById("userSearchTable");
@@ -21,7 +22,6 @@ async function searchByUsername(){
     </tr>
 `;
 
-    // if not working check api/users/username/ - probably not correct way of creating this route
     const responseUser = await fetch('api/users/username/' + usernameSearch, {
         method: 'GET',
         headers:{ 

@@ -1,5 +1,6 @@
 const daysOfTheWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
+// load day cards inside schedule
 function loadHomePage(){
     Object.keys(currentSchedule.days).forEach((key, index) => {
         const day = currentSchedule.days[key];
@@ -8,6 +9,7 @@ function loadHomePage(){
     });
 }
 
+// create cards for inside of schedule
 function createDayCardView(day, dayOfWeek) {
     const button = document.createElement("div");
 
@@ -22,6 +24,7 @@ function createDayCardView(day, dayOfWeek) {
     return button;
 }
 
+// select the day and display the information
 function selectDayView(day) {
 
     currentDay = day;

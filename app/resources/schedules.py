@@ -107,9 +107,10 @@ class SchedulesAPI(Resource):
         data.pop("_id", None)  # Remove the ID from the data to avoid trying to update it
         
         # Update the schedule in MongoDB with the new data
-        for item in data:
-            mongo.db.Schedules.update_one({"_id": ObjectId(scheduleID)}, {"$set": {item: data[item]}})
-            print("Updating scheduleID: ", scheduleID, " with item: ", item, " and value: ", data[item] )
+        mongo.db.SharedSchedules.update_one(
+            {"_id": ObjectId(scheduleID)},
+            {"$set": data}
+        )
         
         return {"message": "Schedule updated successfully!"}
 
