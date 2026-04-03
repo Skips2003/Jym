@@ -1,20 +1,18 @@
 const daysOfTheWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const daysOfTheWeekID = ["mondayID", "tuesdayID", "wednesdayID", "thursdayID", "fridayID", "saturdayID", "sundayID"];
 
 function loadHomePage(){
-    workouts.forEach(day => {;
-        container.appendChild(createDayCardView(day, daysOfTheWeek[dayCount], dayCount));
+    Object.keys(currentSchedule.days).forEach((key, index) => {
+        const day = currentSchedule.days[key];
+        container.appendChild(createDayCardView(day, daysOfTheWeek[index]));
         console.log(day);
-        dayCount++;
     });
-    
 }
 
-function createDayCardView(day, dayOfWeek, dayIndex) {
+function createDayCardView(day, dayOfWeek) {
     const button = document.createElement("div");
 
     button.innerHTML = `
-        <button class="baseBtn col-span-1" data-modal-target="viewDays-modal" data-modal-toggle="viewDays-modal" onclick="selectDayView(${dayIndex})">
+        <button class="baseBtn col-span-1" data-modal-target="viewDays-modal" data-modal-toggle="viewDays-modal" onclick="selectDayView('${dayOfWeek}')">
             <img src="./images/logoSmall">
             <h3>${dayOfWeek}</h3>
             <p>${day.name}</p>
@@ -28,10 +26,12 @@ function selectDayView(day) {
 
     currentDay = day;
 
-    document.getElementById("workoutName").innerHTML = workouts[day].name;
-    document.getElementById("workoutDescription").innerHTML = workouts[day].description;
+    if(document.getElementById("workoutName") != undefined && document.getElementById("workoutDescription") != undefined){
+        document.getElementById("workoutName").innerHTML = currentSchedule.days[day].name;
+        document.getElementById("workoutDescription").innerHTML = currentSchedule.days[day].description;
+    }
 
-    console.log(workouts[day].description, daysOfTheWeek[day]);
+    console.log(currentSchedule.days[day].description, daysOfTheWeek[day]);
 
     var exerciseTable = document.getElementById("exerciseTable");
 
@@ -44,18 +44,16 @@ function selectDayView(day) {
         </tr>
     `;
 
-    if (workouts[day].exercises == undefined){
-        exerciseTable.insertRow(-1).innerHTML = `
-            <td colspan="4">Rest Day!</td>
-        `;
+    if (currentSchedule.days[day].exercises[0] == undefined){
+        exerciseTable.innerHTML = ``;
     }
     else{
-        for (let i = 0; i < workouts[day].exercises.length; i++) {
+        for (let i = 0; i < currentSchedule.days[day].exercises.length; i++) {
             exerciseTable.insertRow(-1).innerHTML = `
-                <td>${workouts[day].exercises[i].name}</td>
-                <td id="sets-${i}">${workouts[day].exercises[i].sets}</td>
-                <td id="reps-${i}">${workouts[day].exercises[i].reps}</td>
-                <td id="weight-${i}">${workouts[day].exercises[i].weight}</td>
+                <td>${currentSchedule.days[day].exercises[i].name}</td>
+                <td id="sets-${i}">${currentSchedule.days[day].exercises[i].sets}</td>
+                <td id="reps-${i}">${currentSchedule.days[day].exercises[i].reps}</td>
+                <td id="weight-${i}">${currentSchedule.days[day].exercises[i].weight}</td>
             `;
         }
     }

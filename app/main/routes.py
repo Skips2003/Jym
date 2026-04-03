@@ -1,7 +1,7 @@
 import json
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
-from app.models import Users
+from app.models import Users, Follows
 from app.main.forms import LoginForm, SignUpForm
 from app.main import bp
 from app import db, bcrypt, loginManager, mongo, api
@@ -16,20 +16,6 @@ def cleanMongoData(data):
     data['_id'] = data['_id']['$oid']
 
     return data
-
-def loadScheduleDays(schedule):
-
-    print("loading schedule days for scheduleID: ", schedule, "userID: ", current_user.id)
-
-    temp = list(schedule['days'])
-
-    workoutDays = []
-
-    for i in range(len(temp)):
-        day = json.loads(json_util.dumps(mongo.db.Workouts.find_one({ "_id" : ObjectId(schedule['days'][temp[i]]) })))
-        workoutDays.append(cleanMongoData(day))
-    
-    return workoutDays
 
 @loginManager.user_loader
 def loaduser(userID):
@@ -53,16 +39,33 @@ def home():
     else:
         print("schedule found for user")
 
-    workoutDays = loadScheduleDays(schedule)
-    print("workout days: ", workoutDays)
-
-    return render_template('home.html', title='Home Page', schedule=schedule, workoutDays=workoutDays)
+    return render_template('home.html', title='Home Page', schedule=schedule)
 
 @bp.route('/profile', methods=['GET', 'POST'])
+@bp.route('/profile/<username>', methods=['GET', 'POST'])
 @login_required
-def profile():
-    print("profile")
-    return render_template('profile.html')
+def profile(username=None):
+    if username is None:
+        user = current_user
+    else:
+        user = Users.query.filter_by(username=username).first()
+    
+    temp = json.loads(json_util.dumps(mongo.db.Schedules.find_one({ "_id" : ObjectId(user.currentScheduleID) })))
+    schedule = cleanMongoData(temp)
+
+    if not schedule:
+        print("no schedule found for user, setting to default schedule")
+        Users.query.filter_by(id=user.id).first().currentScheduleID = '69c44bc4735131196e47244d'
+        db.session.commit()
+    else:
+        print("schedule found for user" + str(schedule))
+
+    print(f"Viewing profile for: {username}")
+
+    follows = Follows.is_following(current_user.id, user.id)
+    print(follows)
+
+    return render_template('profile.html', user=user, schedule=schedule, follows=follows)
 
 @bp.route('/editSchedule', methods=['GET', 'POST'])
 @login_required
@@ -78,12 +81,9 @@ def editSchedule():
         Users.query.filter_by(id=current_user.id).first().currentScheduleID = '69c44bc4735131196e47244d'
         db.session.commit()
     else:
-        print("schedule found for user")
+        print("schedule found for user " + str(schedule))
 
-    workoutDays = loadScheduleDays(schedule)
-    print("workout days: ", workoutDays)
-
-    return render_template('edit-schedule.html', title='Edit-Schedule', schedule=schedule, workoutDays=workoutDays) 
+    return render_template('edit-schedule.html', title='Edit-Schedule', schedule=schedule) 
 
 @bp.route('/signIn', methods=['GET', 'POST'])
 def signIn():

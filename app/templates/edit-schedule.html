@@ -9,7 +9,6 @@
         <button class="darkBtn w-full" id="editScheduleStringsBtn" onclick="editScheduleDetails()">Edit Schedule Name/Description</button>
         <p>Click on a day to edit the Workout</p>
         <div class="baseCard w-full">
-            {% if workoutDays %}
             <main id="scheduleContainer" class="grid grid-cols-7">
                 <!-- day cards inserted here by JS-->
             </main>
@@ -20,20 +19,14 @@
                 let dayCount = 0;
                 const unchangedSchedule = {{ schedule|tojson|safe }};
                 console.log(unchangedSchedule);
-                const unchangedWorkouts = {{workoutDays|tojson|safe}};
-                console.log(unchangedWorkouts);
-                let workouts = {{ workoutDays|tojson|safe }};
-                console.log(workouts);
                 let currentSchedule ={{ schedule|tojson|safe }};
                 console.log(currentSchedule)
-                const UID = {{current_user.id}};
 
-                var currentDay = 0;
+                var currentDay = "Monday";
 
                 loadSchedulePage();
 
             </script>
-            {% endif %}
         </div>
 
         <div class="baseCard w-full">
@@ -92,7 +85,7 @@
             <div class="flex gap-1">
                 <button class="baseBtn basis-1/3">Cancel</button>
                 <button class="baseBtn basis-1/3">Load Schedule</button>
-                <button class="darkBtn basis-1/3" onclick="saveChanges(workouts, currentSchedule, unchangedWorkouts, unchangedSchedule, UID)">Save Changes</button>
+                <button class="darkBtn basis-1/3" onclick="saveChanges(currentSchedule, unchangedSchedule, UID)">Save Changes</button>
             </div>
         </div>
 

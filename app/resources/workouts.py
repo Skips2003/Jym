@@ -19,30 +19,25 @@ class WorkoutsAPI(Resource):
                 "_id": str(workout['_id']),
                 "name": workout['name'],
                 "description": workout['description'],
-                "shared": workout['shared'],
                 "exercises": workout['exercises']
             })
         elif workoutName:
             workout = mongo.db.Workouts.find_one({"name": workoutName})
             if not workout:
                 return {"message": "Not found"}, 404
-            if workout['shared'] == False:
-                return {"message": "Not found"}, 404
             return jsonify({
                 # Workout _id not returned because request specifies the workoutName, so it could be a security risk to return the workoutID and is not necessary for the client to have
                 "name": workout['name'],
                 "description": workout['description'],
-                "shared": workout['shared'],
                 "exercises": workout['exercises']
             })
         else:
-            Workouts = mongo.db.Workouts.find({"shared": True})
+            Workouts = mongo.db.Workouts.find()
             output = []
             for w in Workouts:
                 output.append({
                     "name": w['name'],
                     "description": w['description'],
-                    "shared": w['shared'],
                     "exercises": w['exercises']
                 })
             return jsonify(output)
@@ -54,7 +49,7 @@ class WorkoutsAPI(Resource):
 
         # Add Validating required fields
 
-        result = mongo.db.Workouts.insert_one(Workouts(name=data["name"], description=data["description"], shared=data.get("shared", True), exercises=data.get("exercises", [])))
+        result = mongo.db.Workouts.insert_one(Workouts(name=data["name"], description=data["description"], exercises=data.get("exercises", [])))
 
         newID = str(result.inserted_id)
 

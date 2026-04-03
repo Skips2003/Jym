@@ -2,64 +2,81 @@
 {% block content %}
 <section>
 
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+    <script> 
+        const profileUser = {{ user }};
+        console.log(profileUser);
+    </script>
+
     <div class="grid grid-cols-3 gap-4">
 
         <div class="baseCard col-span-3">
             <img class="col-span-1" src="" alt="User PFP"/>
-            <h1>{{ current_user.username }}</h1>
-            <p>Member since: {{ current_user.dateJoined }}      Followers: {{ current_user.followers }}</p>
+            <h1>{{ user.username }}</h1>
+            <a onclick="checkFollow('{{ user.id }}', 0)" data-modal-target="default-followModal" data-modal-toggle="default-followModal">Followers: {{ user.followers }}</a>
+            <a onclick="checkFollow('{{ user.id }}', 1)" data-modal-target="default-followModal" data-modal-toggle="default-followModal">Following: {{ user.following }}</a>
             <div class="baseCard bg-default-subtle">
-                <p>{{ current_user.bio }}</p>
+                <p id="userBio">{{ user.bio }}</p>
             </div>
+            {% if current_user.id == user.id %}
+                <button class="darkBtn" id="editBioBtn" onclick="editUserDetails()">Edit Bio</button>
+            {% elif not follows and user.public %}
+                <button class="darkBtn" id="followBtn" onclick="followUser('{{ current_user.id }}', '{{ user.id }}')">Follow</button>
+            {% elif not follows and not user.public %}
+                <button class="darkBtn" id="requestFollowbtn" onclick="requestFollow()">Request to Follow</button>
+            {% elif follows %}
+                <button class="darkBtn" id="unFollowBtn" onclick="unFollowUser('{{ current_user.id }}', '{{ user.id }}')">UnFollow</button>
+            {% endif %}
         </div>
+        {% if user.public or not user.public and follows %}
+            <h1 class="col-span-3">Stats Overview</h1>
 
-        <h1 class="col-span-3">Stats Overview</h1>
+            <div class="baseCard">
+                <h1>{{ user.sessionsInRow }}</h1>                    
+                <p>This is a stat</p>
+            </div>
+            <div class="baseCard">
+                <h1>{{ user.bigThreeTotal }}</h1>
+                <p>This is another stat</p>
+            </div>
+            <div class="baseCard">
+                <h1>{{ user.quickStatThree }}</h1>
+                <p>This is another another stat</p>
+            </div>
 
-        <div class="baseCard">
-            <h1>{{ current_user.sessionsInRow }}</h1>                    
-            <p>This is a stat</p>
-        </div>
-        <div class="baseCard">
-            <h1>{{ current_user.bigThreeTotal }}</h1>
-            <p>This is another stat</p>
-        </div>
-        <div class="baseCard">
-            <h1>{{ current_user.quickStatThree }}</h1>
-            <p>This is another another stat</p>
-        </div>
+            <h1 class="text-left col-span-3">Current Schedule <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>Save</h3></button></h1>
 
-        <h1 class="text-left col-span-3">Current Schedule <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>Save</h3></button></h1>
+            <div class="baseCard col-span-3">
+                <main id="scheduleContainer" class="grid grid-cols-7">
+                    <!-- day cards inserted here by JS-->
+                </main>
+                <script>
+                    const container = document.getElementById("scheduleContainer");
+                    container.innerHTML = "";
 
-        <div class="baseCard col-span-3">
-            <div class="grid grid-cols-7 gap-1">
+                    let dayCount = 0;
+                    const currentSchedule = {{ schedule|tojson|safe }};
+                    console.log(currentSchedule)
+
+                    var currentDay = 0;
+
+                    loadHomePage();
+
+                </script>
+            </div>
+
+            <h1 class="col-span-3">Personal Records & Recent Activity</h1>
+
+            <div class="baseCard col-span-2">
+                <h3>PBs</h3>
+            </div>
+
+            <div class="baseCard col-span-1">
+                <h3>Recent Workouts</h3>
                 <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
                     <img src="./images/logoSmall">
-                    <h3>Mon</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Tue</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Wed</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Thu</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Fri</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                    <img src="./images/logoSmall">
-                    <h3>Sat</h3>
+                    <h3>Sun</h3>
                     <p>Workout Name</p>
                 </button>
                 <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
@@ -68,44 +85,60 @@
                     <p>Workout Name</p>
                 </button>
             </div>
-        </div>
 
-        <h1 class="col-span-3">Personal Records & Recent Activity</h1>
-
-        <div class="baseCard col-span-2">
-            <h3>PBs</h3>
-        </div>
-
-        <div class="baseCard col-span-1">
-            <h3>Recent Workouts</h3>
-            <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                <img src="./images/logoSmall">
-                <h3>Sun</h3>
-                <p>Workout Name</p>
-            </button>
-            <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
-                <img src="./images/logoSmall">
-                <h3>Sun</h3>
-                <p>Workout Name</p>
-            </button>
-        </div>
-
-        <h1 class="col-span-3">Shared Schedules</h1>
-        <div class="baseCard col-span-3">
-            <h3>Shared Schedules</h3>
-            <div class="baseCard">
-                <h3>Schedule Name</h3>
-                <p>Schedule Description</p>
-                <hr class="border-top: 8px solid bg-default border-radius: 5px">
-                <div class="grid grid-rows-1 gap-2">
-                    <img src="./images/like"><p>Likes</p>
-                    <img src="./images/bookmark"><p>Bookmarks</p>
-                    <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>Bookmark</h3></button>
-                    <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>View</h3></button>
+            <h1 class="col-span-3">Shared Schedules</h1>
+            <div class="baseCard col-span-3">
+                <h3>Shared Schedules</h3>
+                <div class="baseCard">
+                    <h3>Schedule Name</h3>
+                    <p>Schedule Description</p>
+                    <hr class="border-top: 8px solid bg-default border-radius: 5px">
+                    <div class="grid grid-rows-1 gap-2">
+                        <img src="./images/like"><p>Likes</p>
+                        <img src="./images/bookmark"><p>Bookmarks</p>
+                        <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>Bookmark</h3></button>
+                        <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>View</h3></button>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <div id="viewDays-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
+                <div class="overflow-auto">
+                    <!-- Modal content -->
+                    <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+                        <!-- Modal header -->
+                        <h1 id="workoutName">Workout Name</h1>
+                        <p id="workoutDescription">Workout Description</p>
+                        <!-- Modal body -->
+                        <table id="exerciseTable" class="table-auto">
+
+                        </table>
+                        {% if current_user.id != user.id %}
+                            <button class="darkBtn" id="saveWorkout" onclick="saveWorkout()">Save Workout</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div id="default-followModal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
+                <div class="overflow-auto">
+                    <!-- Modal content -->
+                    <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+                        <!-- Modal header -->
+                        <h1 id="followersing">Followers</h1>
+                        <table id="followersingTable" class="table-auto">
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            <h1>Users Account is Private</h1>
+            <p>Request to Follow them for Access</p>
+        {% endif %}
 
     </div>
+
 </section>
 {% endblock %}

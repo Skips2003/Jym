@@ -3,6 +3,7 @@ from app import db, bcrypt
 from flask import jsonify, request
 from flask_restful import Resource
 from app.resources.auth import validateRequest
+from sqlalchemy import func
 
 # Add options for filtering the output e.g. just return the different stats or just the username and bio
 
@@ -15,39 +16,42 @@ class UsersAPI(Resource):
             if not user:
                 return {"error": "User not found."}, 404
 
-            if user.public == True:
-                return jsonify({
-                    "id": user.id, # User ID returned because request already specifies the userID, so it is not a security risk and can be useful for the client to have
-                    "username": user.username,
-                    "bio": user.bio,
-                    "followers": user.followers,
-                    "following": user.following,
-                    "sessions_in_row": user.sessionsInRow,
-                    "bench_press": user.benchPress,
-                    "dead_lift": user.deadLift,
-                    "squat": user.squat,
-                })
+            return jsonify({
+                "id": user.id, # User ID returned because request already specifies the userID, so it is not a security risk and can be useful for the client to have
+                "username": user.username,
+                "bio": user.bio,
+                "followers": user.followers,
+                "following": user.following,
+                "sessions_in_row": user.sessionsInRow,
+                "bench_press": user.benchPress,
+                "dead_lift": user.deadLift,
+                "squat": user.squat,
+            })
         elif username:
-            user = Users.query.filter_by(username=username).first()
+            users = Users.query.filter(func.similarity(Users.username, username) > 0.3).all()
+            print(users)
+            output = []
 
-            if not user:
+            if not users:
                 return {"error": "User not found."}, 404
-            
-            if user.public == True:
-                return jsonify({
-                    # User ID not returned because request specifies the username, so it could be a security risk to return the userID and is not necessary for the client to have
-                    "username": user.username, 
-                    "bio": user.bio,
-                    "followers": user.followers,
-                    "following": user.following,
-                    "sessions_in_row": user.sessionsInRow,
-                    "bench_press": user.benchPress,
-                    "dead_lift": user.deadLift,
-                    "squat": user.squat,
-                })
+            for u in users:
+                if u.public == True:
+                    output.append({
+                        # User ID not returned because request specifies the username, so it could be a security risk to return the userID and is not necessary for the client to have
+                        "username": u.username, 
+                        "bio": u.bio,
+                        "followers": u.followers,
+                        "following": u.following,
+                        "sessions_in_row": u.sessionsInRow,
+                        "bench_press": u.benchPress,
+                        "dead_lift": u.deadLift,
+                        "squat": u.squat,
+                    })
+            return jsonify(output)
         else:
             users = Users.query.all()
             output = []
+
             for u in users:
                 if u.public == True:
                     output.append({
@@ -125,7 +129,7 @@ class UsersAPI(Resource):
         if not userID:
             userID = data.get("id")
 
-        user = Users.query.get(userID)
+        user = Users.query.get(userID).first()
 
         if not user:
             return {"error": "User not found."}, 404

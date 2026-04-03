@@ -52,14 +52,8 @@
                 const container = document.getElementById("scheduleContainer");
                 container.innerHTML = "";
 
-                let dayCount = 0;
                 const currentSchedule = {{ schedule|tojson|safe }};
-                console.log(currentSchedule)
-                const unchangedWorkouts = {{workoutDays|tojson|safe}};
-                console.log(unchangedWorkouts)
-                let workouts = {{ workoutDays|tojson|safe }};
-                console.log(workouts)
-                const UID = {{current_user.id}};
+                console.log(currentSchedule);
 
                 var currentDay = 0;
 
@@ -106,5 +100,6 @@
             </div>
         </div>
     </div>
+    
 </section>
 {% endblock %}
