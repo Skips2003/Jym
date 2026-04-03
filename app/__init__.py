@@ -18,10 +18,12 @@ csrf = CSRFProtect()
 from app.resources.users import UsersAPI
 from app.resources.schedules import SchedulesAPI
 from app.resources.workouts import WorkoutsAPI
+from app.resources.follows import FollowsAPI
 
 api.add_resource(UsersAPI, '/api/users', '/api/users/<string:userID>', '/api/users/username/<string:username>')
 api.add_resource(SchedulesAPI, '/api/schedules', '/api/schedules/<string:scheduleID>', '/api/schedules/name/<string:scheduleName>')
 api.add_resource(WorkoutsAPI, '/api/workouts', '/api/workouts/<string:workoutID>', '/api/workouts/name/<string:workoutName>')
+api.add_resource(FollowsAPI, '/api/follow', '/api/followed/<string:followedID>', '/api/follower/<string:followerID>' , '/api/followed/<string:followedID>/follower/<string:followerID>')
 
 def createApp(configClass = Config):
     app = Flask(__name__)

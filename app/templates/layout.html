@@ -6,11 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static',filename='dist/output.css')}}">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css" rel="../input.css">
+    <script>
+        const profileUrlBase = "{{ url_for('main.profile', username='') }}".slice(0, -1);
+        const UID = {{current_user.id}};
+    </script>
+    <script src="{{ url_for('static', filename='js/searchUsers.js') }}"></script>
     <title>StrengthTracker</title>
     <meta id="csrf-token" name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
-           <!-- This entire Page is a placeholder of an edited Navbar from https://flowbite.com/docs/components/navbar/ It can all be changed -->
+    <!-- This entire Page is a placeholder of an edited Navbar from https://flowbite.com/docs/components/navbar/ It can all be changed -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
     <header>
         <nav class="bg-neutral-primary w-full z-20 top-0 start-0 border-b-4 border-default">
@@ -35,10 +40,10 @@
                         <a href="/" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Home</a>
                     </li>
                     <li>
-                        <a href="/editSchedule" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Edit-Schedule</a>
+                        <a href="{{ url_for('main.editSchedule') }}" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Edit-Schedule</a>
                     </li>
                     <li>
-                        <a href="/profile" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Following</a>
+                        <a href="{{ url_for('main.profile') }}" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Profile</a>
                     </li>
                     <li>
                         {% if current_user.is_anonymous %}
@@ -60,13 +65,13 @@
                 <a href="/" class="block py-2 px-3 text-white bg-brand rounded md:bg-transparent md:text-fg-brand md:p-0" aria-current="page">Home</a>
                 </li>
                 <li>
-                <a href="/editSchedule" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Edit-Schedule</a>
+                <a href="{{ url_for('main.editSchedule') }}" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Edit-Schedule</a>
                 </li>
                 <li>
-                <a href="/profile" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Following</a>
+                <a href="{{ url_for('main.profile') }}" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Profile</a>
                 </li>
                 <li>
-                <a href="/signUp" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Settings</a>
+                <a href="{{ url_for('main.signUp') }}" class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Sign Up</a>
                 </li>
                 <li>
                     {% if current_user.is_anonymous %}
@@ -75,7 +80,13 @@
                     <a class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent" href="{{ url_for('main.signOut') }}">Sign Out</a>
                     {% endif %}
                 </li>
-            </ul>
+                <form id="userSearchForm">
+                    <input id="searchUsername" type="text" class="baseInput" onkeyup="debouncedSearchByUsername()">     
+                    <table id="userSearchTable" class="table-auto">
+
+                    </table>
+                </form> 
+            </ul> 
             </div>
             </div>
         </nav>
