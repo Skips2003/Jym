@@ -17,13 +17,25 @@ csrf = CSRFProtect()
 # adding API resources
 from app.resources.users import UsersAPI
 from app.resources.schedules import SchedulesAPI
-from app.resources.workouts import WorkoutsAPI
 from app.resources.follows import FollowsAPI
+from app.resources.savedWorkouts import SavedWorkoutsAPI
+from app.resources.sharedWorkouts import SharedWorkoutsAPI
+from app.resources.savedSchedules import SavedSchedulesAPI
+from app.resources.sharedSchedules import SharedSchedulesAPI
 
 api.add_resource(UsersAPI, '/api/users', '/api/users/<string:userID>', '/api/users/username/<string:username>')
+
 api.add_resource(SchedulesAPI, '/api/schedules', '/api/schedules/<string:scheduleID>', '/api/schedules/name/<string:scheduleName>')
-api.add_resource(WorkoutsAPI, '/api/workouts', '/api/workouts/<string:workoutID>', '/api/workouts/name/<string:workoutName>')
+
 api.add_resource(FollowsAPI, '/api/follow', '/api/followed/<string:followedID>', '/api/follower/<string:followerID>' , '/api/followed/<string:followedID>/follower/<string:followerID>')
+
+api.add_resource(SavedWorkoutsAPI, '/api/savedworkouts', '/api/savedworkouts/<string:workoutID>', '/api/savedworkouts/userID/<string:userID>')
+
+api.add_resource(SavedSchedulesAPI, '/api/savedschedules', '/api/savedschedules/<string:scheduleID>', '/api/savedschedules/userID/<string:userID>')
+
+api.add_resource(SharedWorkoutsAPI, '/api/sharedworkouts', '/api/sharedworkouts/<string:workoutID>', '/api/sharedworkouts/authorUsername/<string:authorUsername>', '/api/sharedworkouts/workoutName/<string:workoutName>')
+
+api.add_resource(SharedSchedulesAPI, '/api/sharedschedules', '/api/sharedschedules/<string:workoutID>', '/api/sharedschedules/authorUsername/<string:authorUsername>', '/api/sharedschedules/scheduleName/<string:scheduleName>')
 
 def createApp(configClass = Config):
     app = Flask(__name__)

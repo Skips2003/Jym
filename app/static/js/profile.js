@@ -1,3 +1,4 @@
+// edit users Bio
 function editUserDetails() {
     const editBtn = document.getElementById("editBioBtn");
     const bioEl = document.getElementById("userBio");
@@ -15,6 +16,7 @@ function editUserDetails() {
     }
 }
 
+// follow user
 async function followUser(followerID, followedID){
     jsonBody = {"followerID": followerID, "followedID": followedID}
     const response = await fetch('/api/follow', {
@@ -31,6 +33,7 @@ async function followUser(followerID, followedID){
 
 }
 
+// unfollow user
 async function unFollowUser(followerID, followedID){
     jsonBody = {"followerID": followerID, "followedID": followedID}
     const response = await fetch('/api/follow', {
@@ -47,6 +50,7 @@ async function unFollowUser(followerID, followedID){
 
 }
 
+// check if a connection exists between two users
 async function checkFollow(userID, type){
     const title = document.getElementById("followersing");
     const table = document.getElementById("followersingTable");

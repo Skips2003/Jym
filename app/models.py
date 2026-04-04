@@ -84,5 +84,28 @@ class Schedules(TypedDict):
     _id: ObjectId
     name: str
     description: str
-    shared: bool
+    days: Days
+
+class SavedWorkouts(TypedDict):
+    userID: str
+    workoutID: ObjectId
+
+class SharedWorkouts(TypedDict):
+    _id: ObjectId
+    authorUsername: str
+    private: bool
+    name: str
+    description: str
+    exercises: list[Exercise]
+
+class SavedSchedules(TypedDict):
+    userID: str
+    scheduleID: ObjectId
+
+class SharedSchedules(TypedDict):
+    _id: ObjectId
+    authorUsername: str
+    private: bool
+    name: str
+    description: str
     days: Days

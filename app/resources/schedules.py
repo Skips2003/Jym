@@ -13,13 +13,13 @@ class SchedulesAPI(Resource):
         if scheduleID:
             schedule = mongo.db.Schedules.find_one({"_id": ObjectId(scheduleID)})
             if not schedule:
-                return {"message": "Not found"}, 404
+                return {"error": "Not found"}, 404
             return jsonify(schedule)
         elif scheduleName:
             schedule = mongo.db.Schedules.find_one({"name": scheduleName})
             schedule.pop('_id', None) # Remove the MongoDB ID as it wasn't requested and could be a security risk to return
             if not schedule:
-                return {"message": "Not found"}, 404
+                return {"error": "Not found"}, 404
             return jsonify(schedule)
         else:
             schedules = mongo.db.Schedules.find()
@@ -107,9 +107,10 @@ class SchedulesAPI(Resource):
         data.pop("_id", None)  # Remove the ID from the data to avoid trying to update it
         
         # Update the schedule in MongoDB with the new data
-        for item in data:
-            mongo.db.Schedules.update_one({"_id": ObjectId(scheduleID)}, {"$set": {item: data[item]}})
-            print("Updating scheduleID: ", scheduleID, " with item: ", item, " and value: ", data[item] )
+        mongo.db.SharedSchedules.update_one(
+            {"_id": ObjectId(scheduleID)},
+            {"$set": data}
+        )
         
         return {"message": "Schedule updated successfully!"}
 

@@ -91,6 +91,18 @@
 
         <div class="baseCard w-full">
             <h3>Find Schedules</h3>
+            <input id="searchSchedule" type="text" class="baseInput" onkeyup="debouncedSearchSchedule()"> 
+            <table id="scheduleSearchTable" class="table-auto">
+                
+            </table>
+        </div>
+
+        <div class="baseCard w-full">
+            <h3>Find Workouts</h3>
+            <input id="searchWorkout" type="text" class="baseInput" onkeyup="debouncedSearchWorkout()"> 
+            <table id="workoutSearchTable" class="table-auto">
+                
+            </table>
         </div>
 
         <script>

@@ -1,5 +1,6 @@
 const daysOfTheWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
+// load day cards for schedule onto page
 function loadSchedulePage(){
     Object.keys(currentSchedule.days).forEach((key, index) => {
         const day = currentSchedule.days[key];
@@ -8,6 +9,7 @@ function loadSchedulePage(){
     });
 }
 
+// create day card for schedule
 function createDayCardEdit(day, dayOfWeek) {
     const button = document.createElement("div");
 
@@ -22,6 +24,7 @@ function createDayCardEdit(day, dayOfWeek) {
     return button;
 }
 
+// select a day and display information to page for editing
 function selectDayEdit(day) {
 
     currentDay = day;
@@ -64,6 +67,7 @@ function selectDayEdit(day) {
 
 }
 
+// edit and save workout name/description
 function editWorkoutDetails() {
     const editBtn = document.getElementById("editWorkoutStringsBtn");
     const nameEl = document.getElementById("workoutName");
@@ -85,6 +89,7 @@ function editWorkoutDetails() {
     }
 }
 
+// edit and save schedule name/description
 function editScheduleDetails() {
     const editBtn = document.getElementById("editScheduleStringsBtn");
     const nameEl = document.getElementById("scheduleName");
@@ -106,28 +111,24 @@ function editScheduleDetails() {
     }
 }
 
-
+// edit and save exercise information (sets,reps,weight)
 function editExerciseDetails(searchID, rowIndex) {
     const exercise = currentSchedule.days[currentDay].exercises.find(ex => ex.searchID === searchID);
     if (!exercise) return;
 
     const editBtn = document.getElementById(`editBtn-${rowIndex}`);
 
-    // Check if already in edit mode
     if (editBtn.innerText === "Save") {
-        // Save the new values back into workouts
         exercise.sets = parseInt(document.getElementById(`sets-${rowIndex}`).querySelector("input").value);
         exercise.reps = parseInt(document.getElementById(`reps-${rowIndex}`).querySelector("input").value);
         exercise.weight = parseFloat(document.getElementById(`weight-${rowIndex}`).querySelector("input").value);
 
-        // Switch back to plain text
         document.getElementById(`sets-${rowIndex}`).innerHTML = exercise.sets;
         document.getElementById(`reps-${rowIndex}`).innerHTML = exercise.reps;
         document.getElementById(`weight-${rowIndex}`).innerHTML = exercise.weight;
 
         editBtn.innerText = "Edit";
     } else {
-        // Switch to edit mode — replace cells with inputs
         document.getElementById(`sets-${rowIndex}`).innerHTML = `<input type="number" value="${exercise.sets}"   min="0" style="width:60px">`;
         document.getElementById(`reps-${rowIndex}`).innerHTML = `<input type="number" value="${exercise.reps}"   min="0" style="width:60px">`;
         document.getElementById(`weight-${rowIndex}`).innerHTML = `<input type="number" value="${exercise.weight}" min="0" style="width:60px">`;
@@ -136,6 +137,7 @@ function editExerciseDetails(searchID, rowIndex) {
     }
 }
 
+// remove exercise from a day
 function removeExerciseFromDay(searchID){
 
     console.log(currentDay);
@@ -152,6 +154,8 @@ function removeExerciseFromDay(searchID){
     selectDayEdit(currentDay)
 }
 
+// search for exercises inside external API and add to table of results
+// needs updated to display by page!
 async function searchExercises() {
     const searchInput = document.getElementById("exerciseSearchInput").value;
 
@@ -190,6 +194,8 @@ async function searchExercises() {
     }
 }
 
+// get exercises from external API using a string
+// return as array of json
 async function getExercisesBySearchString(search){
     try {
         const response = await fetch('https://exercisedb.dev/api/v1/exercises/search?offset=0&limit=5&q=' + search + '&threshold=0.3', {
@@ -205,6 +211,8 @@ async function getExercisesBySearchString(search){
 
 }
 
+// get exercises from external API using an ID
+// return as array of json
 async function getExercisesBySearchID(searchID){
     try {
         const response = await fetch('https://exercisedb.dev/api/v1/exercises/' + searchID, {
@@ -219,6 +227,9 @@ async function getExercisesBySearchID(searchID){
     }
 }
 
+// Add exercise to table with add and details button
+// Add button adds to the selected day
+// details button shows gif and images of workout with instructions
 function addExerciseToSearchTable(exercise){
 
     var exerciseSearchTable = document.getElementById("exerciseSearchTable");
@@ -236,6 +247,7 @@ function addExerciseToSearchTable(exercise){
     `;
 }
 
+// shows gif and images of workout with instructions
 async function viewExerciseDetails(exerciseId){
     console.log("Viewing details for exercise ID: " + exerciseId);
     
@@ -244,6 +256,7 @@ async function viewExerciseDetails(exerciseId){
 
 }
 
+// add exercise to day
 async function addExerciseToDay(exerciseId){
     console.log("Adding exercise ID: " + exerciseId + " to the current day.");
 
@@ -255,6 +268,7 @@ async function addExerciseToDay(exerciseId){
     selectDayEdit(currentDay);
 }
 
+// turns result data into correct format
 function formatExercise(exercise){
     return {
         name: exercise.name,
@@ -265,6 +279,10 @@ function formatExercise(exercise){
     }
 }
 
+// save all changes made to schedule and days by updating Databases
+// if using a default schedule new schedule is created
+// if not using default schedule current schedule updated
+// uses custom backend API
 async function saveChanges(schedule, oldSchedule, UID){
 
     // add check that a workout has been updated without the id changing so we know to update schedule
