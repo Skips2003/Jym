@@ -1,11 +1,82 @@
-from bson import ObjectId
+from bson import ObjectId, json_util
 from app import mongo
-from flask import jsonify, request
+from flask import request
 from flask_restful import Resource
 from app.resources.auth import validateRequest
-from app.models import SavedWorkouts
+from app.models import SavedSchedules
+import json
 
 # Add options for filtering the output e.g. just return the different exercises or just the name and description
 
 class SavedSchedulesAPI(Resource):
-    pass
+    
+    @validateRequest
+    def get(self, scheduleID=None, userID=None):
+ 
+        # Return users that have saved the schedule
+        if scheduleID:
+            users = list(mongo.db.SharedSchedules.find({"scheduleID": scheduleID}))
+            if not users:
+                return {"error": "users not found"}, 404
+            return json.loads(json_util.dumps(users)), 200
+        
+        # Return all schedules saved by a user
+        if userID:
+            schedules = list(mongo.db.SharedSchedules.find({"userID": userID}))
+            if not schedules:
+                return {"error": "schedules not found"}, 404
+            return json.loads(json_util.dumps(schedules)), 200
+        
+        # Return specific schedule saved by user
+        if userID and scheduleID:
+            schedule = mongo.db.SharedSchedules.find_one({"userID": userID, "scheduleID": scheduleID})
+            if not schedule:
+                return {"error": "schedules not found"}, 404
+            return json.loads(json_util.dumps(schedule)), 200
+ 
+        return {"error": "No valid query parameters provided"}, 400
+
+    @validateRequest
+    def post(self):
+        data = request.json
+ 
+        if not data.get("scheduleID"):
+            return {"error": "No authorUsername provided."}, 400
+        
+        if not data.get("userID"):
+            return {"error": "No authorUsername provided."}, 400
+
+ 
+        # add validation that keys in data.get("days") are valid day names and that exercise IDs exist in the Workouts collection
+ 
+        result = mongo.db.SavedSchedules.insert_one(
+            SavedSchedules(
+                userID=data.get("userID"),
+                scheduleID=ObjectId(data.get("scheduleID"))
+            )
+        )
+ 
+        print("Adding schedule:" + data.get("name") + " description: " + data.get("description"))
+ 
+        return {"message": "Schedule added successfully!", "_id": str(result.inserted_id)}, 201
+ 
+    @validateRequest
+    def delete(self, scheduleID=None, userID=None):
+        data = request.json
+ 
+        if not scheduleID:
+            scheduleID = data.get("scheduleID")
+        
+        if not userID:
+            userID = data.get("userID")
+ 
+        schedule = mongo.db.SavedSchedules.find_one({"scheduleID": ObjectId(scheduleID), "userID": userID})
+ 
+        if not schedule:
+            return {"error": "Schedule not found."}, 404
+ 
+        print("Deleting schedule ID: %s, name: %s", scheduleID, schedule.get("name"))
+ 
+        mongo.db.SavedSchedules.delete_one({"scheduleID": ObjectId(scheduleID), "userID": userID})
+ 
+        return {"message": "Schedule deleted successfully!"}, 200

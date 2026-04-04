@@ -13,13 +13,13 @@ class SchedulesAPI(Resource):
         if scheduleID:
             schedule = mongo.db.Schedules.find_one({"_id": ObjectId(scheduleID)})
             if not schedule:
-                return {"message": "Not found"}, 404
+                return {"error": "Not found"}, 404
             return jsonify(schedule)
         elif scheduleName:
             schedule = mongo.db.Schedules.find_one({"name": scheduleName})
             schedule.pop('_id', None) # Remove the MongoDB ID as it wasn't requested and could be a security risk to return
             if not schedule:
-                return {"message": "Not found"}, 404
+                return {"error": "Not found"}, 404
             return jsonify(schedule)
         else:
             schedules = mongo.db.Schedules.find()
