@@ -198,7 +198,7 @@ async function searchExercises() {
 // return as array of json
 async function getExercisesBySearchString(search){
     try {
-        const response = await fetch('https://exercisedb.dev/api/v1/exercises/search?offset=0&limit=5&q=' + search + '&threshold=0.3', {
+        const response = await fetch('https://oss.exercisedb.dev/api/v1/exercises/search?offset=0&limit=5&q=' + search + '&threshold=0.3', {
             headers: { Accept: 'application/json' }
         });
         const data = await response.json();
@@ -215,7 +215,7 @@ async function getExercisesBySearchString(search){
 // return as array of json
 async function getExercisesBySearchID(searchID){
     try {
-        const response = await fetch('https://exercisedb.dev/api/v1/exercises/' + searchID, {
+        const response = await fetch('https://oss.exercisedb.dev/api/v1/exercises/' + searchID, {
             headers: { Accept: 'application/json' }
         });
         const data = await response.json();
@@ -316,48 +316,47 @@ async function updateSchedule(schedule, ogSchedule, UID){
     else if (schedule._id === "69c44bc4735131196e47244d"){ // check if it is using default schedule ID
         if (schedule.name !== ogSchedule.name || schedule.description !== ogSchedule.description || newDays !== oldDays){ // check if changes have been made
             // Create new schedule with changes and update users current schedule to new id
-            // update schedule
-            const response = await fetch('api/schedules', {
-                method: 'POST',
-                headers:{ 
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.getElementById("csrf-token").content
-                },
-                body: JSON.stringify(schedule)
-            });
-
-            const data = await response.json();
-            console.log("Schedule updated:", data);
+            console.log("Inserting Schedule: " + schedule)
+            data = postString(apiString='api/schedules', infoString=undefined, bodyInfo=schedule)
 
             // Update users current Schedule to new schedule!
-            console.log(data._id)
-
-            const responseUser = await fetch('api/users/' + UID, {
-                method: 'PUT',
-                headers:{ 
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.getElementById("csrf-token").content
-                },
-                body: JSON.stringify({"currentScheduleID": data._id})
-            });
-
-            const dataUser = await responseUser.json();
-            console.log("Schedule updated:", dataUser);
+            console.log("Attempting ot update users schedule UserID: " + UID + " ScheduleID: " + data._id)
+            await putString(apiString='api/users/', searchString=UID, body={"currentScheduleID": data._id});
             
         }
     }
     else{ 
         // update schedule
-        const response = await fetch('api/schedules/' + schedule._id, {
-            method: 'PUT',
-            headers:{ 
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.getElementById("csrf-token").content
-            },
-            body: JSON.stringify({schedule})
-        });
-
-        const data = await response.json();
-        console.log("Schedule updated:", data);
+        console.log("Updating Schedule! " + schedule._id)
+        await putString(apiString='api/schedules/', searchString=schedule._id, body={schedule});
     }
+}
+
+async function postString(apiString, infoString, bodyInfo){
+    const response = await fetch(apiString + infoString, {
+        method: 'POST',
+        headers:{ 
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.getElementById("csrf-token").content
+        },
+        body: JSON.stringify(bodyInfo)
+    });
+
+    const data = await response.json();
+    console.log("Insert Completed:", data);
+    return data
+}
+
+async function putString(apiString, searchString, bodyInfo){
+    const response = await fetch(apiString + searchString, {
+        method: 'PUT',
+        headers:{ 
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.getElementById("csrf-token").content
+        },
+        body: JSON.stringify(bodyInfo)
+    });
+    
+    const data = await response.json();
+    console.log("update complete:", data);
 }

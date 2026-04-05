@@ -10,9 +10,6 @@ import json
 class SharedWorkoutsAPI(Resource):
     @validateRequest
     def get(self, workoutID=None, workoutName=None, authorUsername=None):
-        print(workoutID)
-        print(workoutName)
-        print(authorUsername)
         # Return specific workout by ID
         if workoutID:
             workout = mongo.db.SharedWorkouts.find_one({"_id": ObjectId(workoutID)})

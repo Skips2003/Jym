@@ -35,7 +35,7 @@ api.add_resource(SavedSchedulesAPI, '/api/savedschedules', '/api/savedschedules/
 
 api.add_resource(SharedWorkoutsAPI, '/api/sharedworkouts', '/api/sharedworkouts/<string:workoutID>', '/api/sharedworkouts/authorUsername/<string:authorUsername>', '/api/sharedworkouts/workoutName/<string:workoutName>')
 
-api.add_resource(SharedSchedulesAPI, '/api/sharedschedules', '/api/sharedschedules/<string:workoutID>', '/api/sharedschedules/authorUsername/<string:authorUsername>', '/api/sharedschedules/scheduleName/<string:scheduleName>')
+api.add_resource(SharedSchedulesAPI, '/api/sharedschedules', '/api/sharedschedules/<string:scheduleID>', '/api/sharedschedules/authorUsername/<string:authorUsername>', '/api/sharedschedules/scheduleName/<string:scheduleName>')
 
 def createApp(configClass = Config):
     app = Flask(__name__)
