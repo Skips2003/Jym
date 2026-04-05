@@ -2,6 +2,7 @@
 {% block content %}
 <section>
     <script src="{{ url_for('static', filename='js/edit-schedules.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/saveShare.js') }}"></script>
     <div class="flex flex-col gap-1">
         <h1>Edit Current Schedule:</h1>
         <h1 id="scheduleName">{{schedule.name}}</h1>
@@ -41,8 +42,8 @@
                     <table id="exerciseTable" class="w-full"></table>
                     <button class="darkBtn w-full" data-modal-target="searchExercises-modal" data-modal-toggle="searchExercises-modal">Find Exercises</button>
                     <div class="flex gap-1">
-                        <button class="baseBtn flex-1">Import Template</button>
-                        <button class="baseBtn flex-1">Save as Template</button>
+                        <button class="baseBtn flex-1" onclick="getSavedWorkouts('{{ current_user.id }}')" data-modal-target="loadSaved-modal" data-modal-toggle="loadSaved-modal">Load Workout</button>
+                        <button class="baseBtn flex-1" onclick="saveWorkout(currentSchedule.days[currentDay])">Save Workout as Template</button>
                     </div>
                 </div>
             
@@ -53,39 +54,12 @@
                 </div>
             </div>
 
-            <!-- Main modal -->
-            <div id="searchExercises-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
-                <div class="overflow-auto">
-                    <!-- Modal content -->
-                    <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
-                        <!-- Modal header -->
-                        <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
-                            <h1>
-                                Search for Exercises
-                            </h1>
-                        </div>
-                        <input type="text" id="exerciseSearchInput" class="baseInput" placeholder="Search for exercises...">
-                        <button class="baseBtn" onclick="searchExercises()">Search</button>
-                        <!-- Modal body -->
-                        <table id="exerciseSearchTable" class="table-auto">
-
-                        </table>
-                        <form action="#">
-                            <div class="flex gap-1">
-                                <button data-modal-hide="searchExercises-modal" class="darkBtn basis-1/3">
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
             <hr class="border-top: 12px solid bg-default border-radius: 10px">
             <div class="flex gap-1">
-                <button class="baseBtn basis-1/3">Cancel</button>
-                <button class="baseBtn basis-1/3">Load Schedule</button>
-                <button class="darkBtn basis-1/3" onclick="saveChanges(currentSchedule, unchangedSchedule, UID)">Save Changes</button>
+                <button class="baseBtn basis-1/4">Cancel</button>
+                <button class="baseBtn basis-1/4" onclick="getSavedSchedules('{{ current_user.id }}')" data-modal-target="loadSaved-modal" data-modal-toggle="loadSaved-modal">Load Schedule</button>
+                <button class="baseBtn basis-1/4" onclick="saveWorkout()">Save Schedule as Template</button>
+                <button class="darkBtn basis-1/4" onclick="saveChanges(currentSchedule, unchangedSchedule, UID)">Save Changes</button>
             </div>
         </div>
 
@@ -103,6 +77,51 @@
             <table id="workoutSearchTable" class="table-auto">
                 
             </table>
+        </div>
+
+        <!-- Main modal -->
+        <div id="searchExercises-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
+            <div class="overflow-auto">
+                <!-- Modal content -->
+                <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+                        <h1>
+                            Search for Exercises
+                        </h1>
+                    </div>
+                    <input type="text" id="exerciseSearchInput" class="baseInput" placeholder="Search for exercises...">
+                    <button class="baseBtn" onclick="searchExercises()">Search</button>
+                    <!-- Modal body -->
+                    <table id="exerciseSearchTable" class="table-auto">
+        
+                    </table>
+                    <form action="#">
+                        <div class="flex gap-1">
+                             <button data-modal-hide="searchExercises-modal" class="darkBtn basis-1/3">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadSaved-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
+            <div class="overflow-auto">
+                <!-- Modal content -->
+                <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+                        <h1 id="savedTitle"></h1>
+                        <p id="noneFound"></p>
+                    </div>
+                    <!-- Modal body -->
+                    <table id="savedItemsTable" class="table-auto">
+        
+                    </table>
+                </div>
+            </div>
         </div>
 
         <script>

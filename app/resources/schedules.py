@@ -105,13 +105,15 @@ class SchedulesAPI(Resource):
             return {"error": "Schedule not found."}
 
         data.pop("_id", None)  # Remove the ID from the data to avoid trying to update it
-        
+
+        print({"$set": data})
+
         # Update the schedule in MongoDB with the new data
-        mongo.db.SharedSchedules.update_one(
+        mongo.db.Schedules.update_one(
             {"_id": ObjectId(scheduleID)},
             {"$set": data}
         )
-        
+
         return {"message": "Schedule updated successfully!"}
 
     @validateRequest  # Apply middleware to DELETE requests
@@ -140,5 +142,5 @@ class SchedulesAPI(Resource):
 
         print("Deleting schedule with ID: ", scheduleID, " and name: ", schedule['name'] )
         mongo.db.Schedules.delete_one({"_id": ObjectId(scheduleID)}) # Delete the schedule from MongoDB
-        
+
         return {"message": "Schedule deleted successfully!"}, 200

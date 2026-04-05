@@ -88,7 +88,7 @@ async function searchSchedules(){
     </tr>
 `;
 
-    const responseUser = await fetch('/api/sharedschedules/scheduleName/' + scheduleSearch, {
+    const response = await fetch('/api/sharedschedules/scheduleName/' + scheduleSearch, {
         method: 'GET',
         headers:{ 
             'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ async function searchSchedules(){
         },
     });
 
-    const dataSchedule = await responseUser.json();
+    const dataSchedule = await response.json();
     console.log("schedulesFound", dataSchedule);
 
     dataSchedule.forEach(schedule => {

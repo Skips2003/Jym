@@ -3,6 +3,11 @@
 <section>
 
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/saveShare.js') }}"></script>
+    <script>
+        const currentSchedule = {{ schedule|tojson|safe }};
+        console.log(currentSchedule);
+    </script>
     <!-- Welcome message which will use users first name/username -->
     <div class="grid grid-cols-3 grid-rows-2">
         <h1 class="col-span-3">Welcome back, {{ current_user.firstName }}</h1>
@@ -41,7 +46,7 @@
         </div>
         
         <!-- Shows users Current Schedule! -->
-        <h1 class="text-left col-span-3">Current Schedule <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>Edit</h3></button></h3>
+        <h1 class="text-left col-span-3">Current Schedule <button class="baseBtn float-right" onclick="shareSchedule(currentSchedule, '{{ current_user.username }}', '{{ current_user.public }}')"><h3>Share</h3></button><button class="baseBtn float-right" href="{{ url_for('main.editSchedule') }}"><h3>Edit</h3></button></h3>
 
         <!-- When clicked a modal should appear showing the exercises scheduled for the selected day and whether or not they were completed -->
         <div class="baseCard col-span-3">
@@ -52,10 +57,7 @@
                 const container = document.getElementById("scheduleContainer");
                 container.innerHTML = "";
 
-                const currentSchedule = {{ schedule|tojson|safe }};
-                console.log(currentSchedule);
-
-                var currentDay = 0;
+                var currentDay = "Monday";
 
                 loadHomePage();
 
@@ -96,6 +98,7 @@
                     <table id="exerciseTable" class="table-auto">
 
                     </table>
+                    <button class="baseBtn float-right" onclick="shareWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', '{{ current_user.public }}')"><h3>Share</h3></button>
                 </div>
             </div>
         </div>

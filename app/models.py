@@ -18,7 +18,7 @@ class Users(db.Model, UserMixin):
     firstName: so.Mapped[str] = so.mapped_column(sa.String(64))
     lastName: so.Mapped[str] = so.mapped_column(sa.String(64))
     username: so.Mapped[str] = so.mapped_column(sa.String(64), unique=True)
-    public: so.Mapped[bool] = so.mapped_column(sa.Integer, default=True)
+    private: so.Mapped[bool] = so.mapped_column(sa.Integer, default=False)
     bio: so.Mapped[str] = so.mapped_column(sa.String(300), default='Default-Bio')
     followers: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
     following: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)

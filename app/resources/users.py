@@ -35,7 +35,7 @@ class UsersAPI(Resource):
             if not users:
                 return {"error": "User not found."}, 404
             for u in users:
-                if u.public == True:
+                if u.private == False:
                     output.append({
                         # User ID not returned because request specifies the username, so it could be a security risk to return the userID and is not necessary for the client to have
                         "username": u.username, 
@@ -53,7 +53,7 @@ class UsersAPI(Resource):
             output = []
 
             for u in users:
-                if u.public == True:
+                if u.private == False:
                     output.append({
                         # User ID not returned because request does not specify the userID, so it could be a security risk to return the userID and is not necessary for the client to have
                         "username": u.username,
@@ -76,7 +76,7 @@ class UsersAPI(Resource):
             firstName=data["firstName"],
             lastName=data["lastName"],
             username=data["username"],
-            public=data.get("public", True),  # Default to True if not provided
+            private=data.get("private", False),  # Default to False if not provided
             bio=data.get("bio", "Default-Bio"),  # Default bio if not provided
             followers=data.get("followers", 0),  # Default to 0 if not provided
             following=data.get("following", 0),  # Default to 0 if not provided
@@ -111,7 +111,7 @@ class UsersAPI(Resource):
         if "firstName" in data: user.firstName=data["firstName"]
         if "lastName" in data: user.lastName=data["lastName"]
         if "username" in data: user.username=data["username"]
-        if "public" in data: user.public=data["public"]
+        if "private" in data: user.public=data["private"]
         if "bio" in data: user.bio=data["bio"]
         if "currentScheduleID" in data: user.currentScheduleID=data["currentScheduleID"]
         if "benchPress" in data: user.benchPress=data["benchPress"]

@@ -337,12 +337,6 @@
   .col-span-3 {
     grid-column: span 3 / span 3;
   }
-  .row-span-1 {
-    grid-row: span 1 / span 1;
-  }
-  .row-span-9 {
-    grid-row: span 9 / span 9;
-  }
   .float-right {
     float: right;
   }
@@ -490,12 +484,6 @@
   .basis-1\/4 {
     flex-basis: calc(1/4 * 100%);
   }
-  .basis-1\/7 {
-    flex-basis: calc(1/7 * 100%);
-  }
-  .basis-2\/3 {
-    flex-basis: calc(2/3 * 100%);
-  }
   .table-auto {
     table-layout: auto;
   }
@@ -504,9 +492,6 @@
   }
   .grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .grid-cols-7 {
     grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -517,14 +502,8 @@
   .grid-rows-2 {
     grid-template-rows: repeat(2, minmax(0, 1fr));
   }
-  .grid-rows-9 {
-    grid-template-rows: repeat(9, minmax(0, 1fr));
-  }
   .flex-col {
     flex-direction: column;
-  }
-  .flex-row {
-    flex-direction: row;
   }
   .flex-wrap {
     flex-wrap: wrap;
@@ -639,9 +618,6 @@
     .datatable-wrapper .datatable-table tbody tr& {
       background-color: var(--color-neutral-secondary);
     }
-  }
-  .p-0\.5 {
-    padding: calc(var(--spacing) * 0.5);
   }
   .p-1 {
     padding: calc(var(--spacing) * 1);
