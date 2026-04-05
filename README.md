@@ -18,12 +18,12 @@ TODO:
 
 100% Need completed:
 
-1. add ability for users to update account info (bio, username, firstName, lastName, email, password, public/private, pbs)
-2. change shared schedules/workouts search to only display schedules and workouts of users who are public or if private followed by current user
-3. create db for users to save own unshared templates of workouts/schedules
-4. Unit Testing (Better Documentation in general)
-5. add visualisation of muscles worked
-6. add functionality to view details button when searching for exercises (display gif, muscles worked and instructions for exercise)
+1. change shared schedules/workouts search to only display schedules and workouts of users who are public or if private followed by current user
+2. create db for users to save own unshared templates of workouts/schedules
+3. Unit Testing (Better Documentation in general)
+4. add visualisation of muscles worked
+5. add functionality to view details button when searching for exercises (display gif, muscles worked and instructions for exercise)
+6. Add pbs graphs and ability to update them
 7. actually make the HTML and CSS for the site (shouldn't take long)
 8. report system (Users, Shared Schedules/Workouts)
 9. Admin panel for reviewing schedules, profiles etc

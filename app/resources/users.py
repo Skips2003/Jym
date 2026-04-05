@@ -103,7 +103,7 @@ class UsersAPI(Resource):
         if username and not userID:
             user = Users.query.filter_by(username=username).first()
         else:
-            user = Users.query.get(userID)
+            user = Users.query.filter_by(id=userID).first()
 
         if not user:
             return {"error": "User not found."}, 404
@@ -119,7 +119,7 @@ class UsersAPI(Resource):
         if "squat" in data: user.squat=data["squat"]
 
         db.session.commit()
-        print("User: " + userID + " updated!" + data["currentScheduleID"])
+        print("User: " + userID + " updated!")
         return {"message": "User updated successfully!"}, 200
 
     @validateRequest  # Apply middleware to DELETE requests

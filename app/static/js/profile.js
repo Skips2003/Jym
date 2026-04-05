@@ -1,20 +1,26 @@
 // edit users Bio
-function editUserDetails() {
-    const editBtn = document.getElementById("editBioBtn");
-    const bioEl = document.getElementById("userBio");
-
-    if (editBtn.innerText === "Save") {
-        profileUser.bio = document.getElementById("bioInput").value || profileUser.bio;
-
-        bioEl.innerHTML = profileUser.bio;
-
-        editBtn.innerText = "Edit Bio";
-    } else {
-        bioEl.innerHTML = `<input type="text" id="bioInput" value="${profileUser.bio}" style="width:200px">`;
-
-        editBtn.innerText = "Save";
+async function saveUserDetails(UID) {
+    let newUserInfo ={
+        "id": UID,
+        "private": document.getElementById("privacyBtn").value,
+        "username": document.getElementById("username").value,
+        "email": document.getElementById("email").value,
+        "firstName": document.getElementById("firstName").value,
+        "lastName": document.getElementById("lastName").value,
+        "bio": document.getElementById("bio").value
     }
+
+    console.log("Editing User Info: " + newUserInfo)
+
+    await putString('/api/users', infoString=undefined, bodyInfo=newUserInfo);
 }
+
+function toggle() {
+    privacyToggle = privacyToggle ? false : true;
+
+    let text = document.getElementById("privacyToggleBtn")
+    text.innerHTML = privacyToggle
+} 
 
 // follow user
 async function followUser(followerID, followedID){
