@@ -49,7 +49,7 @@ def profile(username=None):
         user = current_user
     else:
         user = Users.query.filter_by(username=username).first()
-    
+        
     temp = json.loads(json_util.dumps(mongo.db.Schedules.find_one({ "_id" : ObjectId(user.currentScheduleID) })))
     schedule = cleanMongoData(temp)
 

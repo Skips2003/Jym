@@ -331,32 +331,3 @@ async function updateSchedule(schedule, ogSchedule, UID){
         await putString(apiString='api/schedules/', searchString=schedule._id, body={schedule});
     }
 }
-
-async function postString(apiString, infoString, bodyInfo){
-    const response = await fetch(apiString + infoString, {
-        method: 'POST',
-        headers:{ 
-            'Content-Type': 'application/json',
-            'X-CSRFToken': document.getElementById("csrf-token").content
-        },
-        body: JSON.stringify(bodyInfo)
-    });
-
-    const data = await response.json();
-    console.log("Insert Completed:", data);
-    return data
-}
-
-async function putString(apiString, searchString, bodyInfo){
-    const response = await fetch(apiString + searchString, {
-        method: 'PUT',
-        headers:{ 
-            'Content-Type': 'application/json',
-            'X-CSRFToken': document.getElementById("csrf-token").content
-        },
-        body: JSON.stringify(bodyInfo)
-    });
-    
-    const data = await response.json();
-    console.log("update complete:", data);
-}

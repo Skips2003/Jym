@@ -4,10 +4,6 @@
 
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
     <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
-    <script> 
-        const profileUser = {{ user }};
-        console.log(profileUser);
-    </script>
 
     <div class="grid grid-cols-3 gap-4">
 
@@ -20,7 +16,7 @@
                 <p id="userBio">{{ user.bio }}</p>
             </div>
             {% if current_user.id == user.id %}
-                <button class="darkBtn" id="editBioBtn" onclick="editUserDetails()">Edit Bio</button>
+                <button class="darkBtn" data-modal-target="default-userInformation" data-modal-toggle="default-userInformation">Edit User Information</button>
             {% elif not follows and not user.private %}
                 <button class="darkBtn" id="followBtn" onclick="followUser('{{ current_user.id }}', '{{ user.id }}')">Follow</button>
             {% elif not follows and user.private %}
@@ -129,6 +125,28 @@
                         <table id="followersingTable" class="table-auto">
 
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="default-userInformation" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
+                <div class="overflow-auto">
+                    <!-- Modal content -->
+                    <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+                        <!-- Modal header -->
+                        <h1>Edit User Information</h1>
+                        <h3>Private Account</h3>
+                        <button id="privacyToggleBtn" onclick="toggle()" class="darkbtn">{{ user.private }}</button>
+                        <script>
+                            let privacyToggle = JSON.parse('{{ user.private|tojson }}');
+                            console.log(privacyToggle);
+                        </script>
+                        <input type="text" id="username" value="{{ user.username }}"></input>
+                        <input type="text" id="email" value="{{ user.email }}"></input>
+                        <input type="text" id="firstName" value="{{ user.firstName }}"></input>
+                        <input type="text" id="lastName" value="{{ user.lastName }}"></input>
+                        <input type="text" id="bio" value="{{ user.bio }}"></input>
+                        <button class="darkBtn" id="followBtn" onclick="saveUserDetails('{{ user.id }}')">Save Changes</button>
                     </div>
                 </div>
             </div>
