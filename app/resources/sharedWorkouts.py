@@ -53,19 +53,31 @@ class SharedWorkoutsAPI(Resource):
             return {"error": "No authorUsername provided."}, 400
  
         userCheck = Users.query.filter_by(username=data.get("authorUsername")).first()
+
         if not userCheck:
             return {"error": "Author not found."}, 404
-        # validate that keys in data.get("days") are valid day names and that exercise IDs exist in the Workouts collection
+
+        if data.get("private") == 'True':
+            privacy = True
+        elif data.get("private") == 'False':
+            privacy = False
+        else:
+            privacy = Users.query.filter_by(username=data.get("authorUsername")).first().private
  
-        result = mongo.db.SharedWorkouts.insert_one(
-            SharedWorkouts(
-                name=data.get("name", "Default-workout"),
-                description=data.get("description", "Default-workout"),
+        newWorkout = SharedWorkouts(
+                name=data.get("name", "Default-Workout"),
+                description=data.get("description", "Default-Workout"),
                 authorUsername=data.get("authorUsername"),
-                private=data.get("private", True),
+                private=privacy,
                 exercises=data.get("exercises", [])
             )
-        )
+        
+        checkIfDuplicate = mongo.db.SharedWorkouts.find_one(newWorkout)
+
+        if checkIfDuplicate:
+            return {"error": "Workout with those details already exists!"}, 404
+ 
+        result = mongo.db.SharedWorkouts.insert_one(newWorkout)
  
         print("Adding workout:" + data.get("name") + " description: " + data.get("description"))
  

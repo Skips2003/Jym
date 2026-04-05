@@ -56,10 +56,6 @@
     table {
         @apply w-full text-sm text-left rtl:text-right text-body;
     }
-
-    hr {
-        @apply border-top: 12px solid bg-default border-radius: 10px p-0.5
-    }
 }
 
 @layer components{

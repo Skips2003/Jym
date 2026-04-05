@@ -21,15 +21,15 @@
             </div>
             {% if current_user.id == user.id %}
                 <button class="darkBtn" id="editBioBtn" onclick="editUserDetails()">Edit Bio</button>
-            {% elif not follows and user.public %}
+            {% elif not follows and not user.private %}
                 <button class="darkBtn" id="followBtn" onclick="followUser('{{ current_user.id }}', '{{ user.id }}')">Follow</button>
-            {% elif not follows and not user.public %}
+            {% elif not follows and user.private %}
                 <button class="darkBtn" id="requestFollowbtn" onclick="requestFollow()">Request to Follow</button>
             {% elif follows %}
                 <button class="darkBtn" id="unFollowBtn" onclick="unFollowUser('{{ current_user.id }}', '{{ user.id }}')">UnFollow</button>
             {% endif %}
         </div>
-        {% if user.public or not user.public and follows %}
+        {% if not user.private or user.private and follows %}
             <h1 class="col-span-3">Stats Overview</h1>
 
             <div class="baseCard">

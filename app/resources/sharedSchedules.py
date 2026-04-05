@@ -59,7 +59,7 @@ class SharedSchedulesAPI(Resource):
         if not userCheck:
             return {"error": "Author not found."}, 404
  
-        days_default = {
+        daysDefault = {
             "Monday":    {"name": "Rest Day", "description": "Day of Rest!", "exercises": []},
             "Tuesday":   {"name": "Rest Day", "description": "Day of Rest!", "exercises": []},
             "Wednesday": {"name": "Rest Day", "description": "Day of Rest!", "exercises": []},
@@ -70,16 +70,28 @@ class SharedSchedulesAPI(Resource):
         }
  
         # add validation that keys in data.get("days") are valid day names and that exercise IDs exist in the Workouts collection
+
+        if data.get("private") == 'True':
+            privacy = True
+        elif data.get("private") == 'False':
+            privacy = False
+        else:
+            privacy = Users.query.filter_by(username=data.get("authorUsername")).first().private
  
-        result = mongo.db.SharedSchedules.insert_one(
-            SharedSchedules(
+        newSchedule = SharedSchedules(
                 name=data.get("name", "Default-Schedule"),
                 description=data.get("description", "Default-Schedule"),
-                days=data.get("days", days_default),
                 authorUsername=data.get("authorUsername"),
-                private=data.get("private", True)
+                private=privacy,
+                days=data.get("days", daysDefault)
             )
-        )
+        
+        checkIfDuplicate = mongo.db.SharedSchedules.find_one(newSchedule)
+
+        if checkIfDuplicate:
+            return {"error": "Workout with those details already exists!"}, 404
+ 
+        result = mongo.db.SharedSchedules.insert_one(newSchedule)
  
         print("Adding schedule:" + data.get("name") + " description: " + data.get("description"))
  
