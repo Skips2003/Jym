@@ -25,6 +25,8 @@ TODO:
 7. Admin panel for reviewing schedules, profiles etc
 8. add completing a workout (with check to ensure it was completed on the right day)
 9. view recently completed workouts
+10. Add tags to schedules/workouts for searching
+11. Search Page
 
 Optional for after above is finished:
 1. trainer accounts (allow trainers to provide schedules to users and track their progress!)
