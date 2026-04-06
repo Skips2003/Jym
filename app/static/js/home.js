@@ -13,13 +13,12 @@ function loadHomePage(){
 function createDayCardView(day, dayOfWeek) {
     const button = document.createElement("button");
 
-    button.setAttribute("class", "baseBtn col-span-1");
+    button.setAttribute("class", "dayBtn col-span-1");
     button.setAttribute("data-modal-target", "viewDays-modal");
     button.setAttribute("data-modal-toggle", "viewDays-modal");
     button.onclick = function() {selectDayView(dayOfWeek)};
 
     button.innerHTML = `
-        <img src="./images/logoSmall">
         <h3>${dayOfWeek}</h3>
         <p>${day.name}</p>
     `;

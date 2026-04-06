@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-<section>
+<section class="bg-default">
 
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
     <script src="{{ url_for('static', filename='js/saveShare.js') }}"></script>
@@ -8,67 +8,17 @@
         const currentSchedule = {{ schedule|tojson|safe }};
         console.log(currentSchedule);
     </script>
-    <div class="baseCard grid grid-cols-12 gap-2">
-        <div class="baseCard col-span-1 bg-greenBlueOne"><p>greenBlueOne</p></div>
-        <div class="baseCard col-span-1 bg-greenBlueTwo"><p>greenBlueTwo</p></div>
-        <div class="baseCard col-span-1 bg-blueGreenOne"><p>blueGreenOne</p></div>
-        <div class="baseCard col-span-1 bg-salmon"><p>salmon</p></div>
-        <div class="baseCard col-span-1 bg-redOne"><p>redOne</p></div>
-        <div class="baseCard col-span-1 bg-redTwo"><p>redTwo</p></div>
-        <div class="baseCard col-span-1 bg-spaceBlue"><p>spaceBlue</p></div>
-        <div class="baseCard col-span-1 bg-spaceBlueTwo"><p>spaceBlueTwo</p></div>
-        <div class="baseCard col-span-1 bg-spaceGray"><p>spaceGray</p></div>
-        <div class="baseCard col-span-1 bg-spacePurple"><p>spacePurple</p></div>
-        <div class="baseCard col-span-1 bg-stars"><p>stars</p></div>
-        <div class="baseCard col-span-1 bg-starsTwo"><p>starsTwo</p></div>
 
-        <div class="baseCard col-span-1 bg-greenBlueOne/75"><p>greenBlueOne</p></div>
-        <div class="baseCard col-span-1 bg-greenBlueTwo/75"><p>greenBlueTwo</p></div>
-        <div class="baseCard col-span-1 bg-blueGreenOne/75"><p>blueGreenOne</p></div>
-        <div class="baseCard col-span-1 bg-salmon/75"><p>salmon</p></div>
-        <div class="baseCard col-span-1 bg-redOne/75"><p>redOne</p></div>
-        <div class="baseCard col-span-1 bg-redTwo/75"><p>redTwo</p></div>
-        <div class="baseCard col-span-1 bg-spaceBlue/75"><p>spaceBlue</p></div>
-        <div class="baseCard col-span-1 bg-spaceBlueTwo/75"><p>spaceBlueTwo</p></div>
-        <div class="baseCard col-span-1 bg-spaceGray/75"><p>spaceGray</p></div>
-        <div class="baseCard col-span-1 bg-spacePurple/75"><p>spacePurple</p></div>
-        <div class="baseCard col-span-1 bg-stars/75"><p>stars</p></div>
-        <div class="baseCard col-span-1 bg-starsTwo/75"><p>starsTwo</p></div>
 
-        <div class="baseCard col-span-1 bg-greenBlueOne/50"><p>greenBlueOne</p></div>
-        <div class="baseCard col-span-1 bg-greenBlueTwo/50"><p>greenBlueTwo</p></div>
-        <div class="baseCard col-span-1 bg-blueGreenOne/50"><p>blueGreenOne</p></div>
-        <div class="baseCard col-span-1 bg-salmon/50"><p>salmon</p></div>
-        <div class="baseCard col-span-1 bg-redOne/50"><p>redOne</p></div>
-        <div class="baseCard col-span-1 bg-redTwo/50"><p>redTwo</p></div>
-        <div class="baseCard col-span-1 bg-spaceBlue/50"><p>spaceBlue</p></div>
-        <div class="baseCard col-span-1 bg-spaceBlueTwo/50"><p>spaceBlueTwo</p></div>
-        <div class="baseCard col-span-1 bg-spaceGray/50"><p>spaceGray</p></div>
-        <div class="baseCard col-span-1 bg-spacePurple/50"><p>spacePurple</p></div>
-        <div class="baseCard col-span-1 bg-stars/50"><p>stars</p></div>
-        <div class="baseCard col-span-1 bg-starsTwo/50"><p>starsTwo</p></div>
 
-        <div class="baseCard col-span-1 bg-greenBlueOne/25"><p>greenBlueOne</p></div>
-        <div class="baseCard col-span-1 bg-greenBlueTwo/25"><p>greenBlueTwo</p></div>
-        <div class="baseCard col-span-1 bg-blueGreenOne/25"><p>blueGreenOne</p></div>
-        <div class="baseCard col-span-1 bg-salmon/25"><p>salmon</p></div>
-        <div class="baseCard col-span-1 bg-redOne/25"><p>redOne</p></div>
-        <div class="baseCard col-span-1 bg-redTwo/25"><p>redTwo</p></div>
-        <div class="baseCard col-span-1 bg-spaceBlue/25"><p>spaceBlue</p></div>
-        <div class="baseCard col-span-1 bg-spaceBlueTwo/25"><p>spaceBlueTwo</p></div>
-        <div class="baseCard col-span-1 bg-spaceGray/25"><p>spaceGray</p></div>
-        <div class="baseCard col-span-1 bg-spacePurple/25"><p>spacePurple</p></div>
-        <div class="baseCard col-span-1 bg-stars/25"><p>stars</p></div>
-        <div class="baseCard col-span-1 bg-starsTwo/25"><p>starsTwo</p></div>
-    </div>
-    <div class="p-10">
-        <h1>Welcome back, {{ current_user.firstName }}</h1>
-        <p>Ready to crush your next workout today?</p>
-    </div>
-
-    <div class="grid grid-cols-7 grid-rows-6 gap-2">
+    <div class="grid grid-cols-7 grid-rows-7 gap-2">
 
         <div class="col-span-7 row-start-1 baseCard">
+            <h1>Welcome back, {{ current_user.firstName }}</h1>
+            <h3>Ready to crush your next workout today?</h3>
+        </div>
+
+        <div class="col-span-7 row-start-2 baseCard">
 
             <!-- Shows users Current Schedule! -->
             <h1 class="text-left">Current Schedule <button class="baseBtn float-right" onclick="shareSaveSchedule(currentSchedule, '{{ current_user.username }}', false)"><h3>Share</h3></button><button class="baseBtn float-right" href="{{ url_for('main.editSchedule') }}"><h3>Edit</h3></button></h3>
@@ -88,7 +38,7 @@
             </script>
 
         </div>
-        <div class="col-span-2 row-span-5 row-start-2 baseCard">
+        <div class="col-span-2 row-span-5 row-start-3 baseCard">
                 <!-- Show exercises from workout when clicked -->
                 <h1 >Recent Workouts</h1 >
                 <button class="baseBtn">
@@ -103,7 +53,7 @@
                 </button>
 
         </div>
-        <div class="col-span-3 row-span-2 col-start-3 row-start-2 baseCard">
+        <div class="col-span-2 row-span-2 col-start-3 row-start-3 baseCard">
             <!-- Quick Actions to allow user to do various common tasks while using service, Need to create pages for each of these -->
             <h1>Quick Actions</h1>
             <div class="grid grid-cols-3 gap-4">
@@ -119,16 +69,16 @@
             </div>
 
         </div>
-        <div class="col-span-2 row-span-2 col-start-6 row-start-2 baseCard">
+        <div class="col-span-3 row-span-2 col-start-5 row-start-3 baseCard">
             <h1 >Muscles Worked</h1 >
             <!-- Add a bar chart for each of the users PBs on core lifts, also add a line chart showing their progress over last 6 months/selected period of time -->
             <!-- Toggle in top right to switch between bar or line graph -->
         </div>
-        <div class="col-span-5 row-span-3 col-start-3 row-start-4 baseCard">        
-            <h1>Personal Records & Recent Activity</h1>
+        <div class="col-span-5 row-span-3 col-start-3 row-start-5 baseCard">        
+            <h1>Personal Records</h1>
 
             <!-- Graphs of users current PBs and how they have changed -->
-            <h1 >PBs</h1 >
+            <h3>PBs</h3>
             <!-- Add a bar chart for each of the users PBs on core lifts, also add a line chart showing their progress over last 6 months/selected period of time -->
             <!-- Toggle in top right to switch between bar or line graph -->
         </div>
@@ -137,7 +87,7 @@
         <div id="viewDays-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
             <div class="overflow-auto">
                 <!-- Modal content -->
-                <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+                <div class="relative bg-light border border-default rounded-base shadow-sm p-4 md:p-6">
                     <!-- Modal header -->
                     <h1 id="workoutName">Workout Name</h1>
                     <p id="workoutDescription">Workout Description</p>

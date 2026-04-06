@@ -36,6 +36,8 @@ class Users(db.Model, UserMixin):
     benchPress: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
     deadLift: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
     squat: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
+    admin: so.Mapped[bool] = so.mapped_column(sa.Integer, default=False)
+    reports: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
 
 class Follows(db.Model, UserMixin):
     
