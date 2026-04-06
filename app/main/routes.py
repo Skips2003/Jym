@@ -1,10 +1,10 @@
 import json
-from flask import render_template, flash, redirect, url_for, jsonify
+from flask import render_template, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models import Users, Follows
 from app.main.forms import LoginForm, SignUpForm
 from app.main import bp
-from app import db, bcrypt, loginManager, mongo, api
+from app import db, bcrypt, loginManager, mongo
 from bson import json_util
 from bson.objectid import ObjectId
 

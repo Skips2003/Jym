@@ -32,15 +32,11 @@ async function getSavedSchedules(userID){
 
 }
 
-async function saveSchedule(){
-    
-}
-
 async function loadSchedule(){
     
 }
 
-async function shareSchedule(schedule, username, private){
+async function shareSaveSchedule(schedule, username, private){
     let sharingSchedule = {
         "name": schedule.name,
         "description": schedule.description,
@@ -87,15 +83,11 @@ async function getSavedWorkouts(userID){
 
 }
 
-async function saveWorkout(){
-    
-}
-
 async function loadWorkout(){
     
 }
 
-async function shareWorkout(workout, username, private){
+async function shareSaveWorkout(workout, username, private){
     let sharingWorkout = {
         "name": workout.name,
         "description": workout.description,

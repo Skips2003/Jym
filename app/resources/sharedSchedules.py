@@ -4,46 +4,105 @@ from flask import request
 from flask_restful import Resource
 from flask_login import current_user
 from app.resources.auth import validateRequest, webOnly
-from app.models import SharedSchedules, Users
+from app.models import SharedSchedules, Users, Follows
 import json
 
-
 class SharedSchedulesAPI(Resource):
-
     @validateRequest
-    def get(self, scheduleID=None, scheduleName=None, authorUsername=None):
+    def get(self, scheduleID=None, scheduleName=None, authorUsername=None, userID=None):
+        # Private schedules only accessed if userID is provided or search is done using scheduleID
  
         # Return specific schedule by ID
         if scheduleID:
+
             schedule = mongo.db.SharedSchedules.find_one({"_id": ObjectId(scheduleID)})
+
             if not schedule:
                 return {"error": "Schedule not found"}, 404
+            
             return json.loads(json_util.dumps(schedule)), 200
  
         # Return all schedules by authorUsername only
         if authorUsername and not scheduleName:
+
             schedules = list(mongo.db.SharedSchedules.find({"authorUsername": authorUsername}))
+
+            for schedule in schedules:
+
+                if schedule["private"]:
+
+                    schedules.pop(schedule)
+
+                elif userID:
+
+                    author = Users.query.filter_by(username=schedule["authorUsername"]).first()
+
+                    if author.private and not Follows.is_following(userID, author.id):
+                        schedules.pop(schedule)
+
+                else:
+                    schedules.pop(schedule)
+
             if not schedules:
-                return {"error": "No schedules found for this author"}, 404
+                return {"error": "No schedules found matching that name"}, 404
+            
             return json.loads(json_util.dumps(schedules)), 200
  
         # Fuzzy search by scheduleName only
         if scheduleName and not authorUsername:
+
             schedules = list(mongo.db.SharedSchedules.find({
                 "name": {"$regex": scheduleName, "$options": "i"}
             }))
+
+            for schedule in schedules:
+
+                if schedule["private"]:
+
+                    schedules.pop(schedule)
+
+                elif userID:
+
+                    author = Users.query.filter_by(username=schedule["authorUsername"]).first()
+
+                    if author.private and not Follows.is_following(userID, author.id):
+                        schedules.pop(schedule)
+
+                else:
+                    schedules.pop(schedule)
+
             if not schedules:
                 return {"error": "No schedules found matching that name"}, 404
+            
             return json.loads(json_util.dumps(schedules)), 200
  
         # Fuzzy search by scheduleName, filtered by authorUsername
         if authorUsername and scheduleName:
+
             schedules = list(mongo.db.SharedSchedules.find({
                 "authorUsername": authorUsername,
                 "name": {"$regex": scheduleName, "$options": "i"}
             }))
+
+            for schedule in schedules:
+
+                if schedule["private"]:
+
+                    schedules.pop(schedule)
+
+                elif userID:
+
+                    author = Users.query.filter_by(username=schedule["authorUsername"]).first()
+
+                    if author.private and not Follows.is_following(userID, author.id):
+                        schedules.pop(schedule)
+
+                else:
+                    schedules.pop(schedule)
+
             if not schedules:
-                return {"error": "No schedules found for this author matching that name"}, 404
+                return {"error": "No schedules found matching that name"}, 404
+            
             return json.loads(json_util.dumps(schedules)), 200
  
         return {"error": "No valid query parameters provided"}, 400
@@ -70,19 +129,12 @@ class SharedSchedulesAPI(Resource):
         }
  
         # add validation that keys in data.get("days") are valid day names and that exercise IDs exist in the Workouts collection
-
-        if data.get("private") == 'True':
-            privacy = True
-        elif data.get("private") == 'False':
-            privacy = False
-        else:
-            privacy = Users.query.filter_by(username=data.get("authorUsername")).first().private
  
         newSchedule = SharedSchedules(
                 name=data.get("name", "Default-Schedule"),
                 description=data.get("description", "Default-Schedule"),
                 authorUsername=data.get("authorUsername"),
-                private=privacy,
+                private=data.get("private", Users.query.filter_by(username=data.get("authorUsername")).first().private),
                 days=data.get("days", daysDefault)
             )
         

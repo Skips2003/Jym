@@ -5,6 +5,7 @@ from flask_restful import Resource
 from app.resources.auth import validateRequest
 from sqlalchemy import func
 
+# This really needs cleaned up it was my first attempt at an API and it's not good but i will fix it when i get around to adding the report system
 # Add options for filtering the output e.g. just return the different stats or just the username and bio
 
 class UsersAPI(Resource):

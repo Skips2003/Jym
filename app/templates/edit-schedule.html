@@ -18,10 +18,12 @@
                 container.innerHTML = "";
 
                 let dayCount = 0;
+
                 const unchangedSchedule = {{ schedule|tojson|safe }};
                 console.log(unchangedSchedule);
+
                 let currentSchedule ={{ schedule|tojson|safe }};
-                console.log(currentSchedule)
+                console.log(currentSchedule);
 
                 var currentDay = "Monday";
 
@@ -43,7 +45,7 @@
                     <button class="darkBtn w-full" data-modal-target="searchExercises-modal" data-modal-toggle="searchExercises-modal">Find Exercises</button>
                     <div class="flex gap-1">
                         <button class="baseBtn flex-1" onclick="getSavedWorkouts('{{ current_user.id }}')" data-modal-target="loadSaved-modal" data-modal-toggle="loadSaved-modal">Load Workout</button>
-                        <button class="baseBtn flex-1" onclick="saveWorkout(currentSchedule.days[currentDay])">Save Workout as Template</button>
+                        <button class="baseBtn flex-1" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', true)">Save Workout as Template</button>
                     </div>
                 </div>
             
@@ -58,7 +60,7 @@
             <div class="flex gap-1">
                 <button class="baseBtn basis-1/4">Cancel</button>
                 <button class="baseBtn basis-1/4" onclick="getSavedSchedules('{{ current_user.id }}')" data-modal-target="loadSaved-modal" data-modal-toggle="loadSaved-modal">Load Schedule</button>
-                <button class="baseBtn basis-1/4" onclick="saveWorkout()">Save Schedule as Template</button>
+                <button class="baseBtn basis-1/4" onclick="shareSaveSchedule(currentSchedule, '{{ current_user.username }}', true)">Save Schedule as Template</button>
                 <button class="darkBtn basis-1/4" onclick="saveChanges(currentSchedule, unchangedSchedule, UID)">Save Changes</button>
             </div>
         </div>

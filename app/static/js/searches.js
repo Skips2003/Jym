@@ -55,7 +55,7 @@ async function searchWorkouts(){
     </tr>
 `;
 
-    const responseUser = await fetch('/api/sharedworkouts/workoutName/' + workoutSearch, {
+    const responseUser = await fetch('/api/sharedworkouts/workoutName/' + workoutSearch + '/userID/' + UID, {
         method: 'GET',
         headers:{ 
             'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ async function searchSchedules(){
     </tr>
 `;
 
-    const response = await fetch('/api/sharedschedules/scheduleName/' + scheduleSearch, {
+    const response = await fetch('/api/sharedschedules/scheduleName/' + scheduleSearch + '/userID/' + UID, {
         method: 'GET',
         headers:{ 
             'Content-Type': 'application/json',

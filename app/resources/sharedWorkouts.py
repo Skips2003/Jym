@@ -4,43 +4,105 @@ from flask import request
 from flask_restful import Resource
 from flask_login import current_user
 from app.resources.auth import validateRequest, webOnly
-from app.models import SharedWorkouts, Users
+from app.models import SharedWorkouts, Users, Follows
 import json
 
 class SharedWorkoutsAPI(Resource):
     @validateRequest
-    def get(self, workoutID=None, workoutName=None, authorUsername=None):
+    def get(self, workoutID=None, workoutName=None, authorUsername=None, userID=None):
+        # Private workouts only accessed if userID is provided or search is done using scheduleID
+
         # Return specific workout by ID
         if workoutID:
+
             workout = mongo.db.SharedWorkouts.find_one({"_id": ObjectId(workoutID)})
+
             if not workout:
                 return {"error": "workout not found"}, 404
+            
             return json.loads(json_util.dumps(workout)), 200
  
         # Return all Workouts by authorUsername only
         if authorUsername and not workoutName:
+
             workouts = list(mongo.db.SharedWorkouts.find({"authorUsername": authorUsername}))
+
+            for workout in workouts:
+
+                if workout["private"]:
+
+                    workouts.pop(workout)
+
+                elif userID:
+
+                    author = Users.query.filter_by(username=workout["authorUsername"]).first()
+
+                    if author.private and not Follows.is_following(userID, author.id):
+                        workouts.pop(workout)
+
+                else:
+                    workouts.pop(workout)
+
             if not workouts:
                 return {"error": "No workouts found for this author"}, 404
+            
             return json.loads(json_util.dumps(workouts)), 200
  
         # Fuzzy search by workoutName only
         if workoutName and not authorUsername:
+
             workouts = list(mongo.db.SharedWorkouts.find({
                 "name": {"$regex": workoutName, "$options": "i"}
             }))
+
+            for workout in workouts:
+
+                if workout["private"]:
+
+                    workouts.pop(workout)
+
+                elif userID:
+
+                    author = Users.query.filter_by(username=workout["authorUsername"]).first()
+
+                    if author.private and not Follows.is_following(userID, author.id):
+                        workouts.pop(workout)
+
+                else:
+                    workouts.pop(workout)
+
             if not workouts:
                 return {"error": "No workouts found matching that name"}, 404
+            
             return json.loads(json_util.dumps(workouts)), 200
  
         # Fuzzy search by workoutName, filtered by authorUsername
         if authorUsername and workoutName:
+
             workouts = list(mongo.db.SharedWorkouts.find({
                 "authorUsername": authorUsername,
                 "name": {"$regex": workoutName, "$options": "i"}
             }))
+
+            for workout in workouts:
+
+                if workout["private"]:
+
+                    workouts.pop(workout)
+
+                elif userID:
+
+                    author = Users.query.filter_by(username=workout["authorUsername"]).first()
+
+                    if author.private and not Follows.is_following(userID, author.id):
+                        workouts.pop(workout)
+
+                else:
+                    workouts.pop(workout)
+
             if not workouts:
                 return {"error": "No workouts found for this author matching that name"}, 404
+            
             return json.loads(json_util.dumps(workouts)), 200
  
         return {"error": "No valid query parameters provided"}, 400
@@ -56,19 +118,12 @@ class SharedWorkoutsAPI(Resource):
 
         if not userCheck:
             return {"error": "Author not found."}, 404
-
-        if data.get("private") == 'True':
-            privacy = True
-        elif data.get("private") == 'False':
-            privacy = False
-        else:
-            privacy = Users.query.filter_by(username=data.get("authorUsername")).first().private
  
         newWorkout = SharedWorkouts(
                 name=data.get("name", "Default-Workout"),
                 description=data.get("description", "Default-Workout"),
                 authorUsername=data.get("authorUsername"),
-                private=privacy,
+                private=data.get("private", Users.query.filter_by(username=data.get("authorUsername")).first().private),
                 exercises=data.get("exercises", [])
             )
         

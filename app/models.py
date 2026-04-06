@@ -7,6 +7,15 @@ from typing import TypedDict
 from bson import ObjectId
 
 # Postgres Database Models (using SQLAlchemy, not MongoDB)
+# Database rules if you are adding code that uses them!
+# Users - all self explanitory, schedule default is a empty schedule which should not be edited!
+# Follows - followedID is the person who is being followed followerID is the person who is following! isFollowing allows you to check if a user is following another and returns True/False bool
+# APIKey - standard i think i got it from the lab sheets
+# Exercises - self explanitory, searchID is the ID returned from the externalAPI so we can easily access what was searched again! undecided on weight catagory so far but will figure it out
+# Workouts - array of exercises will have a cap of eight soon but not yet!
+# Schedules - this only contains users current schedules! the idea is to prevent redundant schedules which cannot be accessed (not shared or saved). Format of days is an object with fields "Monday" - "Sunday" which contain embeded Workouts
+# SharedSchedules/Workouts - same as non shared versions but they contain the authorusername (person who shared it) and private (private means it is saved on the users accouant for just them and not shared) 
+# SavedSchedules/Workouts - each contain the userID of the person who saved it and the objectId of the object they are saving!
 
 class Users(db.Model, UserMixin):
     

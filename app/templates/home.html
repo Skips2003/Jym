@@ -46,7 +46,7 @@
         </div>
         
         <!-- Shows users Current Schedule! -->
-        <h1 class="text-left col-span-3">Current Schedule <button class="baseBtn float-right" onclick="shareSchedule(currentSchedule, '{{ current_user.username }}', '{{ current_user.public }}')"><h3>Share</h3></button><button class="baseBtn float-right" href="{{ url_for('main.editSchedule') }}"><h3>Edit</h3></button></h3>
+        <h1 class="text-left col-span-3">Current Schedule <button class="baseBtn float-right" onclick="shareSaveSchedule(currentSchedule, '{{ current_user.username }}', false)"><h3>Share</h3></button><button class="baseBtn float-right" href="{{ url_for('main.editSchedule') }}"><h3>Edit</h3></button></h3>
 
         <!-- When clicked a modal should appear showing the exercises scheduled for the selected day and whether or not they were completed -->
         <div class="baseCard col-span-3">
@@ -98,7 +98,7 @@
                     <table id="exerciseTable" class="table-auto">
 
                     </table>
-                    <button class="baseBtn float-right" onclick="shareWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', '{{ current_user.public }}')"><h3>Share</h3></button>
+                    <button class="baseBtn float-right" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', false)"><h3>Share</h3></button>
                 </div>
             </div>
         </div>
