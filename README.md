@@ -5,7 +5,6 @@ uses:
 pip install flask
 pip install flask-wtf
 pip install flask-sqlalchemy
-pip install flask-migrate
 pip install flask-login
 pip install flask_bcrypt
 pip install flask-pymongo
@@ -17,18 +16,15 @@ the free version of the exercisesDB we are using is currently down but should be
 TODO:
 
 100% Need completed:
-
-1. change shared schedules/workouts search to only display schedules and workouts of users who are public or if private followed by current user
-2. create db for users to save own unshared templates of workouts/schedules
-3. Unit Testing (Better Documentation in general)
-4. add visualisation of muscles worked
-5. add functionality to view details button when searching for exercises (display gif, muscles worked and instructions for exercise)
-6. Add pbs graphs and ability to update them
-7. actually make the HTML and CSS for the site (shouldn't take long)
-8. report system (Users, Shared Schedules/Workouts)
-9. Admin panel for reviewing schedules, profiles etc
-10. add completing a workout (with check to ensure it was completed on the right day)
-11. view recently completed workouts
+1. Unit Testing (Better Documentation in general)
+2. actually make the HTML and CSS for the site (shouldn't take long)
+3. add functionality to view details button when searching for exercises (display gif, muscles worked and instructions for exercise)
+4. Add pbs graphs and ability to update them
+5. add visualisation of muscles worked
+6. report system (Users, Shared Schedules/Workouts)
+7. Admin panel for reviewing schedules, profiles etc
+8. add completing a workout (with check to ensure it was completed on the right day)
+9. view recently completed workouts
 
 Optional for after above is finished:
 1. trainer accounts (allow trainers to provide schedules to users and track their progress!)
