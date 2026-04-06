@@ -9,12 +9,15 @@
     --color-greenBlueOne: #77a6a9;
     --color-greenBlueTwo: #56787a;
     --color-blueGreenOne: #618fad;
-    --color-blueGreenTwo: #45657a;
+    --color-spaceBlue: #45657a;
+    --color-spaceBlueTwo: #2E404D;
     --color-redOne: #c24d3f;
     --color-redTwo: #963c31;
     --color-salmon: #ebb8a4;
     --color-spaceGray: #1d313c;
     --color-stars: #e1ccad;
+    --color-starsTwo: #EFE3D2;
+    --color-spacePurple: #1F0638;
 
     /* default color */
     --color-default: var(--color-gray-800);
