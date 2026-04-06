@@ -1,5 +1,5 @@
 import json
-from flask import render_template, flash, redirect, url_for, jsonify
+from flask import render_template, flash, redirect, url_for, jsonify ,request
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models import Users, Follows
 from app.main.forms import LoginForm, SignUpForm
@@ -127,9 +127,35 @@ def signOut():
 @bp.route('/admin', methods=['GET', 'POST'])
 def admin():
     print("admin")
-    return render_template('admin.html')
+    form=SignUpForm()
+    users = Users.query.all()
+    return render_template('admin.html', users=users, form=form)
 
-@bp.route('/manage', methods=['GET', 'POST'])
-def manage():
+@bp.route('/manage/<int:user_id>', methods=['GET', 'POST'])
+def manage(user_id):
     print("manage")
-    return render_template('manage.html')
+    form=SignUpForm()
+    user=Users.query.get(user_id)
+    return render_template('manage.html', user=user,form=form)
+
+
+@bp.route('/add', methods=['POST'])
+def add_user():
+    id = request.form['id']
+    email = request.form['email']
+    password = request.form['password']    
+    firstName = request.form['firstName']
+    lastName = request.form['lastName']
+    username = request.form['username']    
+    new_user = Users(email=email, password=password, firstName=firstName,lastName=lastName,username=username)
+                     # ,public=True,bio="bio",followers=0,following=0,currentScheduleID="69c44bc4735131196e47244d",sessionsInRow=0,benchPress=0,deadLift=0,squat=0)
+    db.session.add(new_user)
+    db.session.commit()
+    return redirect('/admin')
+
+@bp.route('/edit/<int:id>', methods=['POST'])
+def edit_user(id):
+    user = Users.query.get(id)
+    user.username = request.form['username']
+    db.session.commit()
+    return redirect(f"/manage/{id}")

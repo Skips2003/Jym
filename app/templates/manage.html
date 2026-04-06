@@ -25,6 +25,13 @@
     </style>
     </head>
     <body>       
+        <h2>{{user.id}} {{ user.firstName }} {{user.lastName}} ({{ user.email }})</h2>
+        <h3>{{ user.username }}</h3>
+    <form action="/edit/{{ user.id }}" method="POST" style="display:inline;">
+        {{ form.hidden_tag() }}    
+        <input type="text" name="username" value="{{ user.username }}">
+        <button type="submit">Update</button>
+    </form>
         <div class="container">            
             <nav class="navbar navbar-expand-md bg-light mb-2">
                 <a class="navbar-brand" href="#">

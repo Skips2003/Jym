@@ -19,6 +19,25 @@
 
 </a>
 
+<h1>Users</h1>
+    <ul>
+        {% for user in users %}
+            <li>{{user.id}} {{ user.firstName }} {{user.lastName}} ({{ user.email }})</li>
+            <a href="/manage/{{ user.id }} "> edit </a>
+        {% endfor %}
+    </ul>
+
+<form action="/add" method="POST">
+    {{ form.hidden_tag() }}
+    <input type="number" name="id" placeholder="user id" required>
+    <input type="text" name="email" placeholder="user email" required>
+    <input type="text" name="password" placeholder="password" required>
+    <input type="text" name="firstName" placeholder="user firstName" required>
+    <input type="text" name="lastName" placeholder="user Last Name" required>
+    <input type="text" name="username" placeholder="username" required>
+    
+    <button type="submit">Add user</button>
+</form>
 
 
 </section>
