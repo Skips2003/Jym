@@ -11,14 +11,17 @@ function loadHomePage(){
 
 // create cards for inside of schedule
 function createDayCardView(day, dayOfWeek) {
-    const button = document.createElement("div");
+    const button = document.createElement("button");
+
+    button.setAttribute("class", "baseBtn col-span-1");
+    button.setAttribute("data-modal-target", "viewDays-modal");
+    button.setAttribute("data-modal-toggle", "viewDays-modal");
+    button.onclick = function() {selectDayView(dayOfWeek)};
 
     button.innerHTML = `
-        <button class="baseBtn col-span-1" data-modal-target="viewDays-modal" data-modal-toggle="viewDays-modal" onclick="selectDayView('${dayOfWeek}')">
-            <img src="./images/logoSmall">
-            <h3>${dayOfWeek}</h3>
-            <p>${day.name}</p>
-        </button>
+        <img src="./images/logoSmall">
+        <h3>${dayOfWeek}</h3>
+        <p>${day.name}</p>
     `;
 
     return button;
