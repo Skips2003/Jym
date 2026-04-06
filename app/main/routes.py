@@ -1,5 +1,5 @@
 import json
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for , request
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models import Users, Follows
 from app.main.forms import LoginForm, SignUpForm
@@ -127,9 +127,20 @@ def signOut():
 @bp.route('/admin', methods=['GET', 'POST'])
 def admin():
     print("admin")
-    return render_template('admin.html')
+    users=Users.query.all()
+    return render_template('admin.html', users=users)
 
-@bp.route('/manage', methods=['GET', 'POST'])
-def manage():
+@bp.route('/manage/<int:user_id>', methods=['GET', 'POST'])
+def manage(user_id):
     print("manage")
-    return render_template('manage.html')
+    form = SignUpForm()
+    user=Users.query.get(user_id)
+    return render_template('manage.html',user=user , form = form)
+
+
+@bp.route('/edit/<int:user_id>', methods=['POST'])
+def edit_user(user_id):
+    user = Users.query.get(user_id)
+    user.username = request.form['username']
+    db.session.commit()
+    return redirect(f"/manage/{user_id}")
