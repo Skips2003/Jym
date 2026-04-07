@@ -141,6 +141,13 @@ def manage(user_id):
 @bp.route('/edit/<int:user_id>', methods=['POST'])
 def edit_user(user_id):
     user = Users.query.get(user_id)
-    user.username = request.form['username']
+    if (request.form['username']):
+        user.username = request.form['username']
+    if (request.form['firstName']):
+        user.firstName = request.form['firstName']
+    if (request.form['lastName']):
+        user.lastName=request.form['lastName']
+    if (request.form['email']):
+        user.email=request.form['email']
     db.session.commit()
     return redirect(f"/manage/{user_id}")
