@@ -5,25 +5,37 @@
 @source "../../node_modules/flowbite";
 
 @theme {
+
+    /* Custom Colours */
+    --color-greenBlueOne: #77a6a9;
+    --color-greenBlueTwo: #56787a;
+    --color-blueGreenOne: #618fad;
+    --color-spaceBlue: #45657a;
+    --color-spaceBlueTwo: #002D38;
+    --color-redOne: #c24d3f;
+    --color-redTwo: #963c31;
+    --color-salmon: #ebb8a4;
+    --color-spaceGray: #1d313c;
+    --color-stars: #e1ccad;
+    --color-starsTwo: #FAF8EC;
+    --color-spacePurple: #1F0638;
+
     /* default color */
-    --color-default: var(--color-gray-800);
+    --color-default: var(--color-spaceBlueTwo);
     --color-default-subtle: var(--color-gray-200);
+    --color-light: var(--color-starsTwo);
+    --color-dark: var();
 
     /* main text color */
-    --color-body: var(--color-black-600);
-    --color-body-subtle: var(--color-black-400);
+    --color-body: var(--color-spaceBlueTwo);
+    --color-body-subtle: var(--color-spaceBlueTwo);
 
     /* text heading colors */
     --color-heading: var(--color-gray-800);
 
-    /* used for custom brand colors */
-    --color-fg-brand-subtle: var(--color-stone-200);
-    --color-fg-brand: var(--color-stone-950);
-    --color-fg-brand-strong: var(--color-stone-900);
-
-    --font-sans: 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-body: 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-mono: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace';
+    --font-sans: 'futura-100', 'ui-sans-serif', 'system-ui', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-body: 'futura-100', 'ui-sans-serif', 'system-ui', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-mono: 'futura-100', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace';
 
     --spacing-custom: 10px;
 
@@ -34,15 +46,15 @@
 
 @layer base{
     h1 {
-        @apply text-default text-2xl font-medium;
+        @apply text-8xl font-sans font-bold text-body p-2;
     }
 
     h3 {
-        @apply text-default text-lg font-medium;
+        @apply text-4xl font-sans font-bold text-body p-2;
     }
 
     p {
-        @apply text-body-subtle text-base font-medium;
+        @apply text-2xl text-body-subtle font-sans p-2;
     }
 
     th {
@@ -50,7 +62,7 @@
     }
 
     tr {
-        @apply bg-default-subtle border-b border-default hover:bg-neutral-secondary-medium
+        @apply bg-default-subtle border-b border-default hover:bg-neutral-secondary-medium text-body;
     }
 
     table {
@@ -60,19 +72,23 @@
 
 @layer components{
     .grid{
-        @apply p-10;
+        @apply p-12;
     }
     
     .baseCard{
-        @apply bg-white block p-1 border-4 border-default rounded-base shadow-xs;
+        @apply bg-light block p-0.5 rounded-base shadow-xs text-body;
     }
 
     .baseBtn{
-        @apply bg-white block p-4 border-4 border-default rounded-base shadow-xs text-center;
+        @apply bg-light border-4 border-default block p-4 rounded-base shadow-xs text-center text-body;
     }
 
     .darkBtn{
-        @apply bg-default block p-4 border-4 border-gray-900 rounded-base shadow-xs text-center text-white;
+        @apply bg-default/90 border-4 border-default block p-4 rounded-base shadow-xs text-center text-light;
+    }
+
+    .dayBtn{
+        @apply bg-light border-4 border-default block p-4 rounded-base shadow-xs text-center text-body;
     }
 }
 

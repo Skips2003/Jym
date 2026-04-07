@@ -17,16 +17,15 @@ TODO:
 
 100% Need completed:
 1. Unit Testing (Better Documentation in general)
-2. actually make the HTML and CSS for the site (shouldn't take long)
-3. add functionality to view details button when searching for exercises (display gif, muscles worked and instructions for exercise)
-4. Add pbs graphs and ability to update them
-5. add visualisation of muscles worked
-6. report system (Users, Shared Schedules/Workouts)
-7. Admin panel for reviewing schedules, profiles etc
-8. add completing a workout (with check to ensure it was completed on the right day)
-9. view recently completed workouts
-10. Add tags to schedules/workouts for searching
-11. Search Page
+2. add functionality to view details button when searching for exercises (display gif, muscles worked and instructions for exercise)
+3. Add pbs graphs and ability to update them
+4. add visualisation of muscles worked
+5. report system (Users, Shared Schedules/Workouts)
+6. Admin panel for reviewing schedules, profiles etc
+7. add completing a workout (with check to ensure it was completed on the right day)
+8. view recently completed workouts
+9. Add tags to schedules/workouts for searching
+10. Search Page
 
 Optional for after above is finished:
 1. trainer accounts (allow trainers to provide schedules to users and track their progress!)
