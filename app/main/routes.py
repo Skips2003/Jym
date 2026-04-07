@@ -127,8 +127,10 @@ def signOut():
 @bp.route('/admin', methods=['GET', 'POST'])
 def admin():
     print("admin")
+    form = SignUpForm()
     users=Users.query.all()
-    return render_template('admin.html', users=users)
+    exercises=list(mongo.db.Exercises.find())
+    return render_template('admin.html', users=users, form=form,exercises=exercises)
 
 @bp.route('/manage/<int:user_id>', methods=['GET', 'POST'])
 def manage(user_id):
@@ -151,3 +153,15 @@ def edit_user(user_id):
         user.email=request.form['email']
     db.session.commit()
     return redirect(f"/manage/{user_id}")
+
+@bp.route('/add_exercise', methods=['POST'])
+def add_exercise():
+    exercise = {
+        "name": request.form["name"],
+        "reps": int(request.form["reps"]),
+        "sets": int(request.form["sets"]),
+        "weight": int(request.form["weight"]),
+        "searchID": request.form["searchID"]
+    }
+    mongo.db.Exercises.insert_one(exercise)
+    return redirect('/admin')
