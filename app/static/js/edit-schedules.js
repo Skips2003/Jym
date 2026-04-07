@@ -11,14 +11,16 @@ function loadSchedulePage(){
 
 // create day card for schedule
 function createDayCardEdit(day, dayOfWeek) {
-    const button = document.createElement("div");
+    const button = document.createElement("button");
+
+    button.setAttribute("class", "dayBtn col-span-1");
+    button.setAttribute("data-modal-target", "viewDays-modal");
+    button.setAttribute("data-modal-toggle", "viewDays-modal");
+    button.onclick = function() {selectDayEdit(dayOfWeek)};
 
     button.innerHTML = `
-        <button class="baseBtn col-span-1" onclick="selectDayEdit('${dayOfWeek}')">
-            <img src="./images/logoSmall">
-            <h3>${dayOfWeek}</h3>
-            <p>${day.name}</p>
-        </button>
+        <h3>${dayOfWeek}</h3>
+        <p>${day.name}</p>
     `;
 
     return button;

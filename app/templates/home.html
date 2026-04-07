@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-<section class="bg-default">
+<section>
 
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
     <script src="{{ url_for('static', filename='js/saveShare.js') }}"></script>
@@ -25,7 +25,7 @@
 
             <!-- When clicked a modal should appear showing the exercises scheduled for the selected day and whether or not they were completed -->
             <main id="scheduleContainer" class="grid grid-cols-7 gap-2">
-                    <!-- day cards inserted here by JS-->
+                <!-- day cards inserted here by JS-->
             </main>
             <script>
                 const container = document.getElementById("scheduleContainer");
@@ -42,12 +42,10 @@
                 <!-- Show exercises from workout when clicked -->
                 <h1 >Recent Workouts</h1 >
                 <button class="baseBtn">
-                    <img src="./images/logoSmall">
                     <h3>Sun</h3>
                     <p>Workout Name</p>
                 </button>
                 <button class="baseBtn">
-                    <img src="./images/logoSmall">
                     <h3>Sun</h3>
                     <p>Workout Name</p>
                 </button>
@@ -71,8 +69,6 @@
         </div>
         <div class="col-span-3 row-span-2 col-start-5 row-start-3 baseCard">
             <h1 >Muscles Worked</h1 >
-            <!-- Add a bar chart for each of the users PBs on core lifts, also add a line chart showing their progress over last 6 months/selected period of time -->
-            <!-- Toggle in top right to switch between bar or line graph -->
         </div>
         <div class="col-span-5 row-span-3 col-start-3 row-start-5 baseCard">        
             <h1>Personal Records</h1>

@@ -24,7 +24,6 @@
     --color-default: var(--color-spaceBlueTwo);
     --color-default-subtle: var(--color-gray-200);
     --color-light: var(--color-starsTwo);
-    --color-light-subtle: var(--color-starsTwo);
     --color-dark: var();
 
     /* main text color */
@@ -85,7 +84,7 @@
     }
 
     .darkBtn{
-        @apply bg-light block p-4 rounded-base shadow-xs text-center text-body;
+        @apply bg-default/90 border-4 border-default block p-4 rounded-base shadow-xs text-center text-light;
     }
 
     .dayBtn{
