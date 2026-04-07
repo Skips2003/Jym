@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static',filename='dist/output.css')}}">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css" rel="../input.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const profileUrlBase = "{{ url_for('main.profile', username='') }}".slice(0, -1);
         const UID = {{current_user.id}};
     </script>
     <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
     <script src="{{ url_for('static', filename='js/searches.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/PBs.js') }}"></script>
     <title>Jym</title>
     <meta id="csrf-token" name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -86,7 +88,7 @@
                     <table id="userSearchTable" class="table-auto">
 
                     </table>
-                </form> 
+                </form>
             </ul> 
             </div>
             </div>

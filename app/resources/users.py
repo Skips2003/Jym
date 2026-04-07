@@ -27,6 +27,9 @@ class UsersAPI(Resource):
                 "bench_press": user.benchPress,
                 "dead_lift": user.deadLift,
                 "squat": user.squat,
+                "overhead_Press": user.overheadPress,
+                "snatch": user.snatch,
+                "cleanAndJerk": user.cleanAndJerk
             })
         elif username:
             users = Users.query.filter(func.similarity(Users.username, username) > 0.3).all()
@@ -47,6 +50,9 @@ class UsersAPI(Resource):
                         "bench_press": u.benchPress,
                         "dead_lift": u.deadLift,
                         "squat": u.squat,
+                        "overhead_Press": user.overheadPress,
+                        "snatch": user.snatch,
+                        "cleanAndJerk": user.cleanAndJerk
                     })
             return jsonify(output)
         else:
@@ -65,6 +71,9 @@ class UsersAPI(Resource):
                         "bench_press": u.benchPress,
                         "dead_lift": u.deadLift,
                         "squat": u.squat,
+                        "overhead_Press": user.overheadPress,
+                        "snatch": user.snatch,
+                        "cleanAndJerk": user.cleanAndJerk
                     })
             return jsonify(output)
 
@@ -85,7 +94,10 @@ class UsersAPI(Resource):
             sessionsInRow=data.get("sessionsInRow", 0),  # Default to 0 if not provided
             benchPress=data.get("benchPress", 0),  # Default to 0 if not provided
             deadLift=data.get("deadLift", 0),  # Default to 0 if not provided
-            squat=data.get("squat", 0)  # Default to 0 if not provided
+            squat=data.get("squat", 0),  # Default to 0 if not provided
+            overheadPress=data.get("overheadPress", 0),  # Default to 0 if not provided
+            snatch=data.get("snatch", 0),  # Default to 0 if not provided
+            cleanAndJerk=data.get("cleanAndJerk", 0)  # Default to 0 if not provided
         )
         db.session.add(newUser)
         db.session.commit()
@@ -118,6 +130,9 @@ class UsersAPI(Resource):
         if "benchPress" in data: user.benchPress=data["benchPress"]
         if "deadLift" in data: user.deadLift=data["deadLift"]
         if "squat" in data: user.squat=data["squat"]
+        if "overheadPress" in data: user.overheadPress=data["overheadPress"]
+        if "snatch" in data: user.snatch=data["snatch"]
+        if "cleanAndJerk" in data: user.cleanAndJerk=data["cleanAndJerk"]
 
         db.session.commit()
         print("User: " + userID + " updated!")
