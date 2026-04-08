@@ -129,15 +129,29 @@ def admin():
     print("admin")
     form = SignUpForm()
     users=Users.query.all()
-    exercises=list(mongo.db.Exercises.find())
-    return render_template('admin.html', users=users, form=form,exercises=exercises)
+    exercises=list(mongo.db.Exercise.find())
+    workouts=list(mongo.db.Workouts.find())
+    return render_template('admin.html', users=users, form=form,exercises=exercises,workouts=workouts)
 
 @bp.route('/manage/<int:user_id>', methods=['GET', 'POST'])
 def manage(user_id):
     print("manage")
     form = SignUpForm()
     user=Users.query.get(user_id)
-    return render_template('manage.html',user=user , form = form)
+    all_workouts=list(mongo.db.Workouts.find())
+    saved_workouts = list(mongo.db.SavedWorkouts.find({"userID":str(user_id)}))
+    if (saved_workouts):
+        # 1. Extract all workoutIDs from the list of dictionaries
+        # This creates: [ObjectId('...'), ObjectId('...')]
+        id_list = [ObjectId(item['workoutID']) for item in saved_workouts]
+        # 2. Now use that list with the $in operator
+        # Note: $in expects a LIST, so we pass id_list directly
+        workouts = list(mongo.db.Workouts.find({"_id": {"$in": id_list}}))
+    else:
+        workouts=[]
+    current_schedule =[]
+    current_schedule = mongo.db.Schedules.find_one({"_id":ObjectId(user.currentScheduleID)})
+    return render_template('manage.html',user=user , form = form,workouts=workouts,all_workouts=all_workouts,schedule=current_schedule)
 
 
 @bp.route('/edit/<int:user_id>', methods=['POST'])
@@ -161,7 +175,57 @@ def add_exercise():
         "reps": int(request.form["reps"]),
         "sets": int(request.form["sets"]),
         "weight": int(request.form["weight"]),
-        "searchID": request.form["searchID"]
+        "searchID": request.form["searchID"],
+        "targetMuscles" : request.form.getlist("targetMuscles"),
+        "secondaryMuscles": request.form.getlist("secondaryMuscles")
     }
-    mongo.db.Exercises.insert_one(exercise)
+    mongo.db.Exercise.insert_one(exercise)
     return redirect('/admin')
+
+@bp.route('/add_workout', methods=['POST'])
+def add_workout():
+    exercise_ids=request.form.getlist('exercise_ids')
+    workout = {        
+        "name": request.form["name"],
+        "description": request.form["description"],
+        "exercises": list(mongo.db.Exercise.find({"searchID":{"$in":exercise_ids}}))
+    }
+    mongo.db.Workouts.insert_one(workout)
+    return redirect('/admin')
+
+
+@bp.route('/add_user_workout/<int:user_id>', methods=['POST'])
+def add_user_workout(user_id):
+    workout_ids=request.form.getlist('workout_name')
+    for w_id in workout_ids :
+        saving_workout = {        
+            "userID": str(user_id),
+            "workoutID": ObjectId(w_id)
+            }
+        mongo.db.SavedWorkouts.insert_one(saving_workout)
+    return redirect(f"/manage/{user_id}")
+
+
+@bp.route('/add_user_schedule/<int:user_id>', methods=['POST'])
+def add_user_schedule(user_id):
+    monday = mongo.db.Workouts.find_one({"_id":ObjectId(request.form.get('workout_id_1'))})
+    tuesday = mongo.db.Workouts.find_one({"_id":ObjectId(request.form.get('workout_id_2'))})
+    days = {
+        "Monday" : monday , 
+        "Tuesday" : tuesday ,
+        "Wednesday" : monday,
+        "Thursday": monday,
+        "Friday": tuesday,
+        "Saturday" : monday,
+        "Sunday": tuesday
+    }
+    new_schedule = {
+        "name":"myname",
+        "description":"assignment",
+        "days" : days
+    }
+    insert_result = mongo.db.Schedules.insert_one(new_schedule)
+    user = Users.query.get(user_id)
+    user.currentScheduleID = str(insert_result.inserted_id)
+    db.session.commit()
+    return redirect(f"/manage/{user_id}")

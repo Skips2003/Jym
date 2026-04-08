@@ -38,6 +38,8 @@
             <th>sets</th>
             <th>weight</th>
             <th>search ID</th>
+            <th>target muscle</th>
+            <th>2nd muscle</th>
         </tr>
         {% for exercise in exercises %}
         <tr>
@@ -46,6 +48,8 @@
             <td>{{ exercise.sets }}</td>
             <td>{{ exercise.weight }}</td>
             <td>{{ exercise.searchID }}</td>
+            <td>{{ exercise.targetMuscles }}</td>
+            <td>{{ exercise.secondaryMuscles }}</td>
         </tr>
         {% endfor %}
     </table>
@@ -61,11 +65,48 @@
     <input type="number" name="sets" placeholder="sets" required>
     <input type="number" name="weight" placeholder="weight" required>
     <input type="text" name="searchID" placeholder="search ID" required>
+    <input type="text" name="targetMuscles" placeholder="target muscle" required>
+    <input type="text" name="secondaryMuscles" placeholder="secondary muscle" required>
     
     <button type="submit" class="inline-flex items-center text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" >Add Exercise</button>
 </form>
 </div>
 
+
+
+<div>
+    <h1>Workouts list</h1>
+    <table border="1">
+        <tr>
+            <th>name</th>
+            <th>description</th>
+            <th>Excercises</th>
+        </tr>
+        {% for workout in workouts %}
+        <tr>
+            <td>{{ workout.name }}</td>
+            <td>{{ workout.description }}</td>
+            <td>{% for ex in workout.exercises %}  
+                   <p>{{ ex.name }} @ {{ex.searchID}}</p>
+                {% endfor %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div>
+<h2>Add a Workout</h2>
+<form action="/add_workout" method="POST">
+    {{ form.hidden_tag() }}    
+        
+    <input type="text" name="name" placeholder="name" required>
+    <input type="text" name="description" placeholder="description" required>
+    {% for exercise in exercises %}
+    <input type="checkbox" name="exercise_ids" value="{{ exercise.searchID }}">{{ exercise.name }}
+    {% endfor %}
+    <button type="submit" class="inline-flex items-center text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" >Add Exercise</button>
+</form>
+</div>
 
 
 

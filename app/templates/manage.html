@@ -24,9 +24,68 @@
         </button>  
         </p>
     </div>
-    <div class="baseCard border-transparent shadow col-span-1">
-        <h3>current schedule</h3>
-        <p>current schedule ID {{ user.currentScheduleID }}</p>
-    </div>
+    
+<div>
+    <h1>User's Workouts list</h1>
+    <table border="1">
+        <tr>
+            <th>name</th>
+            <th>description</th>
+            <th>Excercises</th>
+        </tr>
+        {% for workout in workouts %}
+        <tr>
+            <td>{{ workout.name }}</td>
+            <td>{{ workout.description }}</td>
+            <td>{% for ex in workout.exercises %}  
+                   <p>{{ ex.name }} @ {{ex.searchID}}</p>
+                {% endfor %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div>
+    <h2>Add Workout for user</h2>
+    <form action="/add_user_workout/{{user.id}}" method="POST">
+    {{ form.hidden_tag() }}    
+    {% for workout in all_workouts %}
+    <input type="checkbox" name="workout_name" value="{{ workout._id|string }}">{{ workout.name }}
+    {% endfor %}
+    <button type="submit" class="inline-flex items-center text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" >Add Workout</button>
+    
+    </form>    
+</div>
+
+<div class="baseCard border-transparent shadow col-span-1">
+    <h3>current schedule</h3>
+    <p> ID {{ user.currentScheduleID }}</p>
+    <p>{{schedule.days.Monday.name}}</p>
+    <p>{{schedule.days.Tuesday.name}}</p>
+</div>
+
+<div>
+    <h3>add a schedule for user</h3>
+    <form method="POST" action="/add_user_schedule/{{user.id}}">
+    {{form.hidden_tag()}}
+    <p><span>Monday</span>
+        <select name="workout_id_1">
+        {% for workout in workouts %}
+            <option value="{{ workout._id|string }}">{{ workout.name }}</option>
+        {% endfor %}
+        </select>
+    </p>
+    <p>Tuesday</p>
+    <p><span>"Tuesday"</span>
+        <select name="workout_id_2">
+        {% for workout in workouts %}
+            <option value="{{ workout._id|string }}">{{ workout.name }}</option>
+        {% endfor %}
+        </select>
+    </p>
+    <button type="submit">Add</button>
+    </form>
+</div>
+
 </section>
 {% endblock %}
