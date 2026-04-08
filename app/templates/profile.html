@@ -11,7 +11,7 @@
                 
         Object.keys(currentSchedule.days).forEach(day => {
             currentSchedule.days[day].exercises.forEach(exercise =>{
-                schedule.push(exercise)
+                scheduleExercises.push(exercise)
             })
         });
                 
@@ -66,18 +66,18 @@
                     <div class="grid grid-rows-1 gap-2">
                         <img src="./images/like"><p>Likes</p>
                         <img src="./images/bookmark"><p>Bookmarks</p>
-                        <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>Bookmark</h3></button>
-                        <button class="baseBtn float-right" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal"><h3>View</h3></button>
+                        <button class="baseBtn float-right"><h3>Bookmark</h3></button>
+                        <button class="baseBtn float-right"><h3>View</h3></button>
                     </div>
                 </div>
             </div>
             <div class="col-span-2 row-span-3 row-start-5 baseCard">
                 <h1>Recent Workouts</h1>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                <button class="baseBtn">
                     <h3>Sun</h3>
                     <p>Workout Name</p>
                 </button>
-                <button class="baseBtn" data-modal-target="default-currentScheduleModal" data-modal-toggle="default-modal">
+                <button class="baseBtn">
                     <h3>Sun</h3>
                     <p>Workout Name</p>
                 </button>
@@ -89,6 +89,7 @@
                 <h1 class="col-span-2">Muscles Worked</h1>
                 <div class="col-span-1 baseCard" id="musclesWorkedAnterior"></div>
                 <div class="col-span-1 baseCard" id="musclesWorkedPosterior"></div>
+                <button class="baseBtn" onclick="changeDiagram(scheduleExercises)">Reset</button>
             </div>
         {% else %}
             <h1>Users Account is Private</h1>

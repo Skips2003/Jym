@@ -91,11 +91,12 @@
     --color-brand-strong: var(--color-blue-800);
     --color-dark: var();
     --color-light: var(--color-starsTwo);
-    --color-default-subtle: var(--color-gray-200);
     --color-default: var(--color-spaceBlueTwo);
     --color-default-medium: var(--color-gray-200);
     --color-spaceBlueTwo: #002D38;
+    --color-redTwo: #963c31;
     --color-starsTwo: #FAF8EC;
+    --color-yellow: #d9c380;
   }
 }
 @layer base {
@@ -357,9 +358,6 @@
   .row-span-3 {
     grid-row: span 3 / span 3;
   }
-  .row-span-4 {
-    grid-row: span 4 / span 4;
-  }
   .row-span-5 {
     grid-row: span 5 / span 5;
   }
@@ -374,12 +372,6 @@
   }
   .row-start-5 {
     grid-row-start: 5;
-  }
-  .row-start-6 {
-    grid-row-start: 6;
-  }
-  .row-start-7 {
-    grid-row-start: 7;
   }
   .float-right {
     float: right;
@@ -465,6 +457,9 @@
   .table {
     display: table;
   }
+  .h-0 {
+    height: calc(var(--spacing) * 0);
+  }
   .h-4 {
     height: calc(var(--spacing) * 4);
   }
@@ -528,6 +523,9 @@
   .grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -542,6 +540,9 @@
   }
   .grid-rows-7 {
     grid-template-rows: repeat(7, minmax(0, 1fr));
+  }
+  .grid-rows-10 {
+    grid-template-rows: repeat(10, minmax(0, 1fr));
   }
   .flex-col {
     flex-direction: column;
@@ -641,11 +642,11 @@
   .bg-neutral-secondary-medium {
     background-color: var(--color-neutral-secondary-medium);
   }
-  .bg-red-300 {
-    background-color: var(--color-red-300);
+  .bg-redTwo {
+    background-color: var(--color-redTwo);
   }
-  .bg-yellow-200 {
-    background-color: var(--color-yellow-200);
+  .bg-yellow {
+    background-color: var(--color-yellow);
   }
   .selected {
     .datatable-wrapper .datatable-table tbody tr& {
@@ -699,6 +700,9 @@
   }
   .text-left {
     text-align: left;
+  }
+  .align-bottom {
+    vertical-align: bottom;
   }
   .align-top {
     vertical-align: top;
@@ -1124,7 +1128,7 @@
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
     border-color: var(--color-default);
-    background-color: var(--color-default-subtle);
+    background-color: var(--color-light);
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
     color: var(--color-body);
@@ -1133,7 +1137,7 @@
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
     border-color: var(--color-default);
-    background-color: var(--color-default-subtle);
+    background-color: var(--color-light);
     color: var(--color-body);
     &:hover {
       @media (hover: hover) {
@@ -1206,6 +1210,9 @@
     color: var(--color-body);
     --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .is-hidden {
+    display: none;
   }
 }
 @layer utilities {

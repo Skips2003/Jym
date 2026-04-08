@@ -45,7 +45,7 @@ async function searchByUsername(){
 // search shared workouts using name
 async function searchWorkouts(){
 
-    var workoutSearchTable = document.getElementById("workoutSearchTable");
+    var workoutSearchTable = document.getElementById("sharedSearchTable");
 
     let workoutSearch = document.getElementById("searchWorkout").value;
 
@@ -78,7 +78,7 @@ async function searchWorkouts(){
 // search shared schedules using name
 async function searchSchedules(){
 
-    var scheduleSearchTable = document.getElementById("scheduleSearchTable");
+    var scheduleSearchTable = document.getElementById("sharedSearchTable");
 
     let scheduleSearch = document.getElementById("searchSchedule").value;
 

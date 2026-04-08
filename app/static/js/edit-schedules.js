@@ -29,6 +29,13 @@ function createDayCardEdit(day, dayOfWeek) {
 // select a day and display information to page for editing
 function selectDayEdit(day) {
 
+    scheduleInfo = document.getElementById("scheduleInfo");
+    workoutInfo = document.getElementById("workoutInfo");
+
+    if(workoutInfo.classList.contains('is-hidden') && ! scheduleInfo.classList.contains('is-hidden')){
+        swapInfo()
+    }
+
     currentDay = day;
     let exercises = currentSchedule.days[day].exercises;
 
@@ -62,8 +69,8 @@ function selectDayEdit(day) {
                 <td id="sets-${i}">${exercises[i].sets}</td>
                 <td id="reps-${i}">${exercises[i].reps}</td>
                 <td id="weight-${i}">${exercises[i].weight}</td>
-                <td><button class="baseBtn bg-yellow-200" id="editBtn-${i}" onclick="editExerciseDetails('${exercises[i].searchID}', ${i})">Edit</button></td>
-                <td><button class="baseBtn bg-red-300" onclick="removeExerciseFromDay('${exercises[i].searchID}'); selectDayEdit(currentDay)">Remove</button></td>
+                <td><button class="baseBtn bg-yellow" id="editBtn-${i}" onclick="editExerciseDetails('${exercises[i].searchID}', ${i})">Edit</button></td>
+                <td><button class="baseBtn bg-redTwo" onclick="removeExerciseFromDay('${exercises[i].searchID}'); selectDayEdit(currentDay)">Remove</button></td>
             `;
         }
 
@@ -71,6 +78,23 @@ function selectDayEdit(day) {
 
     }
 
+}
+function swapInfo(){
+
+    scheduleInfo = document.getElementById("scheduleInfo");
+    workoutInfo = document.getElementById("workoutInfo");
+
+    scheduleInfo.classList.toggle('is-hidden');
+    workoutInfo.classList.toggle('is-hidden');
+}
+
+function reset(){
+
+    scheduleInfo = document.getElementById("scheduleInfo");
+    workoutInfo = document.getElementById("workoutInfo");
+
+    scheduleInfo.classList = '';
+    workoutInfo.classList = 'is-hidden';
 }
 
 // edit and save workout name/description
