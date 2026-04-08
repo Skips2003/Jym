@@ -4,6 +4,8 @@
     "tailwindcss": "^4.1.18"
   },
   "dependencies": {
+    "body-highlighter": "^3.0.2",
+    "chart.js": "^4.5.1",
     "flowbite": "^4.0.1"
   }
 }

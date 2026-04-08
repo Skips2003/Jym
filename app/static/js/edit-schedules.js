@@ -30,6 +30,7 @@ function createDayCardEdit(day, dayOfWeek) {
 function selectDayEdit(day) {
 
     currentDay = day;
+    let exercises = currentSchedule.days[day].exercises;
 
     document.getElementById("workoutName").innerHTML = currentSchedule.days[day].name;
     document.getElementById("workoutDescription").innerHTML = currentSchedule.days[day].description;
@@ -49,22 +50,25 @@ function selectDayEdit(day) {
         </tr>
     `;
 
-    if (currentSchedule.days[day].exercises[0] == undefined){
+    if (exercises[0] == undefined){
         exerciseTable.insertRow(-1).innerHTML = `
             <td colspan="6">Rest Day!</td>
         `;
     }
     else{
-        for (let i = 0; i < currentSchedule.days[day].exercises.length; i++) {
+        for (let i = 0; i < exercises.length; i++) {
             exerciseTable.insertRow(-1).innerHTML = `
-                <td>${currentSchedule.days[day].exercises[i].name}</td>
-                <td id="sets-${i}">${currentSchedule.days[day].exercises[i].sets}</td>
-                <td id="reps-${i}">${currentSchedule.days[day].exercises[i].reps}</td>
-                <td id="weight-${i}">${currentSchedule.days[day].exercises[i].weight}</td>
-                <td><button class="baseBtn bg-yellow-200" id="editBtn-${i}" onclick="editExerciseDetails('${currentSchedule.days[day].exercises[i].searchID}', ${i})">Edit</button></td>
-                <td><button class="baseBtn bg-red-300" onclick="removeExerciseFromDay('${currentSchedule.days[day].exercises[i].searchID}'); selectDayEdit(currentDay)">Remove</button></td>
+                <td>${exercises[i].name}</td>
+                <td id="sets-${i}">${exercises[i].sets}</td>
+                <td id="reps-${i}">${exercises[i].reps}</td>
+                <td id="weight-${i}">${exercises[i].weight}</td>
+                <td><button class="baseBtn bg-yellow-200" id="editBtn-${i}" onclick="editExerciseDetails('${exercises[i].searchID}', ${i})">Edit</button></td>
+                <td><button class="baseBtn bg-red-300" onclick="removeExerciseFromDay('${exercises[i].searchID}'); selectDayEdit(currentDay)">Remove</button></td>
             `;
         }
+
+        changeDiagram(exercises)
+
     }
 
 }
@@ -200,8 +204,12 @@ async function searchExercises() {
 // return as array of json
 async function getExercisesBySearchString(search){
     try {
-        const response = await fetch('https://oss.exercisedb.dev/api/v1/exercises/search?offset=0&limit=5&q=' + search + '&threshold=0.3', {
-            headers: { Accept: 'application/json' }
+        const response = await fetch('https://edb-with-videos-and-images-by-ascendapi.p.rapidapi.com/api/v1/exercises?name=' + search , {
+            headers: {
+                'x-rapidapi-key': '4b0ef871b2msh66491918fb044ddp1ea25ejsn79c935d7b3b6',
+                'x-rapidapi-host': 'edb-with-videos-and-images-by-ascendapi.p.rapidapi.com',
+                'Content-Type': 'application/json'
+            }
         });
         const data = await response.json();
         console.log("Exercises fetched:", data);
@@ -217,8 +225,12 @@ async function getExercisesBySearchString(search){
 // return as array of json
 async function getExercisesBySearchID(searchID){
     try {
-        const response = await fetch('https://oss.exercisedb.dev/api/v1/exercises/' + searchID, {
-            headers: { Accept: 'application/json' }
+        const response = await fetch('https://edb-with-videos-and-images-by-ascendapi.p.rapidapi.com/api/v1/exercises/' + searchID, {
+            headers: {
+                'x-rapidapi-key': '4b0ef871b2msh66491918fb044ddp1ea25ejsn79c935d7b3b6',
+                'x-rapidapi-host': 'edb-with-videos-and-images-by-ascendapi.p.rapidapi.com',
+                'Content-Type': 'application/json'
+            }
         });
         const data = await response.json();
         console.log("Exercise fetched:", data);
@@ -277,7 +289,9 @@ function formatExercise(exercise){
         searchID: exercise.exerciseId,
         sets: 3,
         reps: 10,
-        weight: 0
+        weight: 0,
+        targetMuscles: exercise.targetMuscles,
+        secondaryMuscles: exercise.secondaryMuscles
     }
 }
 

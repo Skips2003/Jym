@@ -1,6 +1,26 @@
 {% extends 'layout.html' %}
 {% block content %}
 <section>
+
+    <script>
+        const unchangedSchedule = {{ schedule|tojson|safe }};
+        console.log(unchangedSchedule);
+    
+        let currentSchedule ={{ schedule|tojson|safe }};
+        console.log(currentSchedule);
+
+        let scheduleExercises = [];
+
+                        
+        Object.keys(currentSchedule.days).forEach(day => {
+            currentSchedule.days[day].exercises.forEach(exercise =>{
+                scheduleExercises.push(exercise)
+            })
+        });
+
+    </script>
+
+    <script src="{{ url_for('static', filename='js/musclesWorked/diagram.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/edit-schedules.js') }}"></script>
     <script src="{{ url_for('static', filename='js/saveShare.js') }}"></script>
 
@@ -16,12 +36,6 @@
                     container.innerHTML = "";
     
                     let dayCount = 0;
-    
-                    const unchangedSchedule = {{ schedule|tojson|safe }};
-                    console.log(unchangedSchedule);
-    
-                    let currentSchedule ={{ schedule|tojson|safe }};
-                    console.log(currentSchedule);
     
                     var currentDay = "Monday";
     
@@ -46,8 +60,11 @@
                 <button class="baseBtn flex-1" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', true)">Save Workout as Template</button>
             </div>
         </div>
-        <div class="col-span-3 row-span-4 col-start-5 row-start-2 baseCard">
-            <h1>Muscles Worked</h1>
+        <div class="col-span-3 row-span-4 col-start-5 row-start-2 baseCard grid grid-cols-2">
+            <h1 class="col-span-2">Muscles Worked</h1>
+            <div class="col-span-1 baseCard" id="musclesWorkedAnterior"></div>
+            <div class="col-span-1 baseCard" id="musclesWorkedPosterior"></div>
+            <button class="baseBtn" onclick="changeDiagram(prepareExercises())">Reset</button>
         </div>
         <div class="col-span-7 row-start-6 baseCard">
             <h3>Find Schedules</h3>
@@ -113,10 +130,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        selectDayEdit(currentDay)
-    </script>
 
 </section>
 {% endblock %}

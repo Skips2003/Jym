@@ -2,6 +2,22 @@
 {% block content %}
 <section>
 
+    <script>
+        const currentSchedule = {{ schedule|tojson|safe }};
+        console.log(currentSchedule);
+
+
+        const scheduleExercises = [];
+                
+        Object.keys(currentSchedule.days).forEach(day => {
+            currentSchedule.days[day].exercises.forEach(exercise =>{
+                schedule.push(exercise)
+            })
+        });
+                
+    </script>
+
+    <script src="{{ url_for('static', filename='js/musclesWorked/diagram.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
     <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
 
@@ -35,8 +51,6 @@
                     container.innerHTML = "";
 
                     let dayCount = 0;
-                    const currentSchedule = {{ schedule|tojson|safe }};
-                    console.log(currentSchedule)
 
                     var currentDay = 0;
 
@@ -71,8 +85,10 @@
             <div class="col-span-3 row-span-3 col-start-3 row-start-5 baseCard">
                 <h1>PBs</h1 >
             </div>
-            <div class="col-span-2 row-span-3 col-start-6 row-start-5 baseCard">
-                <h1>Muscles Worked</h1 >
+            <div class="col-span-2 row-span-3 col-start-6 row-start-5 baseCard grid grid-cols-2">
+                <h1 class="col-span-2">Muscles Worked</h1>
+                <div class="col-span-1 baseCard" id="musclesWorkedAnterior"></div>
+                <div class="col-span-1 baseCard" id="musclesWorkedPosterior"></div>
             </div>
         {% else %}
             <h1>Users Account is Private</h1>
