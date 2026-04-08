@@ -442,11 +442,32 @@
       let muscleList = [];
       if (Array.isArray(exercise.targetMuscles)) {
         exercise.targetMuscles.forEach((muscle) => {
-          muscleList = [muscle.toLowerCase()];
-          currentData.push({
-            name: exercise.name,
-            muscles: muscleList
-          });
+          if (muscle.toLocaleLowerCase().includes("pectoralis")) {
+            currentData.push({
+              name: exercise.name,
+              muscles: [e.CHEST],
+              frequency: 2
+            });
+          } else if (muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior") != true) {
+            currentData.push({
+              name: exercise.name,
+              muscles: [e.FRONT_DELTOIDS],
+              frequency: 2
+            });
+          } else if (muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior")) {
+            currentData.push({
+              name: exercise.name,
+              muscles: [e.BACK_DELTOIDS],
+              frequency: 2
+            });
+          } else {
+            muscleList = [muscle.toLowerCase()];
+            currentData.push({
+              name: exercise.name,
+              muscles: muscleList,
+              frequency: 2
+            });
+          }
         });
       } else {
         muscleList = [exercise.targetMuscles.toLowerCase()];
@@ -457,11 +478,28 @@
       }
       if (Array.isArray(exercise.secondaryMuscles)) {
         exercise.secondaryMuscles.forEach((muscle) => {
-          muscleList = [muscle.toLowerCase()];
-          currentData.push({
-            name: exercise.name,
-            muscles: muscleList
-          });
+          if (muscle.toLocaleLowerCase().includes("pectoralis")) {
+            currentData.push({
+              name: exercise.name,
+              muscles: [e.CHEST]
+            });
+          } else if (muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior") != true) {
+            currentData.push({
+              name: exercise.name,
+              muscles: [e.FRONT_DELTOIDS]
+            });
+          } else if (muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior")) {
+            currentData.push({
+              name: exercise.name,
+              muscles: [e.BACK_DELTOIDS]
+            });
+          } else {
+            muscleList = [muscle.toLowerCase()];
+            currentData.push({
+              name: exercise.name,
+              muscles: muscleList
+            });
+          }
         });
       } else {
         muscleList = [exercise.secondaryMuscles.toLowerCase()];
@@ -473,8 +511,19 @@
     });
     syncHighlighters();
   };
+  var prepareExercises = () => {
+    let newScheduleExercises = [];
+    Object.keys(currentSchedule.days).forEach((day) => {
+      currentSchedule.days[day].exercises.forEach((exercise) => {
+        newScheduleExercises.push(exercise);
+      });
+    });
+    return newScheduleExercises;
+  };
   document.addEventListener("DOMContentLoaded", () => {
     initDiagram();
+    changeDiagram(scheduleExercises);
   });
   window.changeDiagram = changeDiagram;
+  window.prepareExercises = prepareExercises;
 })();

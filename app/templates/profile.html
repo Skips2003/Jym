@@ -1,6 +1,22 @@
 {% extends 'layout.html' %}
 {% block content %}
 <section>
+
+    <script>
+        const currentSchedule = {{ schedule|tojson|safe }};
+        console.log(currentSchedule);
+
+
+        const scheduleExercises = [];
+                
+        Object.keys(currentSchedule.days).forEach(day => {
+            currentSchedule.days[day].exercises.forEach(exercise =>{
+                schedule.push(exercise)
+            })
+        });
+                
+    </script>
+
     <script src="{{ url_for('static', filename='js/musclesWorked/diagram.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
     <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
@@ -35,8 +51,6 @@
                     container.innerHTML = "";
 
                     let dayCount = 0;
-                    const currentSchedule = {{ schedule|tojson|safe }};
-                    console.log(currentSchedule)
 
                     var currentDay = 0;
 

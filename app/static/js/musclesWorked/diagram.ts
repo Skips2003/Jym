@@ -1,4 +1,4 @@
-import createBodyHighlighter, { IExerciseData} from 'body-highlighter';
+import createBodyHighlighter, {IExerciseData, MuscleType} from 'body-highlighter';
 
 interface IExerciseInput {
     name: string;
@@ -57,11 +57,35 @@ const changeDiagram = (exercises: IExerciseInput[]): void => {
         
         if (Array.isArray(exercise.targetMuscles)) {
             exercise.targetMuscles.forEach(muscle => {
-                muscleList = [muscle.toLowerCase()];
-                currentData.push({
-                    name: exercise.name,
-                    muscles: muscleList,
-                });
+                if (muscle.toLocaleLowerCase().includes("pectoralis")){
+                    currentData.push({
+                        name: exercise.name,
+                        muscles: [MuscleType.CHEST],
+                        frequency: 2
+                    });
+                }
+                else if(muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior") != true){
+                    currentData.push({
+                        name: exercise.name,
+                        muscles: [MuscleType.FRONT_DELTOIDS],
+                        frequency: 2
+                    });
+                }
+                else if(muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior")){
+                    currentData.push({
+                        name: exercise.name,
+                        muscles: [MuscleType.BACK_DELTOIDS],
+                        frequency: 2
+                    });
+                }
+                else{
+                    muscleList = [muscle.toLowerCase()];
+                    currentData.push({
+                        name: exercise.name,
+                        muscles: muscleList,
+                        frequency: 2
+                    });
+                }
             });
         } else {
             muscleList = [exercise.targetMuscles.toLowerCase()];
@@ -73,11 +97,31 @@ const changeDiagram = (exercises: IExerciseInput[]): void => {
 
         if (Array.isArray(exercise.secondaryMuscles)) {
             exercise.secondaryMuscles.forEach(muscle => {
-                muscleList = [muscle.toLowerCase()];
-                currentData.push({
-                    name: exercise.name,
-                    muscles: muscleList,
-                });
+                if (muscle.toLocaleLowerCase().includes("pectoralis")){
+                    currentData.push({
+                        name: exercise.name,
+                        muscles: [MuscleType.CHEST],
+                    });
+                }
+                else if(muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior") != true){
+                    currentData.push({
+                        name: exercise.name,
+                        muscles: [MuscleType.FRONT_DELTOIDS],
+                    });
+                }
+                else if(muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior")){
+                    currentData.push({
+                        name: exercise.name,
+                        muscles: [MuscleType.BACK_DELTOIDS],
+                    });
+                }
+                else{
+                    muscleList = [muscle.toLowerCase()];
+                    currentData.push({
+                        name: exercise.name,
+                        muscles: muscleList,
+                    });
+                }
             });
         } else {
             muscleList = [exercise.secondaryMuscles.toLowerCase()];
@@ -92,7 +136,25 @@ const changeDiagram = (exercises: IExerciseInput[]): void => {
     syncHighlighters();
 };
 
+
+const prepareExercises = (): void => {
+
+    let newScheduleExercises = [];
+
+    Object.keys(currentSchedule.days).forEach(day => {
+        currentSchedule.days[day].exercises.forEach(exercise =>{
+            newScheduleExercises.push(exercise)
+        })
+    });
+
+    return newScheduleExercises;
+};
+
 // Initialise Models
-document.addEventListener('DOMContentLoaded', () => {initDiagram();});
+document.addEventListener('DOMContentLoaded', () => {
+    initDiagram();
+    changeDiagram(scheduleExercises);
+});
 
 (window as any).changeDiagram = changeDiagram;
+(window as any).prepareExercises = prepareExercises;

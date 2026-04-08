@@ -2,13 +2,24 @@
 {% block content %}
 <section>
 
-    <script src="{{ url_for('static', filename='js/home.js') }}" type="module"></script>
-    <script src="{{ url_for('static', filename='js/saveShare.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/musclesWorked/diagram.bundle.js') }}"></script>
     <script>
         const currentSchedule = {{ schedule|tojson|safe }};
         console.log(currentSchedule);
+
+
+        const scheduleExercises = [];
+                
+        Object.keys(currentSchedule.days).forEach(day => {
+            currentSchedule.days[day].exercises.forEach(exercise =>{
+                scheduleExercises.push(exercise)
+            })
+        });
+                
     </script>
+
+    <script src="{{ url_for('static', filename='js/musclesWorked/diagram.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/home.js') }}" type="module"></script>
+    <script src="{{ url_for('static', filename='js/saveShare.js') }}"></script>
 
     <div class="grid grid-cols-7 grid-rows-7 gap-2">
 
@@ -68,6 +79,7 @@
             <h1 class="col-span-2">Muscles Worked</h1>
             <div class="col-span-1 baseCard" id="musclesWorkedAnterior"></div>
             <div class="col-span-1 baseCard" id="musclesWorkedPosterior"></div>
+            <button class="baseBtn" onclick="changeDiagram(scheduleExercises)">Reset</button>
         </div>
         <div class="col-span-5 row-span-3 col-start-3 row-start-5 baseCard">        
             <h1>Personal Records</h1>
@@ -99,5 +111,6 @@
                 </div>
             </div>
         </div>
+
 </section>
 {% endblock %}
