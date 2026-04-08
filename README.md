@@ -10,7 +10,8 @@ pip install flask_bcrypt
 pip install flask-pymongo
 pip install flask-restful
 pip install psycopg2
-npm install body-highlighter 
+npm install body-highlighter
+npx esbuild app/static/js/musclesWorked/diagram.ts --bundle --outfile=app/static/js/musclesWorked/diagram.bundle.js
 
 the free version of the exercisesDB we are using is currently down but should be fixed soon, if not we can just use a different one
 
