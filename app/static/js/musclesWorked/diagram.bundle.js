@@ -403,18 +403,78 @@
   };
 
   // app/static/js/musclesWorked/diagram.ts
+  var highlighterAnterior;
+  var highlighterPosterior;
+  var currentData = [];
   var initDiagram = () => {
-    const container = document.getElementById("musclesWorked");
-    if (!container) return;
-    const data = [
-      { name: "Bench Press", muscles: [e.CHEST, e.TRICEPS] },
-      { name: "Squats", muscles: [e.QUADRICEPS, e.GLUTEUS_MAXIMUS] }
-    ];
-    K({
-      container,
-      data,
-      style: { width: "300px" }
-    });
+    const containerAnterior = document.getElementById("musclesWorkedAnterior");
+    const containerPosterior = document.getElementById("musclesWorkedPosterior");
+    const commonConfig = {
+      data: [],
+      highlightedColors: ["#d9c380", "#CC6C27", "#963c31"],
+      style: { width: "240px", padding: "24px" },
+      svgStyle: { borderRadius: "16px" }
+    };
+    if (containerAnterior) {
+      highlighterAnterior = K({
+        ...commonConfig,
+        container: containerAnterior,
+        type: "anterior",
+        bodyColor: "#56787a"
+      });
+    }
+    if (containerPosterior) {
+      highlighterPosterior = K({
+        ...commonConfig,
+        container: containerPosterior,
+        type: "posterior",
+        bodyColor: "#56787a"
+      });
+    }
   };
-  document.addEventListener("DOMContentLoaded", initDiagram);
+  var syncHighlighters = () => {
+    if (highlighterAnterior) highlighterAnterior.update({ data: currentData });
+    if (highlighterPosterior) highlighterPosterior.update({ data: currentData });
+  };
+  var changeDiagram = (exercises) => {
+    currentData = [];
+    exercises.forEach((exercise) => {
+      let muscleList = [];
+      if (Array.isArray(exercise.targetMuscles)) {
+        exercise.targetMuscles.forEach((muscle) => {
+          muscleList = [muscle.toLowerCase()];
+          currentData.push({
+            name: exercise.name,
+            muscles: muscleList
+          });
+        });
+      } else {
+        muscleList = [exercise.targetMuscles.toLowerCase()];
+        currentData.push({
+          name: exercise.name,
+          muscles: muscleList
+        });
+      }
+      if (Array.isArray(exercise.secondaryMuscles)) {
+        exercise.secondaryMuscles.forEach((muscle) => {
+          muscleList = [muscle.toLowerCase()];
+          currentData.push({
+            name: exercise.name,
+            muscles: muscleList
+          });
+        });
+      } else {
+        muscleList = [exercise.secondaryMuscles.toLowerCase()];
+        currentData.push({
+          name: exercise.name,
+          muscles: muscleList
+        });
+      }
+    });
+    syncHighlighters();
+  };
+  document.addEventListener("DOMContentLoaded", () => {
+    initDiagram();
+  });
+  window.changeDiagram = changeDiagram;
 })();

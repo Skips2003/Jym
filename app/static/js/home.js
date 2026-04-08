@@ -30,6 +30,7 @@ function createDayCardView(day, dayOfWeek) {
 function selectDayView(day) {
 
     currentDay = day;
+    let exercises = currentSchedule.days[day].exercises;
 
     if(document.getElementById("workoutName") != undefined && document.getElementById("workoutDescription") != undefined){
         document.getElementById("workoutName").innerHTML = currentSchedule.days[day].name;
@@ -49,18 +50,24 @@ function selectDayView(day) {
         </tr>
     `;
 
-    if (currentSchedule.days[day].exercises[0] == undefined){
+    if (exercises[0] == undefined){
         exerciseTable.innerHTML = ``;
+        changeDiagram(exercises)
     }
     else{
-        for (let i = 0; i < currentSchedule.days[day].exercises.length; i++) {
+        for (let i = 0; i < exercises.length; i++) {
             exerciseTable.insertRow(-1).innerHTML = `
-                <td>${currentSchedule.days[day].exercises[i].name}</td>
-                <td id="sets-${i}">${currentSchedule.days[day].exercises[i].sets}</td>
-                <td id="reps-${i}">${currentSchedule.days[day].exercises[i].reps}</td>
-                <td id="weight-${i}">${currentSchedule.days[day].exercises[i].weight}</td>
+                <td>${exercises[i].name}</td>
+                <td id="sets-${i}">${exercises[i].sets}</td>
+                <td id="reps-${i}">${exercises[i].reps}</td>
+                <td id="weight-${i}">${exercises[i].weight}</td>
             `;
         }
+
+        changeDiagram(exercises)
+
     }
 
 }
+
+loadHomePage();

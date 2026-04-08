@@ -50,9 +50,9 @@ class UsersAPI(Resource):
                         "bench_press": u.benchPress,
                         "dead_lift": u.deadLift,
                         "squat": u.squat,
-                        "overhead_Press": user.overheadPress,
-                        "snatch": user.snatch,
-                        "cleanAndJerk": user.cleanAndJerk
+                        "overhead_Press": u.overheadPress,
+                        "snatch": u.snatch,
+                        "cleanAndJerk": u.cleanAndJerk
                     })
             return jsonify(output)
         else:
@@ -71,9 +71,9 @@ class UsersAPI(Resource):
                         "bench_press": u.benchPress,
                         "dead_lift": u.deadLift,
                         "squat": u.squat,
-                        "overhead_Press": user.overheadPress,
-                        "snatch": user.snatch,
-                        "cleanAndJerk": user.cleanAndJerk
+                        "overhead_Press": u.overheadPress,
+                        "snatch": u.snatch,
+                        "cleanAndJerk": u.cleanAndJerk
                     })
             return jsonify(output)
 

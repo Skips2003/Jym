@@ -19,14 +19,12 @@ TODO:
 100% Need completed:
 1. Unit Testing (Better Documentation in general)
 2. add functionality to view details button when searching for exercises (display gif, muscles worked and instructions for exercise)
-3. Add pbs graphs and ability to update them
-4. add visualisation of muscles worked
-5. report system (Users, Shared Schedules/Workouts)
-6. Admin panel for reviewing schedules, profiles etc
-7. add completing a workout (with check to ensure it was completed on the right day)
-8. view recently completed workouts
-9. Add tags to schedules/workouts for searching
-10. Search Page
+3. report system (Users, Shared Schedules/Workouts)
+4. Admin panel for reviewing schedules, profiles etc
+5. add completing a workout (with check to ensure it was completed on the right day)
+6. view recently completed workouts
+7. Add tags to schedules/workouts for searching
+8. Search Page
 
 Optional for after above is finished:
 1. trainer accounts (allow trainers to provide schedules to users and track their progress!)

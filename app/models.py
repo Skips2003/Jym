@@ -77,6 +77,8 @@ class Exercise(TypedDict):
     sets: int
     weight: int
     searchID: str
+    targetMuscles: str
+    secondaryMuscles: str
 
 
 class Workouts(TypedDict):
