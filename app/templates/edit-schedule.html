@@ -1,136 +1,139 @@
 {% extends 'layout.html' %}
 {% block content %}
-<section>
-
+<section class="p-2 md:p-4">
+ 
     <script>
         const unchangedSchedule = {{ schedule|tojson|safe }};
-        console.log(unchangedSchedule);
-    
-        let currentSchedule ={{ schedule|tojson|safe }};
-        console.log(currentSchedule);
-
+        let currentSchedule = {{ schedule|tojson|safe }};
         let scheduleExercises = [];
-
-                        
         Object.keys(currentSchedule.days).forEach(day => {
-            currentSchedule.days[day].exercises.forEach(exercise =>{
-                scheduleExercises.push(exercise)
-            })
+            currentSchedule.days[day].exercises.forEach(exercise => { scheduleExercises.push(exercise) })
         });
-
     </script>
-
     <script src="{{ url_for('static', filename='js/musclesWorked/diagram.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/edit-schedules.js') }}"></script>
     <script src="{{ url_for('static', filename='js/saveShare.js') }}"></script>
-
-    <div class="grid grid-cols-7 gap-4">
-
-        <div class="col-span-7 baseCard">
-            <main id="scheduleContainer" class="grid grid-cols-7 gap-2">
-                <!-- day cards inserted here by JS-->
+ 
+    <div class="grid grid-cols-1 lg:grid-cols-7 gap-4 !p-0">
+ 
+        <!-- Day Selector -->
+        <div class="lg:col-span-7 baseCard">
+            <main id="scheduleContainer" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 !p-4">
+                <!-- Day cards inserted here by JS -->
             </main>
             <script>
                 const container = document.getElementById("scheduleContainer");
                 container.innerHTML = "";
-    
                 let dayCount = 0;
-    
                 var currentDay = "Monday";
-    
                 loadSchedulePage();
-    
             </script>
         </div>
-        <div class="col-span-4 baseCard">
-
+ 
+        <!-- Info Panel -->
+        <div class="lg:col-span-4 baseCard flex flex-col gap-4 p-2">
             <div id="scheduleInfo">
                 <h1 id="scheduleName">{{schedule.name}}</h1>
                 <p id="scheduleDescription">{{schedule.description}}</p>
-                <button class="darkBtn w-full" id="editScheduleStringsBtn" onclick="editScheduleDetails()">Edit Schedule Name/Description</button>
+                <button class="darkBtn w-full md:w-auto" id="editScheduleStringsBtn" onclick="editScheduleDetails()">Edit Details</button>
             </div>
-
+ 
             <div id="workoutInfo" class="is-hidden">
                 <h1 id="workoutName">Workout Name</h1>
                 <p id="workoutDescription">Workout Description</p>
-                <button class="darkBtn w-full" id="editWorkoutStringsBtn" onclick="editWorkoutDetails()">Edit Workout Name/Description</button>
-                <h1>Edit Day</h1>
-                <table id="exerciseTable" class="w-full"></table>
-                <button class="darkBtn w-full" data-modal-target="searchExercises-modal" data-modal-toggle="searchExercises-modal">Find Exercises</button>
-                <div class="flex gap-1">
-                    <button class="baseBtn flex-1" onclick="getSavedWorkouts('{{ current_user.id }}')" data-modal-target="loadSaved-modal" data-modal-toggle="loadSaved-modal">Load Workout</button>
-                    <button class="baseBtn flex-1" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', true)">Save Workout as Template</button>
+                <button class="darkBtn w-full md:w-auto mb-4" id="editWorkoutStringsBtn" onclick="editWorkoutDetails()">Edit Workout Details</button>
+                <h3>Edit Day</h3>
+                <div class="table-wrap max-h-[400px]">
+                    <table id="exerciseTable"></table>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2 mt-4">
+                    <button class="baseBtn flex-1" onclick="getSavedWorkouts('{{ current_user.id }}')" data-modal-target="loadSaved-modal" data-modal-toggle="loadSaved-modal">Load Template</button>
+                    <button class="baseBtn flex-1" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', true, '{{ current_user.id }}')">Save as Template</button>
                 </div>
             </div>
-            
         </div>
-        <div class="col-span-3 baseCard grid grid-cols-2">
-            <h1 class="col-span-2">Muscles Worked</h1>
-            <div class="col-span-1 baseCard" id="musclesWorkedAnterior"></div>
-            <div class="col-span-1 baseCard" id="musclesWorkedPosterior"></div>
-            <button class="baseBtn" onclick="changeDiagram(prepareExercises(), reset())">Reset</button>
-        </div>
-        <div class="col-span-7 baseCard">
-            <div class="col-span-7 baseCard grid grid-cols-4 gap-4">
-                <h3 class="col-span-2">Find Schedules</h3>
-                <h3 class="col-span-2">Find Workouts</h3>
-                <input id="searchSchedule" type="text" class="baseInput col-span-2" onkeyup="debouncedSearchSchedule()"> 
-                <input id="searchWorkout" type="text" class="baseInput col-span-2" onkeyup="debouncedSearchWorkout()"> 
-                <table id="sharedSearchTable" class="table-auto col-span-4">
-                    
-                </table>
-                <button class="baseBtn col-span-1">Cancel</button>
-                <button class="baseBtn col-span-1" onclick="getSavedSchedules('{{ current_user.id }}')" data-modal-target="loadSaved-modal" data-modal-toggle="loadSaved-modal">Load Schedule</button>
-                <button class="baseBtn col-span-1" onclick="shareSaveSchedule(currentSchedule, '{{ current_user.username }}', true)">Save Schedule as Template</button>
-                <button class="darkBtn col-span-1" onclick="saveChanges(currentSchedule, unchangedSchedule, UID)">Save Changes</button>
+ 
+        <!-- Muscles Diagram -->
+        <div class="lg:col-span-3 baseCard flex flex-col gap-4 p-4">
+            <h3 class="text-center">Muscles Worked</h3>
+            <div class="grid grid-cols-2 gap-2 !p-0">
+                <div class="baseCard min-h-[200px]" id="musclesWorkedAnterior"></div>
+                <div class="baseCard min-h-[200px]" id="musclesWorkedPosterior"></div>
+                <button class="baseBtn w-full col-span-2" onclick="changeDiagram(prepareExercises(), reset())">Reset Diagram</button>
             </div>
         </div>
-    </div>
-
-    <!-- Main modal -->
-    <div id="searchExercises-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
-        <div class="overflow-auto">
-            <!-- Modal content -->
-            <div class="relative bg-light border border-default rounded-base shadow-sm p-4 md:p-6">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
-                    <h1>
-                        Search for Exercises
-                    </h1>
+ 
+        <!-- Search Tools -->
+        <div class="lg:col-span-7 baseCard">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 !p-4">
+ 
+                <div class="md:col-span-2">
+                    <h3>Find Exercises</h3>
+                    <input type="text" id="exerciseSearchInput" class="input-search" placeholder="Search..." onkeydown="if(event.key === 'Enter') searchExercises()">
                 </div>
-                <input type="text" id="exerciseSearchInput" class="baseInput" placeholder="Search for exercises...">
-                <button class="baseBtn" onclick="searchExercises()">Search</button>
-                <!-- Modal body -->
-                <table id="exerciseSearchTable" class="table-auto">
-        
-                </table>
-                <form action="#">
-                    <div class="flex gap-1">
-                        <button data-modal-hide="searchExercises-modal" class="darkBtn basis-1/3">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div id="loadSaved-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
-        <div class="overflow-auto">
-            <!-- Modal content -->
-            <div class="relative bg-light border border-default rounded-base shadow-sm p-4 md:p-6">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
-                    <h1 id="savedTitle"></h1>
-                    <p id="noneFound"></p>
+                <div class="md:col-span-2">
+                    <h3>Find Schedules</h3>
+                    <input id="searchSchedule" type="text" class="input-search" placeholder="Search..." onkeyup="debouncedSearchSchedule()">
                 </div>
-                <!-- Modal body -->
-                <table id="savedItemsTable" class="table-auto">
-        
-                </table>
+                <div class="md:col-span-2">
+                    <h3>Find Workouts</h3>
+                    <input id="searchWorkout" type="text" class="input-search" placeholder="Search..." onkeyup="debouncedSearchWorkout()">
+                </div>
+ 
+                <div class="md:col-span-2 table-wrap max-h-[400px]">
+                    <table id="exerciseSearchTable">
+                        <thead>
+                            <tr>
+                                <th>Exercise</th>
+                                <th>Target</th>
+                                <th>Details</th>
+                                <th>Add</th>
+                            </tr>
+                        </thead>
+                        <tbody id="exerciseTableBody"></tbody>
+                    </table>
+                </div>
+ 
+                <div class="md:col-span-4 table-wrap max-h-[400px]">
+                    <table id="sharedSearchTable"></table>
+                </div>
+ 
+                <div class="md:col-span-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                    <button class="baseBtn" onclick="revertChanges()">Undo Changes</button>
+                    <button class="baseBtn" onclick="getSavedSchedules('{{ current_user.id }}')" data-modal-target="loadSaved-modal" data-modal-toggle="loadSaved-modal">Load Template</button>
+                    <button class="baseBtn" onclick="shareSaveSchedule(currentSchedule, '{{ current_user.username }}', true, '{{ current_user.id }}')">Save Template</button>
+                    <button class="darkBtn" onclick="saveChanges(currentSchedule, unchangedSchedule, UID)">Save Changes</button>
+                </div>
             </div>
         </div>
+ 
     </div>
-
+ 
+    <!-- Exercise Details Modal -->
+    <div id="viewDetails-modal" class="modal-backdrop">
+        <div class="modal-body max-w-2xl max-h-[90vh]">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 !p-0">
+                <div>
+                    <h3>Exercise Details:</h3>
+                    <p id="exerciseTips"></p>
+                </div>
+                <video class="baseCard w-full" id="exerciseVideo" autoplay loop muted playsinline></video>
+            </div>
+            <button data-modal-hide="viewDetails-modal" class="darkBtn w-full mt-4">Close</button>
+        </div>
+    </div>
+ 
+    <!-- Load Template Modal -->
+    <div id="loadSaved-modal" class="modal-backdrop">
+        <div class="modal-body max-w-xl max-h-[80vh] flex flex-col">
+            <h1 id="savedTitle" class="border-b border-default pb-2"></h1>
+            <p id="noneFound" class="text-red-500"></p>
+            <div class="flex-grow overflow-auto mt-4 table-wrap max-h-[400px]">
+                <table id="savedItemsTable"></table>
+            </div>
+            <button data-modal-hide="loadSaved-modal" class="darkBtn w-full mt-4">Cancel</button>
+        </div>
+    </div>
+ 
 </section>
 {% endblock %}

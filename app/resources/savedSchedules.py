@@ -55,12 +55,10 @@ class SavedSchedulesAPI(Resource):
  
         result = mongo.db.SavedSchedules.insert_one(
             SavedSchedules(
-                userID=data.get("userID"),
-                scheduleID=ObjectId(data.get("scheduleID"))
+                userID=userID,
+                scheduleID=ObjectId(scheduleID)
             )
         )
- 
-        print("Adding schedule:" + data.get("name") + " description: " + data.get("description"))
  
         return {"message": "Schedule added successfully!", "_id": str(result.inserted_id)}, 201
  

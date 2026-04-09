@@ -2,6 +2,8 @@ const daysOfTheWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "
 
 // load day cards for schedule onto page
 function loadSchedulePage(){
+    container.innerHTML = "";
+
     Object.keys(currentSchedule.days).forEach((key, index) => {
         const day = currentSchedule.days[key];
         container.appendChild(createDayCardEdit(day, daysOfTheWeek[index]));
@@ -14,8 +16,6 @@ function createDayCardEdit(day, dayOfWeek) {
     const button = document.createElement("button");
 
     button.setAttribute("class", "dayBtn col-span-1");
-    button.setAttribute("data-modal-target", "viewDays-modal");
-    button.setAttribute("data-modal-toggle", "viewDays-modal");
     button.onclick = function() {selectDayEdit(dayOfWeek)};
 
     button.innerHTML = `
@@ -74,9 +74,9 @@ function selectDayEdit(day) {
             `;
         }
 
-        changeDiagram(exercises)
-
     }
+
+    changeDiagram(exercises)
 
 }
 function swapInfo(){
@@ -188,40 +188,40 @@ function removeExerciseFromDay(searchID){
 // needs updated to display by page!
 async function searchExercises() {
     const searchInput = document.getElementById("exerciseSearchInput").value;
+    const tableBody = document.getElementById("exerciseTableBody");
 
-    console.log("Searching for exercises with query: " + searchInput);
+    tableBody.innerHTML = "";
+
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="6" class="p-8 text-center text-gray-500 italic">
+                Searching for "${searchInput}"...
+            </td>
+        </tr>
+    `;
 
     const exercises = await getExercisesBySearchString(searchInput);
 
-    console.log(exercises)
+    tableBody.innerHTML = "";
 
-    console.log("Exercises found: ", exercises.data);
-
-    const exerciseSearchTable = document.getElementById("exerciseSearchTable");
-
-    exerciseSearchTable.innerHTML = ``;
-
-    exerciseSearchTable.innerHTML = `
-        <tr>
-            <th>Exercise</th>
-            <th>Target Muscles</th>
-            <th>Secondary Muscles</th>
-            <th>Equipments</th>
-            <th>Details</th>
-            <th>Add to Day</th>
-        </tr>
-    `;
-    
-    if (exercises.data == undefined){
-        exerciseSearchTable.insertRow(-1).innerHTML = `
-            <td colspan="6">No exercises found.</td>
+    if (!exercises.data || exercises.data.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="p-8 text-center text-gray-500">
+                    No exercises found.
+                </td>
+            </tr>
         `;
+        return;
     }
-    else{
-        exercises.data.forEach(exercise => {
-            addExerciseToSearchTable(exercise);
-        });
-    }
+
+    exercises.data.forEach(exercise => {
+        addExerciseToSearchTable(exercise);
+    });
+
+    console.error("Search failed:", error);
+    tableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">Error loading results.</td></tr>`;
+
 }
 
 // get exercises from external API using a string
@@ -268,30 +268,45 @@ async function getExercisesBySearchID(searchID){
 // Add exercise to table with add and details button
 // Add button adds to the selected day
 // details button shows gif and images of workout with instructions
-function addExerciseToSearchTable(exercise){
+function addExerciseToSearchTable(exercise) {
 
-    var exerciseSearchTable = document.getElementById("exerciseSearchTable");
+    const tableBody = document.getElementById("exerciseTableBody");
 
-    // Use -1 to append the row to the end of the table
-    let row = exerciseSearchTable.insertRow(-1); 
+    let row = tableBody.insertRow(-1); 
     
+    row.className = "bg-light border-b border-default hover:bg-neutral-secondary-medium text-body h-12";
+
     row.innerHTML = `
-        <td>${exercise.name}</td>
-        <td>${exercise.targetMuscles}</td>
-        <td>${exercise.secondaryMuscles}</td>
-        <td>${exercise.equipments}</td>
-        <td><button class="baseBtn" onclick="viewExerciseDetails('${exercise.exerciseId}')">Details</button></td>
-        <td><button class="baseBtn" onclick="addExerciseToDay('${exercise.exerciseId}')">Add</button></td>
+        <td class="px-3 py-2">${exercise.name}</td>
+        <td class="px-3 py-2">${exercise.targetMuscles}</td>
+        <td class="px-3 py-2">${exercise.secondaryMuscles}</td>
+        <td class="px-3 py-2">${exercise.equipments}</td>
+        <td class="px-3 py-2"><button class="baseBtn" data-modal-toggle="viewDetails-modal" data-modal-target="viewDetails-modal" onclick="viewExerciseDetails('${exercise.exerciseId}')">Details</button></td>
+        <td class="px-3 py-2"><button class="baseBtn" onclick="addExerciseToDay('${exercise.exerciseId}')">Add</button></td>
     `;
+
+    if (typeof initFlowbite === 'function') {
+        initFlowbite();
+    }
 }
 
 // shows gif and images of workout with instructions
 async function viewExerciseDetails(exerciseId){
-    console.log("Viewing details for exercise ID: " + exerciseId);
-    
-    searchResults = await getExercisesBySearchID(exerciseId);
-    console.log("Exercise details fetched: ", searchResults.data);
+    const videoElement = document.getElementById("exerciseVideo");
 
+    document.getElementById("exerciseTips").innerHTML = "";
+
+    const searchResults = await getExercisesBySearchID(exerciseId);
+
+    videoElement.src = searchResults.data.videoUrl;
+
+    videoElement.load(); 
+
+    searchResults.data.exerciseTips.forEach(tip => {
+        const pTip = document.createElement("p");
+        pTip.textContent = tip;
+        document.getElementById("exerciseTips").appendChild(pTip);
+    });
 }
 
 // add exercise to day
@@ -370,4 +385,44 @@ async function updateSchedule(schedule, ogSchedule, UID){
         console.log("Updating Schedule! " + schedule._id)
         await putString(apiString='api/schedules/', searchString=schedule._id, body={schedule});
     }
+}
+
+async function loadWorkout(workoutID){
+
+    console.log(workoutID)
+
+    let workoutLoad = await getString(apiString='/api/sharedworkouts/', searchString=workoutID, body=undefined);
+
+    console.log(JSON.stringify(workoutLoad));
+
+    delete workoutLoad["authorUsername"];
+    delete workoutLoad["private"]
+
+    currentSchedule.days[currentDay] = workoutLoad;
+
+    loadSchedulePage();
+    selectDayEdit(currentDay)
+}
+
+async function loadSchedule(scheduleID){
+
+    console.log(scheduleID)
+
+    let scheduleLoad = await getString(apiString='/api/sharedschedules/', searchString=scheduleID, body=undefined);
+
+    console.log(JSON.stringify(scheduleLoad));
+
+    delete scheduleLoad["authorUsername"];
+    delete scheduleLoad["private"];
+
+    currentSchedule = scheduleLoad;
+
+    loadSchedulePage();
+    selectDayEdit(currentDay)
+}
+
+function revertChanges(){
+    currentSchedule = unchangedSchedule;
+    loadSchedulePage();
+    selectDayEdit(currentDay)
 }

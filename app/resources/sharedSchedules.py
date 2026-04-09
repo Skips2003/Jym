@@ -31,17 +31,17 @@ class SharedSchedulesAPI(Resource):
 
                 if schedule["private"]:
 
-                    schedules.pop(schedule)
+                    schedules.remove(schedule)
 
                 elif userID:
 
                     author = Users.query.filter_by(username=schedule["authorUsername"]).first()
 
                     if author.private and not Follows.is_following(userID, author.id):
-                        schedules.pop(schedule)
+                        schedules.remove(schedule)
 
                 else:
-                    schedules.pop(schedule)
+                    schedules.remove(schedule)
 
             if not schedules:
                 return {"error": "No schedules found matching that name"}, 404
@@ -59,17 +59,17 @@ class SharedSchedulesAPI(Resource):
 
                 if schedule["private"]:
 
-                    schedules.pop(schedule)
+                    schedules.remove(schedule)
 
                 elif userID:
 
                     author = Users.query.filter_by(username=schedule["authorUsername"]).first()
 
                     if author.private and not Follows.is_following(userID, author.id):
-                        schedules.pop(schedule)
+                        schedules.remove(schedule)
 
                 else:
-                    schedules.pop(schedule)
+                    schedules.remove(schedule)
 
             if not schedules:
                 return {"error": "No schedules found matching that name"}, 404
@@ -88,17 +88,17 @@ class SharedSchedulesAPI(Resource):
 
                 if schedule["private"]:
 
-                    schedules.pop(schedule)
+                    schedules.remove(schedule)
 
                 elif userID:
 
                     author = Users.query.filter_by(username=schedule["authorUsername"]).first()
 
                     if author.private and not Follows.is_following(userID, author.id):
-                        schedules.pop(schedule)
+                        schedules.remove(schedule)
 
                 else:
-                    schedules.pop(schedule)
+                    schedules.remove(schedule)
 
             if not schedules:
                 return {"error": "No schedules found matching that name"}, 404

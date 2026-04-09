@@ -1,116 +1,99 @@
 {% extends 'layout.html' %}
 {% block content %}
-<section>
-
+<section class="p-2 md:p-4">
     <script>
         const currentSchedule = {{ schedule|tojson|safe }};
-        console.log(currentSchedule);
-
-
         const scheduleExercises = [];
-                
         Object.keys(currentSchedule.days).forEach(day => {
-            currentSchedule.days[day].exercises.forEach(exercise =>{
-                scheduleExercises.push(exercise)
-            })
+            currentSchedule.days[day].exercises.forEach(exercise => { scheduleExercises.push(exercise) })
         });
-                
     </script>
-
     <script src="{{ url_for('static', filename='js/musclesWorked/diagram.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/home.js') }}" type="module"></script>
     <script src="{{ url_for('static', filename='js/saveShare.js') }}"></script>
-
-    <div class="grid grid-cols-7 grid-rows-7 gap-2">
-
-        <div class="col-span-7 row-start-1 baseCard">
+ 
+    <div class="grid grid-cols-1 lg:grid-cols-7 lg:grid-rows-7 gap-4 !p-0">
+ 
+        <!-- Welcome -->
+        <div class="lg:col-span-7 baseCard p-4">
             <h1>Welcome back, {{ current_user.firstName }}</h1>
             <h3>Ready to crush your next workout today?</h3>
         </div>
-
-        <div class="col-span-7 row-start-2 baseCard">
-
-            <!-- Shows users Current Schedule! -->
-            <h1 class="text-left">Current Schedule <button class="baseBtn float-right" onclick="shareSaveSchedule(currentSchedule, '{{ current_user.username }}', false)"><h3>Share</h3></button><button class="baseBtn float-right" href="{{ url_for('main.editSchedule') }}"><h3>Edit</h3></button></h3>
-
-            <!-- When clicked a modal should appear showing the exercises scheduled for the selected day and whether or not they were completed -->
-            <main id="scheduleContainer" class="grid grid-cols-7 gap-2">
-                <!-- day cards inserted here by JS-->
+ 
+        <!-- Schedule -->
+        <div class="lg:col-span-7 baseCard">
+            <div class="flex justify-between items-center p-2">
+                <h1>Current Schedule</h1>
+                <button class="baseBtn" onclick="shareSaveSchedule(currentSchedule, '{{ current_user.username }}', false)">
+                    <h3 class="p-0">Share</h3>
+                </button>
+            </div>
+            <main id="scheduleContainer" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 md:gap-4 !p-4">
+                <!-- day cards inserted here by JS -->
             </main>
             <script>
                 const container = document.getElementById("scheduleContainer");
                 container.innerHTML = "";
-    
                 var currentDay = "Monday";
-    
             </script>
-
         </div>
-        <div class="col-span-2 row-span-5 row-start-3 baseCard">
-                <!-- Show exercises from workout when clicked -->
-                <h1 >Recent Workouts</h1 >
-                <button class="baseBtn">
-                    <h3>Sun</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn">
-                    <h3>Sun</h3>
-                    <p>Workout Name</p>
-                </button>
-
-        </div>
-        <div class="col-span-2 row-span-2 col-start-3 row-start-3 baseCard">
-            <!-- Quick Actions to allow user to do various common tasks while using service, Need to create pages for each of these -->
-            <h1>Quick Actions</h1>
-            <div class="grid grid-cols-3 gap-4">
-                <button class="baseBtn">
-                    Start Workout
-                </button>
-                <button class="baseBtn">
-                    View Workout History
-                </button>
-                <button class="baseBtn">
-                    Stats
-                </button>
+ 
+        <!-- Recent Workouts -->
+        <div class="lg:col-span-2 lg:row-span-5 baseCard flex flex-col gap-2">
+            <h1>Recent Workouts</h1>
+            <div class="p-4 flex flex-col gap-2">
+                <button class="baseBtn w-full"><h3>Sun</h3><p>Workout Name</p></button>
+                <button class="baseBtn w-full"><h3>Sun</h3><p>Workout Name</p></button>
             </div>
-
         </div>
-        <div class="col-span-3 row-span-2 col-start-5 row-start-3 baseCard grid grid-cols-2">
-            <h1 class="col-span-2">Muscles Worked</h1>
-            <div class="col-span-1 baseCard" id="musclesWorkedAnterior"></div>
-            <div class="col-span-1 baseCard" id="musclesWorkedPosterior"></div>
-            <button class="baseBtn" onclick="changeDiagram(scheduleExercises)">Reset</button>
+ 
+        <!-- Quick Actions -->
+        <div class="lg:col-span-2 lg:row-span-2 lg:col-start-3 baseCard">
+            <h1>Quick Actions</h1>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 !p-4">
+                <button class="baseBtn !p-2">Start Workout</button>
+                <button class="baseBtn !p-2">History</button>
+                <button class="baseBtn !p-2">Stats</button>
+            </div>
         </div>
-        <div class="col-span-5 row-span-3 col-start-3 row-start-5 baseCard">        
-            <h1>Personal Records</h1>
-
-            <!-- Graphs of users current PBs and how they have changed -->
-            <h3>PBs</h3>
-            <div>
+ 
+        <!-- Muscles Worked -->
+        <div class="lg:col-span-3 lg:row-span-2 lg:col-start-5 baseCard">
+            <h1>Muscles Worked</h1>
+            <div class="grid grid-cols-2 gap-2 !p-4">
+                <div class="baseCard min-h-[150px]" id="musclesWorkedAnterior"></div>
+                <div class="baseCard min-h-[150px]" id="musclesWorkedPosterior"></div>
+                <button class="baseBtn col-span-2 !py-2" onclick="changeDiagram(scheduleExercises)">Reset</button>
+            </div>
+        </div>
+ 
+        <!-- PBs Chart -->
+        <div class="lg:col-span-5 lg:row-span-3 lg:col-start-3 baseCard relative min-h-[300px]">
+            <h1 id="PBs">PBs</h1>
+            <div class="absolute top-20 bottom-4 left-4 right-4">
                 <canvas id="pbsChart"></canvas>
             </div>
-
             <script>
                 createChart({{ current_user.deadLift }}, {{ current_user.squat }}, {{ current_user.benchPress }}, {{ current_user.overheadPress }}, {{ current_user.snatch }}, {{ current_user.cleanAndJerk }});
             </script>
         </div>
+ 
     </div>
-
-        <div id="viewDays-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
-            <div class="overflow-auto">
-                <!-- Modal content -->
-                <div class="relative bg-light border border-default rounded-base shadow-sm p-4 md:p-6">
-                    <!-- Modal header -->
-                    <h1 id="workoutName">Workout Name</h1>
-                    <p id="workoutDescription">Workout Description</p>
-                    <!-- Modal body -->
-                    <table id="exerciseTable" class="table-auto">
-
-                    </table>
-                    <button class="baseBtn float-right" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', false)"><h3>Share</h3></button>
-                </div>
+ 
+    <!-- Workout Modal -->
+    <div id="viewDays-modal" class="modal-backdrop">
+        <div class="relative w-full max-w-2xl max-h-[90vh] overflow-hidden bg-light border-4 border-default rounded-base flex flex-col">
+            <div class="p-4 border-b border-default">
+                <h1 id="workoutName">Workout Name</h1>
+                <p id="workoutDescription">Workout Description</p>
+            </div>
+            <div class="flex-grow overflow-auto p-2 max-h-[400px]">
+                <table id="exerciseTable"></table>
+            </div>
+            <div class="p-4">
+                <button class="baseBtn w-full" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', false)">Share Workout</button>
             </div>
         </div>
-
+    </div>
 </section>
 {% endblock %}

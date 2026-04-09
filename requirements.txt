@@ -1,0 +1,8 @@
+pip install flask
+pip install flask-wtf
+pip install flask-sqlalchemy
+pip install flask-login
+pip install flask_bcrypt
+pip install flask-pymongo
+pip install flask-restful
+pip install psycopg2

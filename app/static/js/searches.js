@@ -69,7 +69,11 @@ async function searchWorkouts(){
     dataWorkout.forEach(workout => {
         workoutSearchTable.insertRow(-1).innerHTML = `
         <td>
-            <a>${workout.name}</a>
+            <a onclick="loadWorkout('${workout._id["$oid"]}')">
+                <h1>${workout.name}</h1>
+                <h3>${workout.description}</h3>
+                <p>${workout.authorUsername}</p>
+            </a>
         </td>
     `;
     });
@@ -99,14 +103,102 @@ async function searchSchedules(){
     const dataSchedule = await response.json();
     console.log("schedulesFound", dataSchedule);
 
-    dataSchedule.forEach(schedule => {
+    if(dataSchedule[0] === undefined){
         scheduleSearchTable.insertRow(-1).innerHTML = `
         <td>
-            <a>${schedule.name}</a>
+            <h1>No Schedules Found...</h1>
         </td>
     `;
-    });
+    }
+    else{
+        dataSchedule.forEach(schedule => {
+            scheduleSearchTable.insertRow(-1).innerHTML = `
+            <td>
+                <a onclick="loadSchedule('${schedule._id["$oid"]}')">
+                    <h1>${schedule.name}</h1>
+                    <h3>${schedule.description}</h3>
+                    <p>${schedule.authorUsername}</p>
+                </a>
+            </td>
+        `;
+        });
+    }
 }
+
+async function getSavedWorkouts(userID){
+    document.getElementById("savedTitle").innerHTML = "Saved Workouts";
+    let workouts = await getString(apiString='/api/savedworkouts/userID/',infoString=userID);
+
+    if (workouts == undefined){
+        document.getElementById("noneFound").innerHTML = "No Workouts Saved...";
+    }
+    else{
+        
+        document.getElementById("noneFound").innerHTML = "";
+
+        let table = document.getElementById("savedItemsTable");
+    
+        table.innerHTML = ``;
+    
+        workouts.forEach(async workout => {
+    
+            let info = await getString('/api/sharedworkouts/',workout.workoutID["$oid"])
+    
+            console.log("Workout found! name: " + info.name)
+    
+            table.insertRow(-1).innerHTML = `
+            <td>
+                <button class="baseBtn" onclick="loadWorkout('${info._id["$oid"]}')">
+                    <h1>${info.name}</h1>
+                    <h3>${info.description}</h3>
+                    <p>${info.authorUsername}</p>
+                </button>
+            </td>
+        `;
+        });
+        
+    }
+
+}
+
+async function getSavedSchedules(userID){
+    document.getElementById("savedTitle").innerHTML = "Saved Schedules";
+
+    let schedules = await getString(apiString='/api/savedschedules/userID/',infoString=userID);
+
+    if (schedules == undefined){
+        // if none found
+        document.getElementById("noneFound").innerHTML = "No Schedules Saved...";
+    }
+    else{
+
+        document.getElementById("noneFound").innerHTML = "";
+
+        let table = document.getElementById("savedItemsTable");
+    
+        table.innerHTML = ``;
+    
+        schedules.forEach(async schedule => {
+    
+            let info = await getString('/api/sharedschedules/',schedule.scheduleID["$oid"])
+    
+            console.log("Schedule found! name: " + info.name)
+    
+            table.insertRow(-1).innerHTML = `
+            <td>
+                <button class="baseBtn" onclick="loadSchedule('${info._id["$oid"]}')">
+                    <h1>${info.name}</h1>
+                    <h3>${info.description}</h3>
+                    <p>${info.authorUsername}</p>
+                </button>
+            </td>
+        `;
+        });
+
+    }
+
+}
+
 
 // Create a debounced version of the search function
 const debouncedSearchSchedule = debounce(searchSchedules, 350);

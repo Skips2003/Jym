@@ -49,18 +49,17 @@ class SavedWorkoutsAPI(Resource):
         
         if not workoutID:
             return {"error": "No WorkoutID provided."}, 400
-
- 
-        # add validation that keys in data.get("days") are valid day names and that exercise IDs exist in the Workouts collection
+        
+        print(userID, workoutID)
  
         result = mongo.db.SavedWorkouts.insert_one(
             SavedWorkouts(
-                userID=data.get("userID"),
-                workoutID=ObjectId(data.get("workoutID"))
+                userID=userID,
+                workoutID=ObjectId(workoutID)
             )
         )
- 
-        print("Adding Workout:" + data.get("name") + " description: " + data.get("description"))
+
+        print(result)
  
         return {"message": "Workout added successfully!", "_id": str(result.inserted_id)}, 201
  
