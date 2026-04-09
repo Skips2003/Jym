@@ -31,17 +31,17 @@ class SharedWorkoutsAPI(Resource):
 
                 if workout["private"]:
 
-                    workouts.pop(workout)
+                    workouts.remove(workout)
 
                 elif userID:
 
                     author = Users.query.filter_by(username=workout["authorUsername"]).first()
 
                     if author.private and not Follows.is_following(userID, author.id):
-                        workouts.pop(workout)
+                        workouts.remove(workout)
 
                 else:
-                    workouts.pop(workout)
+                    workouts.remove(workout)
 
             if not workouts:
                 return {"error": "No workouts found for this author"}, 404
@@ -59,17 +59,17 @@ class SharedWorkoutsAPI(Resource):
 
                 if workout["private"]:
 
-                    workouts.pop(workout)
+                    workouts.remove(workout)
 
                 elif userID:
 
                     author = Users.query.filter_by(username=workout["authorUsername"]).first()
 
                     if author.private and not Follows.is_following(userID, author.id):
-                        workouts.pop(workout)
+                        workouts.remove(workout)
 
                 else:
-                    workouts.pop(workout)
+                    workouts.remove(workout)
 
             if not workouts:
                 return {"error": "No workouts found matching that name"}, 404
@@ -88,17 +88,17 @@ class SharedWorkoutsAPI(Resource):
 
                 if workout["private"]:
 
-                    workouts.pop(workout)
+                    workouts.remove(workout)
 
                 elif userID:
 
                     author = Users.query.filter_by(username=workout["authorUsername"]).first()
 
                     if author.private and not Follows.is_following(userID, author.id):
-                        workouts.pop(workout)
+                        workouts.remove(workout)
 
                 else:
-                    workouts.pop(workout)
+                    workouts.remove(workout)
 
             if not workouts:
                 return {"error": "No workouts found for this author matching that name"}, 404

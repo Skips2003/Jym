@@ -1,153 +1,182 @@
 {% extends 'layout.html' %}
 {% block content %}
-<section>
-
+<section class="p-2 md:p-4">
+ 
     <script>
         const currentSchedule = {{ schedule|tojson|safe }};
-        console.log(currentSchedule);
-
-
         const scheduleExercises = [];
-                
         Object.keys(currentSchedule.days).forEach(day => {
-            currentSchedule.days[day].exercises.forEach(exercise =>{
-                scheduleExercises.push(exercise)
-            })
+            currentSchedule.days[day].exercises.forEach(exercise => { scheduleExercises.push(exercise) })
         });
-                
     </script>
-
     <script src="{{ url_for('static', filename='js/musclesWorked/diagram.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
     <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
-
-
-    <div class="grid grid-cols-7 grid-rows-7 gap-4">
-        <div class="col-span-7 baseCard">
-            <img class="col-span-1" src="" alt="User PFP"/>
-            <h1>{{ user.username }}</h1>
-            <a onclick="checkFollow('{{ user.id }}', 0)" data-modal-target="default-followModal" data-modal-toggle="default-followModal">Followers: {{ user.followers }}</a>
-            <a onclick="checkFollow('{{ user.id }}', 1)" data-modal-target="default-followModal" data-modal-toggle="default-followModal">Following: {{ user.following }}</a>
-            <div class="baseCard border-2 border-default">
-                <p id="userBio">{{ user.bio }}</p>
+ 
+    <div class="grid grid-cols-1 lg:grid-cols-7 gap-4 !p-0">
+ 
+        <!-- Profile Header -->
+        <div class="lg:col-span-7 baseCard p-4 md:p-6">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <img class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-default object-cover" src="{{ user.pfp_url or '' }}" alt="User PFP"/>
+                <div class="flex-1 text-center md:text-left">
+                    <h1>{{ user.username }}</h1>
+                    <div class="flex justify-center md:justify-start gap-4 my-2">
+                        <a class="cursor-pointer hover:underline font-bold" onclick="checkFollow('{{ user.id }}', 0)" data-modal-target="default-followModal" data-modal-toggle="default-followModal">Followers: {{ user.followers }}</a>
+                        <a class="cursor-pointer hover:underline font-bold" onclick="checkFollow('{{ user.id }}', 1)" data-modal-target="default-followModal" data-modal-toggle="default-followModal">Following: {{ user.following }}</a>
+                    </div>
+                    <div class="baseCard border-2 border-default !p-3 mt-2 inline-block w-full md:w-auto min-w-[200px]">
+                        <p id="userBio">{{ user.bio }}</p>
+                    </div>
+                </div>
+                <div class="w-full md:w-auto">
+                    {% if current_user.id == user.id %}
+                        <button class="darkBtn w-full" data-modal-target="default-userInformation" data-modal-toggle="default-userInformation">Edit Profile</button>
+                    {% elif not follows and not user.private %}
+                        <button class="darkBtn w-full" id="followBtn" onclick="followUser('{{ current_user.id }}', '{{ user.id }}')">Follow</button>
+                    {% elif not follows and user.private %}
+                        <button class="darkBtn w-full" id="requestFollowbtn" onclick="requestFollow()">Request to Follow</button>
+                    {% elif follows %}
+                        <button class="darkBtn w-full" id="unFollowBtn" onclick="unFollowUser('{{ current_user.id }}', '{{ user.id }}')">Unfollow</button>
+                    {% endif %}
+                </div>
             </div>
-            {% if current_user.id == user.id %}
-                <button class="darkBtn" data-modal-target="default-userInformation" data-modal-toggle="default-userInformation">Edit User Information</button>
-            {% elif not follows and not user.private %}
-                <button class="darkBtn" id="followBtn" onclick="followUser('{{ current_user.id }}', '{{ user.id }}')">Follow</button>
-            {% elif not follows and user.private %}
-                <button class="darkBtn" id="requestFollowbtn" onclick="requestFollow()">Request to Follow</button>
-            {% elif follows %}
-                <button class="darkBtn" id="unFollowBtn" onclick="unFollowUser('{{ current_user.id }}', '{{ user.id }}')">UnFollow</button>
-            {% endif %}
         </div>
-        {% if not user.private or user.private and follows %}
-            <div class="col-span-7 row-start-2 baseCard">
-                <main id="scheduleContainer" class="grid grid-cols-7 gap-2">
-                    <!-- day cards inserted here by JS-->
+ 
+        {% if not user.private or (user.private and follows) or current_user.id == user.id %}
+ 
+            <!-- Schedule -->
+            <div class="lg:col-span-7 baseCard">
+                <main id="scheduleContainer" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 !p-4">
+
                 </main>
                 <script>
                     const container = document.getElementById("scheduleContainer");
                     container.innerHTML = "";
-
                     let dayCount = 0;
-
                     var currentDay = 0;
-
                     loadHomePage();
-
                 </script>
             </div>
-            <div class="col-span-7 row-span-2 row-start-3 baseCard">
+ 
+            <!-- Shared Schedules -->
+            <div class="lg:col-span-7 baseCard p-4">
                 <h1>Shared Schedules</h1>
-                <div class="baseCard">
+                <div class="baseCard border-2 border-default/20 !p-4">
                     <h3>Schedule Name</h3>
                     <p>Schedule Description</p>
-                    <div class="grid grid-rows-1 gap-2">
-                        <img src="./images/like"><p>Likes</p>
-                        <img src="./images/bookmark"><p>Bookmarks</p>
-                        <button class="baseBtn float-right"><h3>Bookmark</h3></button>
-                        <button class="baseBtn float-right"><h3>View</h3></button>
+                    <div class="flex flex-wrap items-center gap-4 mt-4">
+                        <div class="flex-grow"></div>
+                        <button class="baseBtn"><h3>Save</h3></button>
                     </div>
                 </div>
             </div>
-            <div class="col-span-2 row-span-3 row-start-5 baseCard">
+ 
+            <!-- Recent Workouts -->
+            <div class="lg:col-span-2 baseCard flex flex-col gap-2">
                 <h1>Recent Workouts</h1>
-                <button class="baseBtn">
-                    <h3>Sun</h3>
-                    <p>Workout Name</p>
-                </button>
-                <button class="baseBtn">
-                    <h3>Sun</h3>
-                    <p>Workout Name</p>
-                </button>
+                <div class="p-4 flex flex-col gap-2">
+                    <button class="baseBtn w-full text-left"><h3>Sun</h3><p>Workout Name</p></button>
+                    <button class="baseBtn w-full text-left"><h3>Sun</h3><p>Workout Name</p></button>
+                </div>
             </div>
-            <div class="col-span-3 row-span-3 col-start-3 row-start-5 baseCard">
-                <h1>PBs</h1 >
+ 
+            <!-- PBs Chart -->
+            <div class="lg:col-span-3 baseCard relative min-h-[350px]">
+                <h1 id="PBs">PBs</h1>
+                <div class="absolute top-20 bottom-4 left-4 right-4">
+                    <canvas id="pbsChart"></canvas>
+                </div>
+                <script>
+                    createChart({{ user.deadLift }}, {{ user.squat }}, {{ user.benchPress }}, {{ user.overheadPress }}, {{ user.snatch }}, {{ user.cleanAndJerk }});
+                </script>
             </div>
-            <div class="col-span-2 row-span-3 col-start-6 row-start-5 baseCard grid grid-cols-2">
-                <h1 class="col-span-2">Muscles Worked</h1>
-                <div class="col-span-1 baseCard" id="musclesWorkedAnterior"></div>
-                <div class="col-span-1 baseCard" id="musclesWorkedPosterior"></div>
-                <button class="baseBtn" onclick="changeDiagram(scheduleExercises)">Reset</button>
+ 
+            <!-- Muscles Worked -->
+            <div class="lg:col-span-2 baseCard p-2">
+                <h1 class="text-center">Muscles Worked</h1>
+                <div class="grid grid-cols-2 gap-2 !p-2">
+                    <div class="baseCard min-h-[180px]" id="musclesWorkedAnterior"></div>
+                    <div class="baseCard min-h-[180px]" id="musclesWorkedPosterior"></div>
+                    <button class="baseBtn col-span-2 !py-2" onclick="changeDiagram(scheduleExercises)">Reset</button>
+                </div>
             </div>
+ 
         {% else %}
-            <h1>Users Account is Private</h1>
-            <p>Request to Follow them for Access</p>
+            <!-- Private account -->
+            <div class="lg:col-span-7 baseCard text-center p-12">
+                <h1>This Account is Private</h1>
+            </div>
         {% endif %}
+ 
     </div>
-    <div id="viewDays-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
-        <div class="overflow-auto">
-            <!-- Modal content -->
-            <div class="relative bg-light border border-default rounded-base shadow-sm p-4 md:p-6">
-                <!-- Modal header -->
+ 
+    <!-- Edit Profile Modal -->
+    <div id="default-userInformation" class="modal-backdrop">
+        <div class="modal-body max-w-lg">
+            <h1>Edit Profile</h1>
+            <div class="flex items-center justify-between mb-6 bg-default/5 p-4 rounded-base">
+                <h3>Private Account</h3>
+                <button id="privacyToggleBtn" onclick="toggle()" class="baseBtn !py-2 min-w-[80px]">{{ user.private }}</button>
+            </div>
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-1">
+                    <label class="font-bold ml-2 text-sm">Username</label>
+                    <input type="text" id="username" class="input-field" value="{{ user.username }}">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="font-bold ml-2 text-sm">Email</label>
+                    <input type="text" id="email" class="input-field" value="{{ user.email }}">
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <div class="flex-1 flex flex-col gap-1">
+                        <label class="font-bold ml-2 text-sm">First Name</label>
+                        <input type="text" id="firstName" class="input-field" value="{{ user.firstName }}">
+                    </div>
+                    <div class="flex-1 flex flex-col gap-1">
+                        <label class="font-bold ml-2 text-sm">Last Name</label>
+                        <input type="text" id="lastName" class="input-field" value="{{ user.lastName }}">
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="font-bold ml-2 text-sm">Bio</label>
+                    <textarea id="bio" class="input-field min-h-[100px]">{{ user.bio }}</textarea>
+                </div>
+                <button class="darkBtn w-full mt-4" onclick="saveUserDetails('{{ user.id }}')">Save Changes</button>
+                <button data-modal-hide="default-userInformation" class="baseBtn w-full">Cancel</button>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- Followers Modal -->
+    <div id="default-followModal" class="modal-backdrop">
+        <div class="modal-body max-w-md !max-h-[70vh] flex flex-col">
+            <h1 id="followersing" class="border-b border-default pb-2">Followers</h1>
+            <div class="overflow-auto mt-4 table-wrap max-h-[400px]">
+                <table id="followersingTable"></table>
+            </div>
+            <button data-modal-hide="default-followModal" class="baseBtn mt-4">Close</button>
+        </div>
+    </div>
+ 
+    <!-- Workout View Modal -->
+    <div id="viewDays-modal" class="modal-backdrop">
+        <div class="relative w-full max-w-2xl max-h-[90vh] overflow-hidden bg-light border-4 border-default rounded-base flex flex-col">
+            <div class="p-4 border-b border-default">
                 <h1 id="workoutName">Workout Name</h1>
                 <p id="workoutDescription">Workout Description</p>
-                <!-- Modal body -->
-                <table id="exerciseTable" class="table-auto">
-
-                </table>
+            </div>
+            <div class="flex-grow overflow-auto p-2 max-h-[400px]">
+                <table id="exerciseTable"></table>
+            </div>
+            <div class="p-4 border-t border-default">
                 {% if current_user.id != user.id %}
-                    <button class="darkBtn" id="saveWorkout" onclick="saveWorkout()">Save Workout</button>
+                    <button class="darkBtn w-full" id="saveWorkout" onclick="saveWorkout()">Save Workout</button>
                 {% endif %}
+                <button data-modal-hide="viewDays-modal" class="baseBtn w-full mt-2">Close</button>
             </div>
         </div>
     </div>
-
-    <div id="default-followModal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
-        <div class="overflow-auto">
-            <!-- Modal content -->
-            <div class="relative bg-light border border-default rounded-base shadow-sm p-4 md:p-6">
-                <!-- Modal header -->
-                <h1 id="followersing">Followers</h1>
-                <table id="followersingTable" class="table-auto">
-
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div id="default-userInformation" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
-        <div class="overflow-auto">
-            <!-- Modal content -->
-            <div class="relative bg-light border border-default rounded-base shadow-sm p-4 md:p-6">
-                <!-- Modal header -->
-                <h1>Edit User Information</h1>
-                <h3>Private Account</h3>
-                <button id="privacyToggleBtn" onclick="toggle()" class="darkbtn">{{ user.private }}</button>
-                <script>
-                    let privacyToggle = JSON.parse('{{ user.private|tojson }}');
-                    console.log(privacyToggle);
-                </script>
-                <input type="text" id="username" value="{{ user.username }}"></input>
-                <input type="text" id="email" value="{{ user.email }}"></input>
-                <input type="text" id="firstName" value="{{ user.firstName }}"></input>
-                <input type="text" id="lastName" value="{{ user.lastName }}"></input>
-                <input type="text" id="bio" value="{{ user.bio }}"></input>
-                <button class="darkBtn" id="followBtn" onclick="saveUserDetails('{{ user.id }}')">Save Changes</button>
-            </div>
-        </div>
-    </div>
-
+ 
 </section>
 {% endblock %}

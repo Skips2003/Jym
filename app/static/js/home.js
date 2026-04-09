@@ -13,7 +13,8 @@ function loadHomePage(){
 function createDayCardView(day, dayOfWeek) {
     const button = document.createElement("button");
 
-    button.setAttribute("class", "dayBtn col-span-1");
+    // Changed: Removed 'col-span-1' to let the parent grid control layout
+    button.setAttribute("class", "dayBtn w-full"); 
     button.setAttribute("data-modal-target", "viewDays-modal");
     button.setAttribute("data-modal-toggle", "viewDays-modal");
     button.onclick = function() {selectDayView(dayOfWeek)};
@@ -51,7 +52,7 @@ function selectDayView(day) {
     `;
 
     if (exercises[0] == undefined){
-        exerciseTable.innerHTML = ``;
+        exerciseTable.innerHTML = `<td>Rest Day!</td>`;
         changeDiagram(exercises)
     }
     else{

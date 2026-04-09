@@ -5,92 +5,103 @@
 @source "../../node_modules/flowbite";
 
 @theme {
-
-    /* Custom Colours */
-    --color-greenBlueTwo: #56787a;
-    --color-spaceBlueTwo: #002D38;
-    --color-redTwo: #963c31;
-    --color-starsTwo: #FAF8EC;
-    --color-yellow: #d9c380;
-
-    /* default color */
-    --color-default: var(--color-spaceBlueTwo);
+    --color-greenBlueTwo:   #56787a;
+    --color-spaceBlueTwo:   #002D38;
+    --color-redTwo:         #963c31;
+    --color-starsTwo:       #FAF8EC;
+    --color-yellow:         #d9c380;
+ 
+    --color-default:        var(--color-spaceBlueTwo);
     --color-default-subtle: var(--color-gray-200);
-    --color-light: var(--color-starsTwo);
-    --color-dark: var();
-
-    /* main text color */
-    --color-body: var(--color-spaceBlueTwo);
-    --color-body-subtle: var(--color-spaceBlueTwo);
-
-    /* text heading colors */
-    --color-heading: var(--color-gray-800);
-
-    --font-sans: 'futura-100', 'ui-sans-serif', 'system-ui', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-body: 'futura-100', 'ui-sans-serif', 'system-ui', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-mono: 'futura-100', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace';
-
+    --color-light:          var(--color-starsTwo);
+    --color-dark:           var(--color-spaceBlueTwo);
+    --color-body:           var(--color-spaceBlueTwo);
+    --color-body-subtle:    var(--color-spaceBlueTwo);
+    --color-heading:        var(--color-gray-800);
+ 
+    --font-sans: 'futura-100', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif';
+    --font-body: var(--font-sans);
+    --font-mono: 'futura-100', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace';
+ 
     --spacing-custom: 10px;
-
-    --breakpoint-xs: 30rem;
+ 
+    --breakpoint-xs:  30rem;
+    --breakpoint-sm:  40rem;
+    --breakpoint-md:  48rem;
+    --breakpoint-lg:  64rem;
+    --breakpoint-xl:  80rem;
     --breakpoint-2xl: 100rem;
     --breakpoint-3xl: 120rem;
 }
-
-@layer base{
-    h1 {
-        @apply text-8xl font-sans font-bold text-body p-2;
+ 
+@layer base {
+    h1 { 
+        @apply text-4xl md:text-6xl lg:text-8xl font-sans font-bold text-body p-2 leading-tight; 
+    
+    }
+    h3 { 
+        @apply text-2xl md:text-3xl lg:text-4xl font-sans font-bold text-body p-2; 
     }
 
-    h3 {
-        @apply text-4xl font-sans font-bold text-body p-2;
+    p  { 
+        @apply text-lg md:text-xl lg:text-2xl text-body-subtle font-sans p-2; 
+    }
+ 
+    th    { 
+        @apply text-[10px] md:text-xs font-bold uppercase tracking-wider text-body bg-light border-b border-default sticky top-0 p-2 md:p-3; 
     }
 
-    p {
-        @apply text-2xl text-body-subtle font-sans p-2;
+    tr    { 
+        @apply h-10 md:h-12 bg-light border-b border-default hover:bg-neutral-secondary-medium text-body; 
     }
 
-    th {
-        @apply text-sm text-body bg-light border-b border-default;
-    }
-
-    tr {
-        @apply bg-light border-b border-default hover:bg-neutral-secondary-medium text-body;
-    }
-
-    table {
-        @apply w-full text-sm text-left rtl:text-right text-body;
-    }
-}
-
-@layer components{
-    .grid{
-        @apply p-12;
+    td    { 
+        @apply p-2 md:p-3 truncate max-w-[80px] md:max-w-[150px]; 
     }
     
-    .baseCard{
-        @apply bg-light block p-0.5 rounded-base shadow-xs text-body;
+    table { 
+        @apply w-full text-xs md:text-sm text-left text-body border-collapse; 
     }
-
-    .baseBtn{
-        @apply bg-light border-4 border-default block p-4 rounded-base shadow-xs text-center text-body;
-    }
-
-    .darkBtn{
-        @apply bg-default/90 border-4 border-default block p-4 rounded-base shadow-xs text-center text-light;
-    }
-
-    .dayBtn{
-        @apply bg-light border-4 border-default block p-4 rounded-base shadow-xs text-center text-body;
-    }
-
-    .is-hidden {
-        display: none;
-      }
 }
-
-@layer utilities{
-    .centreScreen{
-        @apply h-screen w-full flex justify-center items-center;
+ 
+@layer components {
+ 
+    .baseCard {
+        @apply bg-light block rounded-base shadow-xs text-body w-full overflow-hidden;
     }
+ 
+    .baseBtn {
+        @apply bg-light border-2 md:border-4 border-default text-body block p-2 md:p-4 rounded-base shadow-xs text-center cursor-pointer;
+    }
+ 
+    .darkBtn {
+        @apply bg-default/90 border-2 md:border-4 border-default text-light block p-2 md:p-4 rounded-base shadow-xs text-center cursor-pointer;
+    }
+ 
+    .dayBtn {
+        @apply bg-light border-2 md:border-4 border-default text-body block p-2 md:p-4 rounded-base shadow-xs text-center cursor-pointer w-full;
+    }
+ 
+    .input-search {
+        @apply bg-light border-2 md:border-4 border-default text-body w-full p-2 md:p-4 rounded-base shadow-xs;
+    }
+ 
+    .input-field {
+        @apply bg-light border-2 md:border-4 border-default text-body w-full p-3 rounded-base shadow-xs text-left;
+    }
+ 
+    .table-wrap {
+        @apply overflow-x-auto border border-default rounded-base;
+    }
+ 
+    .modal-backdrop {
+        @apply hidden fixed inset-0 z-50 flex justify-center items-center bg-black/60 p-4;
+    }
+ 
+    .modal-body {
+        @apply relative w-full bg-light border-4 border-default rounded-base p-4 md:p-6 overflow-y-auto;
+    }
+ 
+    .is-hidden    { display: none; }
+    .centreScreen { @apply min-h-screen w-full flex justify-center items-center p-4; }
 }
