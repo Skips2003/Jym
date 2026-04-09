@@ -55,7 +55,7 @@ async function searchWorkouts(){
     </tr>
 `;
 
-    const responseUser = await fetch('/api/sharedworkouts/workoutName/' + workoutSearch + '/userID/' + UID, {
+    const responseUser = await fetch('/api/sharedworkouts/workoutName/' + workoutSearch , {
         method: 'GET',
         headers:{ 
             'Content-Type': 'application/json',
@@ -69,11 +69,11 @@ async function searchWorkouts(){
     dataWorkout.forEach(workout => {
         workoutSearchTable.insertRow(-1).innerHTML = `
         <td>
-            <a onclick="loadWorkout('${workout._id["$oid"]}')">
+            <button class="baseBtn w-full" onclick="loadWorkout('${workout._id["$oid"]}')">
                 <h1>${workout.name}</h1>
                 <h3>${workout.description}</h3>
                 <p>${workout.authorUsername}</p>
-            </a>
+            </button>
         </td>
     `;
     });
@@ -92,7 +92,7 @@ async function searchSchedules(){
     </tr>
 `;
 
-    const response = await fetch('/api/sharedschedules/scheduleName/' + scheduleSearch + '/userID/' + UID, {
+    const response = await fetch('/api/sharedschedules/scheduleName/' + scheduleSearch , {
         method: 'GET',
         headers:{ 
             'Content-Type': 'application/json',
@@ -114,11 +114,11 @@ async function searchSchedules(){
         dataSchedule.forEach(schedule => {
             scheduleSearchTable.insertRow(-1).innerHTML = `
             <td>
-                <a onclick="loadSchedule('${schedule._id["$oid"]}')">
+                <button class="baseBtn w-full" onclick="loadSchedule('${schedule._id["$oid"]}')">
                     <h1>${schedule.name}</h1>
                     <h3>${schedule.description}</h3>
                     <p>${schedule.authorUsername}</p>
-                </a>
+                </button>
             </td>
         `;
         });

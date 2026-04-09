@@ -9,16 +9,14 @@ if changes made to to diagram.ts use this command to compile it into JS:
 
 the free version of the exercisesDB we are using is currently down but should be fixed soon, if not we can just use a different one
 
-TODO:
+NEED DONE TODAY!!!:
 
-100% Need completed:
-1. Unit Testing (Better Documentation in general)
-2. report system (Users, Shared Schedules/Workouts)
-3. Admin panel for reviewing schedules, profiles etc
-4. add completing a workout (with check to ensure it was completed on the right day)
-5. view recently completed workouts
-6. Add tags to schedules/workouts for searching
-7. Search Page
+1. report system (Users, Shared Schedules/Workouts)
+2. Admin panel for reviewing schedules, profiles etc
+3. add completing a workout (with check to ensure it was completed on the right day)
+4. view recently completed workouts
+5. Add tags to schedules/workouts for searching
+6. Search Page
 
 Optional for after above is finished:
 1. trainer accounts (allow trainers to provide schedules to users and track their progress!)

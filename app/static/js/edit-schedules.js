@@ -228,7 +228,7 @@ async function searchExercises() {
 // return as array of json
 async function getExercisesBySearchString(search){
     try {
-        const response = await fetch('https://edb-with-videos-and-images-by-ascendapi.p.rapidapi.com/api/v1/exercises?name=' + search , {
+        const response = await fetch('https://edb-with-videos-and-images-by-ascendapi.p.rapidapi.com/api/v1/exercises/search?search=' + search , {
             headers: {
                 'x-rapidapi-key': '4b0ef871b2msh66491918fb044ddp1ea25ejsn79c935d7b3b6',
                 'x-rapidapi-host': 'edb-with-videos-and-images-by-ascendapi.p.rapidapi.com',
@@ -278,9 +278,6 @@ function addExerciseToSearchTable(exercise) {
 
     row.innerHTML = `
         <td class="px-3 py-2">${exercise.name}</td>
-        <td class="px-3 py-2">${exercise.targetMuscles}</td>
-        <td class="px-3 py-2">${exercise.secondaryMuscles}</td>
-        <td class="px-3 py-2">${exercise.equipments}</td>
         <td class="px-3 py-2"><button class="baseBtn" data-modal-toggle="viewDetails-modal" data-modal-target="viewDetails-modal" onclick="viewExerciseDetails('${exercise.exerciseId}')">Details</button></td>
         <td class="px-3 py-2"><button class="baseBtn" onclick="addExerciseToDay('${exercise.exerciseId}')">Add</button></td>
     `;

@@ -102,6 +102,10 @@
         @apply relative w-full bg-light border-4 border-default rounded-base p-4 md:p-6 overflow-y-auto;
     }
  
-    .is-hidden    { display: none; }
-    .centreScreen { @apply min-h-screen w-full flex justify-center items-center p-4; }
+    .is-hidden    { 
+        display: none; 
+    }
+    .centreScreen { 
+        @apply min-h-screen w-full flex justify-center items-center p-4; 
+    }
 }

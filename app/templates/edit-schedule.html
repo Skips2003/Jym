@@ -43,7 +43,7 @@
                 <p id="workoutDescription">Workout Description</p>
                 <button class="darkBtn w-full md:w-auto mb-4" id="editWorkoutStringsBtn" onclick="editWorkoutDetails()">Edit Workout Details</button>
                 <h3>Edit Day</h3>
-                <div class="table-wrap max-h-[400px]">
+                <div class="table-wrap max-h-[200px]">
                     <table id="exerciseTable"></table>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-2 mt-4">
@@ -80,12 +80,11 @@
                     <input id="searchWorkout" type="text" class="input-search" placeholder="Search..." onkeyup="debouncedSearchWorkout()">
                 </div>
  
-                <div class="md:col-span-2 table-wrap max-h-[400px]">
+                <div class="md:col-span-6 table-wrap max-h-[400px]">
                     <table id="exerciseSearchTable">
                         <thead>
                             <tr>
                                 <th>Exercise</th>
-                                <th>Target</th>
                                 <th>Details</th>
                                 <th>Add</th>
                             </tr>
@@ -94,7 +93,7 @@
                     </table>
                 </div>
  
-                <div class="md:col-span-4 table-wrap max-h-[400px]">
+                <div class="md:col-span-6 table-wrap max-h-[400px]">
                     <table id="sharedSearchTable"></table>
                 </div>
  
@@ -115,9 +114,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 !p-0">
                 <div>
                     <h3>Exercise Details:</h3>
+                    <video class="baseCard w-full" id="exerciseVideo" autoplay loop muted playsinline></video>
                     <p id="exerciseTips"></p>
                 </div>
-                <video class="baseCard w-full" id="exerciseVideo" autoplay loop muted playsinline></video>
             </div>
             <button data-modal-hide="viewDetails-modal" class="darkBtn w-full mt-4">Close</button>
         </div>
@@ -125,7 +124,7 @@
  
     <!-- Load Template Modal -->
     <div id="loadSaved-modal" class="modal-backdrop">
-        <div class="modal-body max-w-xl max-h-[80vh] flex flex-col">
+        <div class="modal-body max-w-[915px] max-h-[80vh] flex flex-col">
             <h1 id="savedTitle" class="border-b border-default pb-2"></h1>
             <p id="noneFound" class="text-red-500"></p>
             <div class="flex-grow overflow-auto mt-4 table-wrap max-h-[400px]">
