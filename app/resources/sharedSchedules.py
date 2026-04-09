@@ -3,7 +3,7 @@ from app import mongo
 from flask import request
 from flask_restful import Resource
 from flask_login import current_user
-from app.resources.auth import validateRequest, webOnly
+from app.resources.auth import validateRequest
 from app.models import SharedSchedules, Users, Follows
 import json
 
@@ -149,7 +149,7 @@ class SharedSchedulesAPI(Resource):
  
         return {"message": "Schedule added successfully!", "_id": str(result.inserted_id)}, 201
  
-    @webOnly
+    @validateRequest
     def put(self, scheduleID=None):
         data = request.json
         data = data["schedule"]
@@ -177,7 +177,7 @@ class SharedSchedulesAPI(Resource):
  
         return {"message": "Schedule updated successfully!"}, 200
  
-    @webOnly
+    @validateRequest
     def delete(self, scheduleID=None):
         data = request.json
  

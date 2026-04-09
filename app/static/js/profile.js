@@ -16,11 +16,26 @@ async function saveUserDetails(UID) {
 }
 
 function toggle() {
-    privacyToggle = privacyToggle ? false : true;
+    privacyToggle = !privacyToggle
 
-    let text = document.getElementById("privacyToggleBtn")
+    let text = document.getElementById("privacyToggle")
     text.innerHTML = privacyToggle
 } 
+
+async function reportUser(UID, reporterID, reporterUsername) {
+    jsonBody = {"reporterID": reporterID, "reporterUsername": reporterUsername, "reason": document.getElementById("reason").value}
+    const response = await fetch('/api/reports/user/' + UID, {
+        method: 'POST',
+        headers:{ 
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.getElementById("csrf-token").content
+        },
+        body: JSON.stringify(jsonBody)
+    });
+
+    const data = await response.json();
+    console.log("Report created", data);
+}
 
 // follow user
 async function followUser(followerID, followedID){

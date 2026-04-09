@@ -4,6 +4,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from app.models import Users, Follows
 from app.main.forms import LoginForm, SignUpForm
 from app.main import bp
+from app.resources import follows, schedules, savedSchedules, savedWorkouts, sharedSchedules, sharedWorkouts, users, reports
 from app import db, bcrypt, loginManager, mongo
 from bson import json_util
 from bson.objectid import ObjectId

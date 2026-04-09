@@ -39,6 +39,9 @@
                     {% elif follows %}
                         <button class="darkBtn w-full" id="unFollowBtn" onclick="unFollowUser('{{ current_user.id }}', '{{ user.id }}')">Unfollow</button>
                     {% endif %}
+                    {% if current_user.id != user.id %}
+                        <button class="darkBtn w-full" data-modal-target="default-reportUser" data-modal-toggle="default-reportUser">Report</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -117,7 +120,7 @@
             <h1>Edit Profile</h1>
             <div class="flex items-center justify-between mb-6 bg-default/5 p-4 rounded-base">
                 <h3>Private Account</h3>
-                <button id="privacyToggleBtn" onclick="toggle()" class="baseBtn !py-2 min-w-[80px]">{{ user.private }}</button>
+                <button id="privacyToggle" onclick="toggle()" class="baseBtn !py-2 min-w-[80px]">{{ current_user.private|tojson }}</button>
             </div>
             <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-1">
@@ -144,6 +147,19 @@
                 </div>
                 <button class="darkBtn w-full mt-4" onclick="saveUserDetails('{{ user.id }}')">Save Changes</button>
                 <button data-modal-hide="default-userInformation" class="baseBtn w-full">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="default-reportUser" class="modal-backdrop">
+        <div class="modal-body max-w-lg">
+            <h1>Report User</h1>
+                <div class="flex flex-col gap-1">
+                    <label class="font-bold ml-2 text-sm">Reason</label>
+                    <textarea id="reason" class="input-field min-h-[100px]"></textarea>
+                </div>
+                <button class="darkBtn w-full mt-4" onclick="reportUser('{{ user.id }}', '{{ current_user.id }}', '{{ current_user.username }}')">Report</button>
+                <button data-modal-hide="default-reportUser" class="baseBtn w-full">Cancel</button>
             </div>
         </div>
     </div>

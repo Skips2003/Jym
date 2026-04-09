@@ -18,6 +18,9 @@ NEED DONE TODAY!!!:
 5. Add tags to schedules/workouts for searching
 6. Search Page
 
+Current Bugs:
+    Search in Nav not working after used once?
+
 Optional for after above is finished:
 1. trainer accounts (allow trainers to provide schedules to users and track their progress!)
 2. University Researcher accounts with larger access to user data (requires users to permit their data is used)
