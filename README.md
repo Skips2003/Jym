@@ -1,4 +1,4 @@
-# StrengthTrackerWeb
+# Jym
 A website for creating, sharing and tracking a strength training schedule!
 
 pip install -r requirements.txt
@@ -22,3 +22,5 @@ API endpoints are inside of __init__.py inside app folder.
 They require an API key here is one for you to use!
 
 They are accessable through curl and have csrf protection for web!
+
+I know i shouldn't be sharing API keys inside config publicly but they are using free accounts so it should hopefully be ok if anyone finds them!
