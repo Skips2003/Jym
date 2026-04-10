@@ -1,9 +1,16 @@
 from app.models import Users
-from app import db, bcrypt
+from app import db, bcrypt, mongo
 from flask import jsonify, request
 from flask_restful import Resource
 from app.resources.auth import validateRequest
 from sqlalchemy import func
+from app.resources.sharedSchedules import SharedSchedulesAPI
+from app.resources.sharedWorkouts import SharedWorkoutsAPI
+from bson import ObjectId
+from flask_login import current_user
+
+SS = SharedSchedulesAPI()
+SW = SharedWorkoutsAPI()
 
 # This really needs cleaned up it was my first attempt at an API and it's not good but i will fix it when i get around to adding the report system
 # Add options for filtering the output e.g. just return the different stats or just the username and bio
@@ -12,57 +19,45 @@ class UsersAPI(Resource):
     @validateRequest  # Apply middleware to GET requests
     def get(self, userID=None, username=None):
         if userID:
-            user = Users.query.filter_by(id=userID).first()
-
-            if not user:
-                return {"error": "User not found."}, 404
-
-            return jsonify({
-                "id": user.id, # User ID returned because request already specifies the userID, so it is not a security risk and can be useful for the client to have
-                "username": user.username,
-                "bio": user.bio,
-                "followers": user.followers,
-                "following": user.following,
-                "sessions_in_row": user.sessionsInRow,
-                "bench_press": user.benchPress,
-                "dead_lift": user.deadLift,
-                "squat": user.squat,
-                "overhead_Press": user.overheadPress,
-                "snatch": user.snatch,
-                "cleanAndJerk": user.cleanAndJerk
-            })
+            users = Users.query.filter_by(id=userID).all()
         elif username:
             users = Users.query.filter(func.similarity(Users.username, username) > 0.3).all()
-            print(users)
-            output = []
-
-            if not users:
-                return {"error": "User not found."}, 404
-            for u in users:
-                if u.private == False:
-                    output.append({
-                        # User ID not returned because request specifies the username, so it could be a security risk to return the userID and is not necessary for the client to have
-                        "username": u.username, 
-                        "bio": u.bio,
-                        "followers": u.followers,
-                        "following": u.following,
-                        "sessions_in_row": u.sessionsInRow,
-                        "bench_press": u.benchPress,
-                        "dead_lift": u.deadLift,
-                        "squat": u.squat,
-                        "overhead_Press": u.overheadPress,
-                        "snatch": u.snatch,
-                        "cleanAndJerk": u.cleanAndJerk
-                    })
-            return jsonify(output)
         else:
             users = Users.query.all()
-            output = []
 
+        if not users:
+            return {"error": "User not found."}, 404
+
+        output = []
+
+        if current_user.is_authenticated and current_user.admin:
             for u in users:
-                if u.private == False:
+                output.append({
+                    "id": u.id,
+                    "email": u.email,
+                    "firstName": u.firstName,
+                    "lastName": u.lastName,
+                    "username": u.username,
+                    "private": u.private,
+                    "bio": u.bio,
+                    "followers": u.followers,
+                    "following": u.following,
+                    "currentScheduleID": u.currentScheduleID,
+                    "sessions_in_row": u.sessionsInRow,
+                    "bench_press": u.benchPress,
+                    "dead_lift": u.deadLift,
+                    "squat": u.squat,
+                    "overhead_Press": u.overheadPress,
+                    "snatch": u.snatch,
+                    "cleanAndJerk": u.cleanAndJerk,
+                    "admin": u.admin,
+                    "reports": u.reports
+                })
+        else:
+            for u in users:
+                if current_user.is_authenticated and u.id != current_user.id:
                     output.append({
-                        # User ID not returned because request does not specify the userID, so it could be a security risk to return the userID and is not necessary for the client to have
+                        "id": u.id if userID else None,
                         "username": u.username,
                         "bio": u.bio,
                         "followers": u.followers,
@@ -75,7 +70,11 @@ class UsersAPI(Resource):
                         "snatch": u.snatch,
                         "cleanAndJerk": u.cleanAndJerk
                     })
-            return jsonify(output)
+            
+            if not output:
+                return {"error": "No public profiles found."}, 404
+
+        return jsonify(output)
 
     @validateRequest  # Apply middleware to POST requests
     def post(self):
@@ -140,16 +139,32 @@ class UsersAPI(Resource):
 
     @validateRequest  # Apply middleware to DELETE requests
     def delete(self, userID=None):
-        data = request.json
 
-        if not userID:
-            userID = data.get("id")
-
-        user = Users.query.get(userID).first()
-
+        user = Users.query.get(userID)
         if not user:
-            return {"error": "User not found."}, 404
+            return {"error": "User not found"}, 404
+
+        # Cleanup MongoDB - Use delete_many to save database roundtrips
+        username = user.username
+        
+        # Find all associated workouts/schedules to clear their reports
+        workout_ids = [workout['_id'] for workout in mongo.db.SharedWorkouts.find({"authorUsername": username}, {"_id": 1})]
+        schedule_ids = [schedule['_id'] for schedule in mongo.db.SharedSchedules.find({"authorUsername": username}, {"_id": 1})]
+
+        mongo.db.Schedules.delete_many({"_id": ObjectId(user.currentScheduleID)})
+        mongo.db.SharedWorkouts.delete_many({"authorUsername": username})
+        mongo.db.SharedSchedules.delete_many({"authorUsername": username})
+        mongo.db.SavedWorkouts.delete_many({"userID": userID})
+        mongo.db.SavedSchedules.delete_many({"userID": userID})
+        
+        # Clean up reports and saved items
+        mongo.db.Reports.delete_many({"$or": [
+            {"workoutID": {"$in": workout_ids}},
+            {"scheduleID": {"$in": schedule_ids}},
+            {"userID": userID},
+            {"reporterID": userID}
+        ]})
 
         db.session.delete(user)
         db.session.commit()
-        return {"message": "User deleted successfully!"}, 200
+        return {"message": "User and all associated data wiped"}, 200

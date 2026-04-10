@@ -11,6 +11,20 @@ class SharedSchedulesAPI(Resource):
     @validateRequest
     def get(self, scheduleID=None, scheduleName=None, authorUsername=None, userID=None):
         # Private schedules only accessed if userID is provided or search is done using scheduleID
+        if userID:
+
+            print(scheduleName, userID)
+
+            user = Users.query.filter_by(id=userID).first()
+
+            if user.admin:
+
+                if scheduleName:
+                    schedules = list(mongo.db.SharedSchedules.find({"name": {"$regex": scheduleName, "$options": "i"}}))
+                else:
+                    schedules = list(mongo.db.SharedSchedules.find())
+
+                return json.loads(json_util.dumps(schedules)), 200
  
         # Return specific schedule by ID
         if scheduleID:
@@ -163,7 +177,7 @@ class SharedSchedulesAPI(Resource):
             return {"error": "Schedule not found."}, 404
  
         # ownership check — only the author can update their schedule
-        if schedule.get("authorUsername") != current_user.username:
+        if schedule.get("authorUsername") != current_user.username and not current_user.admin:
             return {"error": "Unauthorised."}, 403
  
         data.pop("_id", None)
@@ -173,28 +187,33 @@ class SharedSchedulesAPI(Resource):
             {"$set": data}
         )
  
-        print("Updated scheduleID: %s with data: %s", scheduleID, data)
+        print("Updated scheduleID: ", scheduleID, data)
  
         return {"message": "Schedule updated successfully!"}, 200
  
     @validateRequest
     def delete(self, scheduleID=None):
-        data = request.json
- 
+
         if not scheduleID:
-            scheduleID = data.get("id")
- 
+            return {"error": "ScheduleID not found."}, 404
+
+        # Using find_one to get the schedule for the ownership check
         schedule = mongo.db.SharedSchedules.find_one({"_id": ObjectId(scheduleID)})
- 
+
         if not schedule:
             return {"error": "Schedule not found."}, 404
- 
-        # ownership check — only the author can delete their schedule
-        if schedule.get("authorUsername") != current_user.username:
+
+        # Ownership check
+        if schedule.get("authorUsername") != current_user.username and not current_user.admin:
             return {"error": "Unauthorised."}, 403
- 
-        print("Deleting schedule ID: %s, name: %s", scheduleID, schedule.get("name"))
- 
+
+        # Use snake_case for PyMongo methods
+        print(f"Deleting schedule: {schedule.get('name')}")
+
         mongo.db.SharedSchedules.delete_one({"_id": ObjectId(scheduleID)})
- 
+        
+        # Fix: delete_many instead of deleteMany
+        mongo.db.SavedSchedules.delete_many({"scheduleID": ObjectId(scheduleID)})
+        mongo.db.Reports.delete_many({"scheduleID": ObjectId(scheduleID)})
+
         return {"message": "Schedule deleted successfully!"}, 200

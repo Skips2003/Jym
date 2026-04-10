@@ -11,6 +11,20 @@ class SharedWorkoutsAPI(Resource):
     @validateRequest
     def get(self, workoutID=None, workoutName=None, authorUsername=None, userID=None):
         # Private workouts only accessed if userID is provided or search is done using scheduleID
+        if userID:
+
+            print(workoutName, userID)
+
+            user = Users.query.filter_by(id=userID).first()
+
+            if user.admin:
+
+                if workoutName:
+                    workouts = list(mongo.db.SharedWorkouts.find({"name": {"$regex": workoutName, "$options": "i"}}))
+                else:
+                    workouts = list(mongo.db.SharedWorkouts.find())
+
+                return json.loads(json_util.dumps(workouts)), 200
 
         # Return specific workout by ID
         if workoutID:
@@ -152,7 +166,7 @@ class SharedWorkoutsAPI(Resource):
             return {"error": "workout not found."}, 404
  
         # ownership check — only the author can update their workout
-        if workout.get("authorUsername") != current_user.username:
+        if workout.get("authorUsername") != current_user.username and not current_user.admin:
             return {"error": "Unauthorised."}, 403
  
         data.pop("_id", None)
@@ -169,22 +183,22 @@ class SharedWorkoutsAPI(Resource):
  
     @validateRequest
     def delete(self, workoutID=None):
-        data = request.json
- 
+
         if not workoutID:
-            workoutID = data.get("id")
- 
+            return {"error": "workoutID not found."}, 404
+
         workout = mongo.db.SharedWorkouts.find_one({"_id": ObjectId(workoutID)})
- 
+
         if not workout:
             return {"error": "workout not found."}, 404
- 
-        # ownership check — only the author can delete their workout
-        if workout.get("authorUsername") != current_user.username:
+
+        if workout.get("authorUsername") != current_user.username and not current_user.admin:
             return {"error": "Unauthorised."}, 403
- 
-        print("Deleting workout ID:" + workoutID + " name: " + workout.get("name"))
- 
+
+        print(f"Deleting workout ID: {workoutID} name: {workout.get('name')}")
+
         mongo.db.SharedWorkouts.delete_one({"_id": ObjectId(workoutID)})
- 
+        mongo.db.SavedWorkouts.delete_many({"workoutID": ObjectId(workoutID)})
+        mongo.db.Reports.delete_many({"workoutID": ObjectId(workoutID)})
+
         return {"message": "workout deleted successfully!"}, 200

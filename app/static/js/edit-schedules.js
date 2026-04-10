@@ -369,11 +369,11 @@ async function updateSchedule(schedule, ogSchedule, UID){
         if (schedule.name !== ogSchedule.name || schedule.description !== ogSchedule.description || newDays !== oldDays){ // check if changes have been made
             // Create new schedule with changes and update users current schedule to new id
             console.log("Inserting Schedule: " + schedule)
-            data = postString(apiString='api/schedules', infoString=undefined, bodyInfo=schedule)
+            data = await postString(apiString='api/schedules', infoString=undefined, bodyInfo=schedule)
 
             // Update users current Schedule to new schedule!
             console.log("Attempting ot update users schedule UserID: " + UID + " ScheduleID: " + data._id)
-            await putString(apiString='api/users/', searchString=UID, body={"currentScheduleID": data._id});
+            await putString(apiString='api/users/userID/', searchString=UID, body={"currentScheduleID": data._id});
             
         }
     }
@@ -412,7 +412,9 @@ async function loadSchedule(scheduleID){
     delete scheduleLoad["authorUsername"];
     delete scheduleLoad["private"];
 
-    currentSchedule = scheduleLoad;
+    currentSchedule.name = scheduleLoad.name;
+    currentSchedule.description = scheduleLoad.description;
+    currentSchedule.days = scheduleLoad.days;
 
     loadSchedulePage();
     selectDayEdit(currentDay)
