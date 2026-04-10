@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, jsonify
+from flask import request
 from app import db
 from app.models import APIKey
 from flask_login import current_user
