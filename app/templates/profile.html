@@ -35,7 +35,8 @@
                     {% elif not follows and not user.private %}
                         <button class="darkBtn w-full" id="followBtn" onclick="followUser('{{ current_user.id }}', '{{ user.id }}')">Follow</button>
                     {% elif not follows and user.private %}
-                        <button class="darkBtn w-full" id="requestFollowbtn" onclick="requestFollow()">Request to Follow</button>
+                        <button class="darkBtn w-full" id="requestFollowbtn" onclick="followUser()">Request to Follow</button>
+                        <p>This button just follows the user i did not have time to implement follow requests!</p>
                     {% elif follows %}
                         <button class="darkBtn w-full" id="unFollowBtn" onclick="unFollowUser('{{ current_user.id }}', '{{ user.id }}')">Unfollow</button>
                     {% endif %}
@@ -49,7 +50,15 @@
         {% if not user.private or (user.private and follows) or current_user.id == user.id %}
  
             <!-- Schedule -->
-            <div class="lg:col-span-7 baseCard">
+            <div class="lg:col-span-7 baseCard p-4 md:p-6">
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <div class="flex-1 text-center md:text-left">
+                        <h1>Current Schedule</h1>
+                    </div>
+                    <div class="w-full md:w-auto">
+                        <button class="darkBtn w-full" id="saveSchedule" onclick="saveSchedule('{{ user.currentScheduleID}}', '{{ current_user.id }}')">Save</button>
+                    </div>
+                </div>
                 <main id="scheduleContainer" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 !p-4">
 
                 </main>
@@ -63,15 +72,22 @@
             </div>
  
             <!-- Shared Schedules -->
-            <div class="lg:col-span-7 baseCard p-4">
-                <h1>Shared Schedules</h1>
-                <div class="baseCard border-2 border-default/20 !p-4">
-                    <h3>Schedule Name</h3>
-                    <p>Schedule Description</p>
-                    <div class="flex flex-wrap items-center gap-4 mt-4">
-                        <div class="flex-grow"></div>
-                        <button class="baseBtn"><h3>Save</h3></button>
-                    </div>
+            <div class="lg:col-span-7 baseCard p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <h1 class="md:col-span-1">Shared Schedules</h1>
+                <h1 class="md:col-span-1">Shared Workouts</h1>
+                <h3 id="noneFoundSchedules" class="col-span-1"></h3>
+                <h3 id="noneFoundWorkouts" class="col-span-1"></h3>
+                <div class="md:col-span-1 table-wrap max-h-[300px]">
+                    <table id="sharedSchedulesTable"></table>
+                    <script>
+                        getSharedSchedules('{{ user.username }}', '{{ current_user.id }}');
+                    </script>
+                </div>
+                <div class="md:col-span-1 table-wrap max-h-[300px]">
+                    <table id="sharedWorkoutsTable"></table>
+                    <script>
+                        getSharedWorkouts('{{ user.username }}', '{{ current_user.id }}');
+                    </script>
                 </div>
             </div>
  
@@ -98,9 +114,9 @@
             <!-- Muscles Worked -->
             <div class="lg:col-span-2 baseCard p-2">
                 <h1 class="text-center">Muscles Worked</h1>
-                <div class="grid grid-cols-2 gap-2 !p-2">
-                    <div class="baseCard min-h-[180px]" id="musclesWorkedAnterior"></div>
-                    <div class="baseCard min-h-[180px]" id="musclesWorkedPosterior"></div>
+                <div class="grid grid-cols-2 gap-2 !p-2 baseCard">
+                    <div class="min-h-[180px]" id="musclesWorkedAnterior"></div>
+                    <div class="min-h-[180px]" id="musclesWorkedPosterior"></div>
                     <button class="baseBtn col-span-2 !py-2" onclick="changeDiagram(scheduleExercises)">Reset</button>
                 </div>
             </div>
@@ -163,6 +179,32 @@
             </div>
         </div>
     </div>
+
+    <div id="default-reportWorkout" class="modal-backdrop">
+        <div class="modal-body max-w-lg">
+            <h1>Report Workout</h1>
+                <div class="flex flex-col gap-1">
+                    <label class="font-bold ml-2 text-sm">Reason</label>
+                    <textarea id="reasonWorkouts" class="input-field min-h-[100px]"></textarea>
+                </div>
+                <button class="darkBtn w-full mt-4" onclick="reportWorkout(window.selectedWorkoutID , '{{ current_user.id }}', '{{ current_user.username }}')">Report</button>
+                <button data-modal-hide="default-reportWorkout" class="baseBtn w-full">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="default-reportSchedule" class="modal-backdrop">
+        <div class="modal-body max-w-lg">
+            <h1>Report Schedule</h1>
+                <div class="flex flex-col gap-1">
+                    <label class="font-bold ml-2 text-sm">Reason</label>
+                    <textarea id="reasonSchedules" class="input-field min-h-[100px]"></textarea>
+                </div>
+                <button class="darkBtn w-full mt-4" onclick="reportSchedule(window.selectedScheduleID , '{{ current_user.id }}', '{{ current_user.username }}')">Report</button>
+                <button data-modal-hide="default-reportSchedule" class="baseBtn w-full">Cancel</button>
+            </div>
+        </div>
+    </div>
  
     <!-- Followers Modal -->
     <div id="default-followModal" class="modal-backdrop">
@@ -187,7 +229,7 @@
             </div>
             <div class="p-4 border-t border-default">
                 {% if current_user.id != user.id %}
-                    <button class="darkBtn w-full" id="saveWorkout" onclick="saveWorkout()">Save Workout</button>
+                    <button class="darkBtn w-full" id="saveWorkout">Save Workout</button>
                 {% endif %}
                 <button data-modal-hide="viewDays-modal" class="baseBtn w-full mt-2">Close</button>
             </div>

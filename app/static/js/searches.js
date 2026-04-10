@@ -1,3 +1,6 @@
+let selectedWorkoutID = null;
+let selectedScheduleID = null;
+
 // Debounce function
 function debounce(func, delay) {
     let timeout;
@@ -43,7 +46,7 @@ async function searchByUsername(){
 }
 
 // search shared workouts using name
-async function searchWorkouts(){
+async function searchWorkouts(userID){
 
     var workoutSearchTable = document.getElementById("sharedSearchTable");
 
@@ -53,7 +56,7 @@ async function searchWorkouts(){
     <tr>
         <th>Workouts!</th>
     </tr>
-`;
+    `;
 
     const responseUser = await fetch('/api/sharedworkouts/workoutName/' + workoutSearch , {
         method: 'GET',
@@ -66,21 +69,52 @@ async function searchWorkouts(){
     const dataWorkout = await responseUser.json();
     console.log("workoutsFound", dataWorkout);
 
-    dataWorkout.forEach(workout => {
+    if(dataWorkout[0] === undefined){
         workoutSearchTable.insertRow(-1).innerHTML = `
         <td>
-            <button class="baseBtn w-full" onclick="loadWorkout('${workout._id["$oid"]}')">
-                <h1>${workout.name}</h1>
-                <h3>${workout.description}</h3>
-                <p>${workout.authorUsername}</p>
-            </button>
+            <h1>No Workouts Found...</h1>
         </td>
     `;
-    });
+    }
+    else{
+        dataWorkout.forEach(workout => {
+    
+            console.log("Workout found! name: " + workout.name)
+    
+            antID = 'musclesWorkedAnterior' + workout._id["$oid"];
+            postID = 'musclesWorkedPosterior' + workout._id["$oid"];
+        
+            workoutSearchTable.insertRow(-1).innerHTML = `
+            <td>
+                <div class="dayCard grid grid-cols-2 gap-4 p-4">
+                    <div class="col-span-1">
+                        <h3>${workout.name}</h3>
+                        <p>${workout.description}</p>
+                        <p>By ${workout.authorUsername}</p>
+                    </div>
+    
+                    <div class="col-span-1">
+                        <div class="grid grid-cols-2">
+                            <div id="${antID}"></div>
+                            <div id="${postID}"></div>
+                        </div>
+                    </div>
+    
+                    <div class="col-span-2 flex gap-2 pt-2">
+                        <button class="darkBtn flex-1" onclick="saveWorkout('${workout._id["$oid"]}', '${userID}')">Save</button>
+                        <button class="darkBtn flex-1" onclick="loadWorkout('${workout._id["$oid"]}')">Load</button>
+                        <button class="baseBtn flex-1 bg-redTwo" data-modal-target="default-reportWorkout" data-modal-toggle="default-reportWorkout" onclick="window.selectedWorkoutID = '${workout._id['$oid']}'">Report</button>
+                    </div>
+                </div>
+            </td>`;
+            createWorkoutDiagram(antID, postID, workout.exercises);
+        });
+        initFlowbite();
+    }
 }
 
 // search shared schedules using name
-async function searchSchedules(){
+async function searchSchedules(userID){
 
     var scheduleSearchTable = document.getElementById("sharedSearchTable");
 
@@ -90,7 +124,7 @@ async function searchSchedules(){
     <tr>
         <th>Schedules!</th>
     </tr>
-`;
+    `;
 
     const response = await fetch('/api/sharedschedules/scheduleName/' + scheduleSearch , {
         method: 'GET',
@@ -112,52 +146,99 @@ async function searchSchedules(){
     }
     else{
         dataSchedule.forEach(schedule => {
-            scheduleSearchTable.insertRow(-1).innerHTML = `
-            <td>
-                <button class="baseBtn w-full" onclick="loadSchedule('${schedule._id["$oid"]}')">
-                    <h1>${schedule.name}</h1>
-                    <h3>${schedule.description}</h3>
-                    <p>${schedule.authorUsername}</p>
-                </button>
-            </td>
-        `;
+    
+        console.log("Schedulefound! name: " + schedule.name)
+
+        antID = 'musclesWorkedAnterior' + schedule._id["$oid"];
+        postID = 'musclesWorkedPosterior' + schedule._id["$oid"];
+    
+        scheduleSearchTable.insertRow(-1).innerHTML = `
+        <td>
+            <div class="dayCard grid grid-cols-2 gap-4 p-4">
+                <div class="col-span-1">
+                    <h3>${schedule.name}</h3>
+                    <p>${schedule.description}</p>
+                    <p>By ${schedule.authorUsername}</p>
+                </div>
+
+                <div class="col-span-1">
+                    <div class="grid grid-cols-2">
+                        <div id="${antID}"></div>
+                        <div id="${postID}"></div>
+                    </div>
+                </div>
+
+                <div class="col-span-2 flex gap-2 pt-2">
+                    <button class="darkBtn flex-1" onclick="loadSchedule('${schedule._id["$oid"]}')">Load</button>
+                    <button class="darkBtn flex-1" onclick="saveSchedule('${schedule._id["$oid"]}', '${userID}')">Save</button>
+                    <button class="baseBtn flex-1 bg-redTwo" data-modal-target="default-reportSchedule" data-modal-toggle="default-reportSchedule" onclick="window.selectedScheduleID = '${schedule._id['$oid']}'">Report</button>
+                </div>
+            </div>
+        </td>`;
+
+        let newScheduleExercises = [];
+
+        Object.keys(schedule.days).forEach(day => {
+            schedule.days[day].exercises.forEach(exercise =>{
+                newScheduleExercises.push(exercise)
+            })
+        });
+
+        createWorkoutDiagram(antID, postID, newScheduleExercises);
         });
     }
+
+    initFlowbite();
 }
 
 async function getSavedWorkouts(userID){
     document.getElementById("savedTitle").innerHTML = "Saved Workouts";
     let workouts = await getString(apiString='/api/savedworkouts/userID/',infoString=userID);
 
-    if (workouts == undefined){
-        document.getElementById("noneFound").innerHTML = "No Workouts Saved...";
-    }
-    else{
-        
-        document.getElementById("noneFound").innerHTML = "";
+    document.getElementById("noneFound").innerHTML = "No Workouts Saved...";
 
-        let table = document.getElementById("savedItemsTable");
+    let table = document.getElementById("savedItemsTable");
     
-        table.innerHTML = ``;
+    table.innerHTML = ``;
     
-        workouts.forEach(async workout => {
+    workouts.forEach(async workoutSearch => {
+
+        document.getElementById("noneFound").innerHTML = "";
     
-            let info = await getString('/api/sharedworkouts/',workout.workoutID["$oid"])
+        let workout = await getString('/api/sharedworkouts/',workoutSearch.workoutID["$oid"])
     
-            console.log("Workout found! name: " + info.name)
+        console.log("Workout found! name: " + workout.name)
     
-            table.insertRow(-1).innerHTML = `
-            <td>
-                <button class="baseBtn" onclick="loadWorkout('${info._id["$oid"]}')">
-                    <h1>${info.name}</h1>
-                    <h3>${info.description}</h3>
-                    <p>${info.authorUsername}</p>
-                </button>
-            </td>
-        `;
-        });
-        
-    }
+        antID = 'musclesWorkedAnterior' + workout._id["$oid"];
+        postID = 'musclesWorkedPosterior' + workout._id["$oid"];
+    
+        table.insertRow(-1).innerHTML = `
+        <td>
+            <div class="dayCard grid grid-cols-2 gap-4 p-4">
+                <div class="col-span-1">
+                    <h3>${workout.name}</h3>
+                    <p>${workout.description}</p>
+                    <p>By ${workout.authorUsername}</p>
+                </div>
+
+                <div class="col-span-1">
+                    <div class="grid grid-cols-2">
+                        <div id="${antID}"></div>
+                        <div id="${postID}"></div>
+                    </div>
+                </div>
+
+                <div class="col-span-2 flex gap-2 pt-2">
+                    <button class="darkBtn flex-1" onclick="loadWorkout('${workout._id["$oid"]}')">Load</button>
+                    <button class="baseBtn flex-1 bg-redTwo" data-modal-target="default-reportWorkout" data-modal-toggle="default-reportWorkout" onclick="window.selectedWorkoutID = '${workout._id['$oid']}'">Report</button>
+                </div>
+            </div>
+        </td>`;
+
+        createWorkoutDiagram(antID, postID, workout.exercises);
+    });
+
+    initFlowbite();
 
 }
 
@@ -166,39 +247,177 @@ async function getSavedSchedules(userID){
 
     let schedules = await getString(apiString='/api/savedschedules/userID/',infoString=userID);
 
-    if (schedules == undefined){
-        // if none found
-        document.getElementById("noneFound").innerHTML = "No Schedules Saved...";
-    }
-    else{
+    document.getElementById("noneFound").innerHTML = "No Schedules Saved...";
 
-        document.getElementById("noneFound").innerHTML = "";
+    let table = document.getElementById("savedItemsTable");
+    
+    table.innerHTML = ``;
+    
+    schedules.forEach(async scheduleSearch => {
 
-        let table = document.getElementById("savedItemsTable");
+        document.getElementById("noneFound").innerText = "";
     
-        table.innerHTML = ``;
+        let schedule = await getString('/api/sharedschedules/',scheduleSearch.scheduleID["$oid"])
     
-        schedules.forEach(async schedule => {
+        console.log("Schedule found! name: " + schedule.name)
+
+
+        antID = 'musclesWorkedAnterior' + schedule._id["$oid"];
+        postID = 'musclesWorkedPosterior' + schedule._id["$oid"];
     
-            let info = await getString('/api/sharedschedules/',schedule.scheduleID["$oid"])
     
-            console.log("Schedule found! name: " + info.name)
-    
-            table.insertRow(-1).innerHTML = `
-            <td>
-                <button class="baseBtn" onclick="loadSchedule('${info._id["$oid"]}')">
-                    <h1>${info.name}</h1>
-                    <h3>${info.description}</h3>
-                    <p>${info.authorUsername}</p>
-                </button>
-            </td>
-        `;
+        table.insertRow(-1).innerHTML = `
+        <td>
+            <div class="dayCard grid grid-cols-2 gap-4 p-4">
+                <div class="col-span-1">
+                    <h3>${schedule.name}</h3>
+                    <p>${schedule.description}</p>
+                    <p>By ${schedule.authorUsername}</p>
+                </div>
+
+                <div class="col-span-1">
+                    <div class="grid grid-cols-2">
+                        <div id="${antID}"></div>
+                        <div id="${postID}"></div>
+                    </div>
+                </div>
+
+                <div class="col-span-2 flex gap-2 pt-2">
+                    <button class="darkBtn flex-1" onclick="loadSchedule('${schedule._id["$oid"]}')">Load</button>
+                    <button class="baseBtn flex-1 bg-redTwo" data-modal-target="default-reportSchedule" data-modal-toggle="default-reportSchedule" onclick="window.selectedScheduleID = '${schedule._id['$oid']}'">Report</button>
+                </div>
+            </div>
+        </td>`;
+
+        let newScheduleExercises = [];
+
+        Object.keys(schedule.days).forEach(day => {
+            schedule.days[day].exercises.forEach(exercise =>{
+                newScheduleExercises.push(exercise)
+            })
         });
 
-    }
+        createWorkoutDiagram(antID, postID, newScheduleExercises);
+
+    });
+
+    initFlowbite();
 
 }
 
+async function getSharedSchedules(username, userID){
+
+    let schedules = await getString(apiString='/api/sharedschedules/authorUsername/',infoString=username);
+
+    document.getElementById("noneFoundSchedules").innerText = "No Schedules Posted...";
+
+    let table = document.getElementById("sharedSchedulesTable");
+    
+    table.innerHTML = ``;
+    
+    schedules.forEach(async schedule => {
+
+        document.getElementById("noneFoundSchedules").innerText = "";
+    
+        console.log("Schedulefound! name: " + schedule.name)
+
+        antID = 'musclesWorkedAnterior' + schedule._id["$oid"];
+        postID = 'musclesWorkedPosterior' + schedule._id["$oid"];
+    
+        table.insertRow(-1).innerHTML = `
+        <td>
+            <div class="dayCard grid grid-cols-2 gap-4 p-4">
+                <div class="col-span-1">
+                    <h3>${schedule.name}</h3>
+                    <p>${schedule.description}</p>
+                    <p>By ${schedule.authorUsername}</p>
+                </div>
+
+                <div class="col-span-1">
+                    <div class="grid grid-cols-2">
+                        <div id="${antID}"></div>
+                        <div id="${postID}"></div>
+                    </div>
+                </div>
+
+                <div class="col-span-2 flex gap-2 pt-2">
+                    <button class="darkBtn flex-1" onclick="saveSchedule('${schedule._id["$oid"]}', '${userID}')">Save</button>
+                    <button class="baseBtn flex-1 bg-redTwo" data-modal-target="default-reportSchedule" data-modal-toggle="default-reportSchedule" onclick="window.selectedScheduleID = '${schedule._id['$oid']}'">Report</button>
+                </div>
+            </div>
+        </td>`;
+
+        let newScheduleExercises = [];
+
+        Object.keys(schedule.days).forEach(day => {
+            schedule.days[day].exercises.forEach(exercise =>{
+                newScheduleExercises.push(exercise)
+            })
+        });
+
+        createWorkoutDiagram(antID, postID, newScheduleExercises);
+
+    });
+
+    initFlowbite();
+}
+
+
+async function getSharedWorkouts(username, userID){
+
+    let workouts = await getString(apiString='/api/sharedworkouts/authorUsername/',infoString=username);
+
+    document.getElementById("noneFoundWorkouts").innerText = "No Workouts Posted...";
+
+    let table = document.getElementById("sharedWorkoutsTable");
+    
+    table.innerHTML = ``;
+    
+    workouts.forEach(async workout => {
+
+        document.getElementById("noneFoundWorkouts").innerText = "";
+    
+        console.log("Workout found! name: " + workout.name)
+
+        antID = 'musclesWorkedAnterior' + workout._id["$oid"];
+        postID = 'musclesWorkedPosterior' + workout._id["$oid"];
+    
+        table.insertRow(-1).innerHTML = `
+        <td>
+            <div class="dayCard grid grid-cols-2 gap-4 p-4">
+                <div class="col-span-1">
+                    <h3>${workout.name}</h3>
+                    <p>${workout.description}</p>
+                    <p>By ${workout.authorUsername}</p>
+                </div>
+
+                <div class="col-span-1">
+                    <div class="grid grid-cols-2">
+                        <div id="${antID}"></div>
+                        <div id="${postID}"></div>
+                    </div>
+                </div>
+
+                <div class="col-span-2 flex gap-2 pt-2">
+                    <button class="darkBtn flex-1" onclick="saveWorkout('${workout._id["$oid"]}', '${userID}')">Save</button>
+                    <button class="baseBtn flex-1 bg-redTwo" data-modal-target="default-reportWorkout" data-modal-toggle="default-reportWorkout" onclick="window.selectedWorkoutID = '${workout._id['$oid']}'">Report</button>
+                </div>
+            </div>
+        </td>`;
+        createWorkoutDiagram(antID, postID, workout.exercises);
+
+    });
+
+    initFlowbite();
+}
+
+async function saveWorkout(workoutID, UID){
+    await postString(apiString='/api/savedworkouts/', infoString=workoutID, bodyInfo={"userID": UID})
+}
+
+async function saveSchedule(scheduleID, UID){
+    await postString(apiString='/api/savedschedules/', infoString=scheduleID, bodyInfo={"userID": UID})
+}
 
 // Create a debounced version of the search function
 const debouncedSearchSchedule = debounce(searchSchedules, 350);

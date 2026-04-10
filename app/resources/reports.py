@@ -15,7 +15,7 @@ class ReportsAPI(Resource):
         # Return users that have saved the schedule
         if scheduleID:
 
-            reports = list(mongo.db.Reports.find({"scheduleID": scheduleID}))
+            reports = list(mongo.db.Reports.find({"scheduleID": ObjectId(scheduleID)}))
             if not reports:
                 return {"error": "Reports not found"}, 404
             return json.loads(json_util.dumps(reports)), 200
@@ -31,7 +31,7 @@ class ReportsAPI(Resource):
         # Return specific schedule saved by user
         if workoutID:
             
-            reports = list(mongo.db.Reports.find({"workoutID": workoutID}))
+            reports = list(mongo.db.Reports.find({"workoutID": ObjectId(workoutID)}))
             if not reports:
                 return {"error": "Reports not found"}, 404
             return json.loads(json_util.dumps(reports)), 200
@@ -60,7 +60,7 @@ class ReportsAPI(Resource):
             if not mongo.db.SharedSchedules.find_one({"_id": ObjectId(scheduleID)}):
                 return {"error": "Schedule not found"}, 404
 
-            newReport.update(scheduleID=scheduleID)
+            newReport.update(scheduleID=ObjectId(scheduleID))
 
         # Return specific schedule saved by user
         if userID:
@@ -76,7 +76,7 @@ class ReportsAPI(Resource):
             if not mongo.db.SharedWorkouts.find_one({"_id": ObjectId(workoutID)}):
                 return {"error": "Workout not found"}, 404
 
-            newReport.update(workoutID=workoutID)
+            newReport.update(workoutID=ObjectId(workoutID))
 
         result = mongo.db.Reports.insert_one(newReport)
 

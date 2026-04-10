@@ -1,4 +1,4 @@
-async function shareSaveSchedule(schedule, username, private, UID){
+async function shareSchedule(schedule, username, private, UID){
     let sharingSchedule = {
         "name": schedule.name,
         "description": schedule.description,
@@ -17,7 +17,7 @@ async function shareSaveSchedule(schedule, username, private, UID){
 
 }
 
-async function shareSaveWorkout(workout, username, private, UID){
+async function shareWorkout(workout, username, private, UID){
     let sharingWorkout = {
         "name": workout.name,
         "description": workout.description,

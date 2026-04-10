@@ -24,7 +24,7 @@
         <div class="lg:col-span-7 baseCard">
             <div class="flex justify-between items-center p-2">
                 <h1>Current Schedule</h1>
-                <button class="baseBtn" onclick="shareSaveSchedule(currentSchedule, '{{ current_user.username }}', false)">
+                <button class="baseBtn" onclick="shareSchedule(currentSchedule, '{{ current_user.username }}', false)">
                     <h3 class="p-0">Share</h3>
                 </button>
             </div>
@@ -60,9 +60,9 @@
         <!-- Muscles Worked -->
         <div class="lg:col-span-3 lg:row-span-2 lg:col-start-5 baseCard">
             <h1>Muscles Worked</h1>
-            <div class="grid grid-cols-2 gap-2 !p-4">
-                <div class="baseCard min-h-[150px]" id="musclesWorkedAnterior"></div>
-                <div class="baseCard min-h-[150px]" id="musclesWorkedPosterior"></div>
+            <div class="grid grid-cols-2 gap-2 !p-4 baseCard">
+                <div class="min-h-[150px]" id="musclesWorkedAnterior"></div>
+                <div class="min-h-[150px]" id="musclesWorkedPosterior"></div>
                 <button class="baseBtn col-span-2 !py-2" onclick="changeDiagram(scheduleExercises)">Reset</button>
             </div>
         </div>
@@ -91,7 +91,7 @@
                 <table id="exerciseTable"></table>
             </div>
             <div class="p-4">
-                <button class="baseBtn w-full" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', false)">Share Workout</button>
+                <button class="darkBtn w-full" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', false)">Share Workout</button>
             </div>
         </div>
     </div>

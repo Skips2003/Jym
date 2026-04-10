@@ -112,8 +112,8 @@ function editWorkoutDetails() {
 
         editBtn.innerText = "Edit Workout Name/Description";
     } else {
-        nameEl.innerHTML = `<input type="text" id="nameInput" value="${currentSchedule.days[currentDay].name}" style="width:200px">`;
-        descEl.innerHTML = `<input type="text" id="descInput" value="${currentSchedule.days[currentDay].description}" style="width:200px">`;
+        nameEl.innerHTML = `<input type="text" id="nameInput" class="input-field" value="${currentSchedule.days[currentDay].name}" style="width:200px">`;
+        descEl.innerHTML = `<input type="text" id="descInput" class="input-field" value="${currentSchedule.days[currentDay].description}" style="width:200px">`;
 
         editBtn.innerText = "Save";
     }
@@ -134,8 +134,8 @@ function editScheduleDetails() {
 
         editBtn.innerText = "Edit Workout Name/Description";
     } else {
-        nameEl.innerHTML = `<input type="text" id="nameInput" value="${currentSchedule.name}" style="width:200px">`;
-        descEl.innerHTML = `<input type="text" id="descInput" value="${currentSchedule.description}" style="width:200px">`;
+        nameEl.innerHTML = `<input type="text" class="input-field" id="nameInput" value="${currentSchedule.name}" style="width:200px">`;
+        descEl.innerHTML = `<input type="text" class="input-field" id="descInput" value="${currentSchedule.description}" style="width:200px">`;
 
         editBtn.innerText = "Save";
     }
