@@ -30,3 +30,5 @@ I know i shouldn't be sharing API keys inside config publicly but they are using
 The entire site follows a basic structure of flask using flask-restful APIs to communicate with the databases, JS for a dynamic front end and sending information back through the API to the databases.
 
 A person from outside the group was used to create an account and test the experience of the frontend.
+
+https://github.com/lahaxearnaud/body-highlighter is used for the muscles worked diagrams does not need installed or compiled but if it is'nt working try the command above!
