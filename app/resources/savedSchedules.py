@@ -3,7 +3,7 @@ from app import mongo
 from flask import request
 from flask_restful import Resource
 from app.resources.auth import validateRequest
-from app.models import SavedSchedules
+from app.models import SavedSchedules, Users, SharedSchedules
 import json
 
 # Add options for filtering the output e.g. just return the different exercises or just the name and description
@@ -49,9 +49,12 @@ class SavedSchedulesAPI(Resource):
         
         if not scheduleID:
             return {"error": "No scheduleID provided."}, 400
-
- 
-        # add validation that keys in data.get("days") are valid day names and that exercise IDs exist in the Workouts collection
+        
+        if not SharedSchedules.checkSharedSchedule(scheduleID):
+                return {"error": "Schedule not found"}, 404
+        
+        if not Users.checkUser(userID):
+                return {"error": "User not found"}, 404
  
         result = mongo.db.SavedSchedules.insert_one(
             SavedSchedules(
@@ -83,7 +86,7 @@ class SavedSchedulesAPI(Resource):
         if not schedule:
             return {"error": "Schedule not found."}, 404
  
-        print("Deleting schedule ID: %s, name: %s", scheduleID, schedule.get("name"))
+        print("Deleting schedule ID: " + schedule.get("name"))
  
         mongo.db.SavedSchedules.delete_one({"scheduleID": ObjectId(scheduleID), "userID": userID})
  

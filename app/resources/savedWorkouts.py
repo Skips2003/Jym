@@ -3,7 +3,7 @@ from app import mongo
 from flask import request
 from flask_restful import Resource
 from app.resources.auth import validateRequest
-from app.models import SavedWorkouts
+from app.models import SavedWorkouts, Users, SharedWorkouts
 import json
 
 # Add options for filtering the output e.g. just return the different exercises or just the name and description
@@ -51,6 +51,12 @@ class SavedWorkoutsAPI(Resource):
             return {"error": "No WorkoutID provided."}, 400
         
         print(userID, workoutID)
+
+        if not SharedWorkouts.checkSharedWorkout(workoutID):
+                return {"error": "Workout not found"}, 404
+        
+        if not Users.checkUser(userID):
+                return {"error": "User not found"}, 404
  
         result = mongo.db.SavedWorkouts.insert_one(
             SavedWorkouts(

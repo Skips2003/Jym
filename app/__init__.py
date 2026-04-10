@@ -15,27 +15,23 @@ api = Api()
 csrf = CSRFProtect()
 
 # adding API resources
-from app.resources.users import UsersAPI
-from app.resources.schedules import SchedulesAPI
-from app.resources.follows import FollowsAPI
-from app.resources.savedWorkouts import SavedWorkoutsAPI
-from app.resources.sharedWorkouts import SharedWorkoutsAPI
-from app.resources.savedSchedules import SavedSchedulesAPI
-from app.resources.sharedSchedules import SharedSchedulesAPI
+from app.resources import users, savedSchedules, savedWorkouts, schedules, sharedSchedules, sharedWorkouts, follows, reports
 
-api.add_resource(UsersAPI, '/api/users', '/api/users/<string:userID>', '/api/users/username/<string:username>')
+api.add_resource(users.UsersAPI, '/api/users', '/api/users/<string:userID>', '/api/users/username/<string:username>')
 
-api.add_resource(SchedulesAPI, '/api/schedules', '/api/schedules/<string:scheduleID>', '/api/schedules/name/<string:scheduleName>')
+api.add_resource(schedules.SchedulesAPI, '/api/schedules', '/api/schedules/<string:scheduleID>', '/api/schedules/name/<string:scheduleName>')
 
-api.add_resource(FollowsAPI, '/api/follow', '/api/followed/<string:followedID>', '/api/follower/<string:followerID>' , '/api/followed/<string:followedID>/follower/<string:followerID>')
+api.add_resource(follows.FollowsAPI, '/api/follow', '/api/followed/<string:followedID>', '/api/follower/<string:followerID>')
 
-api.add_resource(SavedWorkoutsAPI, '/api/savedworkouts', '/api/savedworkouts/<string:workoutID>', '/api/savedworkouts/userID/<string:userID>')
+api.add_resource(savedWorkouts.SavedWorkoutsAPI, '/api/savedworkouts', '/api/savedworkouts/<string:workoutID>', '/api/savedworkouts/userID/<string:userID>')
 
-api.add_resource(SavedSchedulesAPI, '/api/savedschedules', '/api/savedschedules/<string:scheduleID>', '/api/savedschedules/userID/<string:userID>')
+api.add_resource(savedSchedules.SavedSchedulesAPI, '/api/savedschedules', '/api/savedschedules/<string:scheduleID>', '/api/savedschedules/userID/<string:userID>')
 
-api.add_resource(SharedWorkoutsAPI, '/api/sharedworkouts', '/api/sharedworkouts/<string:workoutID>', '/api/sharedworkouts/authorUsername/<string:authorUsername>', '/api/sharedworkouts/workoutName/<string:workoutName>', '/api/sharedworkouts/workoutName/<string:workoutName>/userID/<string:userID>')
+api.add_resource(sharedWorkouts.SharedWorkoutsAPI, '/api/sharedworkouts', '/api/sharedworkouts/<string:workoutID>', '/api/sharedworkouts/authorUsername/<string:authorUsername>', '/api/sharedworkouts/workoutName/<string:workoutName>')
 
-api.add_resource(SharedSchedulesAPI, '/api/sharedschedules', '/api/sharedschedules/<string:scheduleID>', '/api/sharedschedules/authorUsername/<string:authorUsername>', '/api/sharedschedules/scheduleName/<string:scheduleName>', '/api/sharedschedules/scheduleName/<string:scheduleName>/userID/<string:userID>')
+api.add_resource(sharedSchedules.SharedSchedulesAPI, '/api/sharedschedules', '/api/sharedschedules/<string:scheduleID>', '/api/sharedschedules/authorUsername/<string:authorUsername>', '/api/sharedschedules/scheduleName/<string:scheduleName>')
+
+api.add_resource(reports.ReportsAPI, '/api/reports', '/api/reports/schedule/<string:scheduleID>', '/api/reports/user/<string:userID>', '/api/reports/workout/<string:workoutID>')
 
 def createApp(configClass = Config):
     app = Flask(__name__)

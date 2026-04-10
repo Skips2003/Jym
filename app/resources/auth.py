@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, jsonify
+from flask import request
 from app import db
 from app.models import APIKey
 from flask_login import current_user
@@ -26,16 +26,5 @@ def validateRequest(f):
 
         setattr(request, 'csrf_exempt', True)
         return f(*args, **kwargs)
-
-    return decorated_function
-
-def webOnly(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-
-        if current_user.is_authenticated:
-            return f(*args, **kwargs)
-        
-        return {"error": "Can only be accessed via website"}, 403
 
     return decorated_function

@@ -2,7 +2,7 @@
 async function saveUserDetails(UID) {
     let newUserInfo ={
         "id": UID,
-        "private": document.getElementById("privacyBtn").value,
+        "private": document.getElementById("privacyToggle").value,
         "username": document.getElementById("username").value,
         "email": document.getElementById("email").value,
         "firstName": document.getElementById("firstName").value,
@@ -16,11 +16,69 @@ async function saveUserDetails(UID) {
 }
 
 function toggle() {
-    privacyToggle = privacyToggle ? false : true;
+    privacyToggle = !privacyToggle
 
-    let text = document.getElementById("privacyToggleBtn")
+    let text = document.getElementById("privacyToggle")
     text.innerHTML = privacyToggle
 } 
+
+async function reportUser(UID, reporterID, reporterUsername) {
+    jsonBody = {"reporterID": reporterID, "reporterUsername": reporterUsername, "reason": document.getElementById("reason").value}
+    const response = await fetch('/api/reports/user/' + UID, {
+        method: 'POST',
+        headers:{ 
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.getElementById("csrf-token").content
+        },
+        body: JSON.stringify(jsonBody)
+    });
+
+    const data = await response.json();
+    console.log("Report created", data);
+
+    document.getElementById("reason").value = '';
+
+    window.location.reload();
+}
+
+async function reportWorkout(workoutID, reporterID, reporterUsername) {
+    jsonBody = {"reporterID": reporterID, "reporterUsername": reporterUsername, "reason": document.getElementById("reasonWorkouts").value}
+    const response = await fetch('/api/reports/workout/' + workoutID, {
+        method: 'POST',
+        headers:{ 
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.getElementById("csrf-token").content
+        },
+        body: JSON.stringify(jsonBody)
+    });
+
+    const data = await response.json();
+    console.log("Report created", data);
+
+    document.getElementById("reasonWorkouts").value = '';
+
+    window.location.reload();
+}
+
+async function reportSchedule(scheduleID, reporterID, reporterUsername) {
+    jsonBody = {"reporterID": reporterID, "reporterUsername": reporterUsername, "reason": document.getElementById("reasonSchedule").value}
+    const response = await fetch('/api/reports/schedule/' + scheduleID, {
+        method: 'POST',
+        headers:{ 
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.getElementById("csrf-token").content
+        },
+        body: JSON.stringify(jsonBody)
+    });
+
+    const data = await response.json();
+    console.log("Report created", data);
+
+    document.getElementById("reasonSchedule").value = '';
+
+    window.location.reload();
+}
+
 
 // follow user
 async function followUser(followerID, followedID){

@@ -48,7 +48,7 @@
                 </div>
                 <div class="flex flex-col sm:flex-row gap-2 mt-4">
                     <button class="baseBtn flex-1" onclick="getSavedWorkouts('{{ current_user.id }}')" data-modal-target="loadSaved-modal" data-modal-toggle="loadSaved-modal">Load Template</button>
-                    <button class="baseBtn flex-1" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', true, '{{ current_user.id }}')">Save as Template</button>
+                    <button class="baseBtn flex-1" onclick="shareWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', true, '{{ current_user.id }}')">Save as Template</button>
                 </div>
             </div>
         </div>
@@ -56,9 +56,9 @@
         <!-- Muscles Diagram -->
         <div class="lg:col-span-3 baseCard flex flex-col gap-4 p-4">
             <h3 class="text-center">Muscles Worked</h3>
-            <div class="grid grid-cols-2 gap-2 !p-0">
-                <div class="baseCard min-h-[200px]" id="musclesWorkedAnterior"></div>
-                <div class="baseCard min-h-[200px]" id="musclesWorkedPosterior"></div>
+            <div class="grid grid-cols-2 gap-2 !p-0 baseCard">
+                <div class="min-h-[200px]" id="musclesWorkedAnterior"></div>
+                <div class=" min-h-[200px]" id="musclesWorkedPosterior"></div>
                 <button class="baseBtn w-full col-span-2" onclick="changeDiagram(prepareExercises(), reset())">Reset Diagram</button>
             </div>
         </div>
@@ -73,11 +73,11 @@
                 </div>
                 <div class="md:col-span-2">
                     <h3>Find Schedules</h3>
-                    <input id="searchSchedule" type="text" class="input-search" placeholder="Search..." onkeyup="debouncedSearchSchedule()">
+                    <input id="searchSchedule" type="text" class="input-search" placeholder="Search..." onkeyup="debouncedSearchSchedule('{{ current_user.id }}')">
                 </div>
                 <div class="md:col-span-2">
                     <h3>Find Workouts</h3>
-                    <input id="searchWorkout" type="text" class="input-search" placeholder="Search..." onkeyup="debouncedSearchWorkout()">
+                    <input id="searchWorkout" type="text" class="input-search" placeholder="Search..." onkeyup="debouncedSearchWorkout('{{ current_user.id }}')">
                 </div>
  
                 <div class="md:col-span-6 table-wrap max-h-[400px]">
@@ -95,12 +95,13 @@
  
                 <div class="md:col-span-6 table-wrap max-h-[400px]">
                     <table id="sharedSearchTable"></table>
+                    <h3 id="noneFound"></h3>
                 </div>
  
                 <div class="md:col-span-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                     <button class="baseBtn" onclick="revertChanges()">Undo Changes</button>
                     <button class="baseBtn" onclick="getSavedSchedules('{{ current_user.id }}')" data-modal-target="loadSaved-modal" data-modal-toggle="loadSaved-modal">Load Template</button>
-                    <button class="baseBtn" onclick="shareSaveSchedule(currentSchedule, '{{ current_user.username }}', true, '{{ current_user.id }}')">Save Template</button>
+                    <button class="baseBtn" onclick="shareSchedule(currentSchedule, '{{ current_user.username }}', true, '{{ current_user.id }}')">Save Template</button>
                     <button class="darkBtn" onclick="saveChanges(currentSchedule, unchangedSchedule, UID)">Save Changes</button>
                 </div>
             </div>
@@ -129,8 +130,35 @@
             <p id="noneFound" class="text-red-500"></p>
             <div class="flex-grow overflow-auto mt-4 table-wrap max-h-[400px]">
                 <table id="savedItemsTable"></table>
+                <h3 id="noneFound"></h3>
             </div>
             <button data-modal-hide="loadSaved-modal" class="darkBtn w-full mt-4">Cancel</button>
+        </div>
+    </div>
+
+    <div id="default-reportWorkout" class="modal-backdrop">
+        <div class="modal-body max-w-lg">
+            <h1>Report Workout</h1>
+                <div class="flex flex-col gap-1">
+                    <label class="font-bold ml-2 text-sm">Reason</label>
+                    <textarea id="reasonWorkouts" class="input-field min-h-[100px]"></textarea>
+                </div>
+                <button class="darkBtn w-full mt-4" onclick="reportWorkout(window.selectedWorkoutID , '{{ current_user.id }}', '{{ current_user.username }}')">Report</button>
+                <button data-modal-hide="default-reportWorkout" class="baseBtn w-full">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="default-reportSchedule" class="modal-backdrop">
+        <div class="modal-body max-w-lg">
+            <h1>Report Schedule</h1>
+                <div class="flex flex-col gap-1">
+                    <label class="font-bold ml-2 text-sm">Reason</label>
+                    <textarea id="reasonSchedules" class="input-field min-h-[100px]"></textarea>
+                </div>
+                <button class="darkBtn w-full mt-4" onclick="reportSchedule(window.selectedScheduleID , '{{ current_user.id }}', '{{ current_user.username }}')">Report</button>
+                <button data-modal-hide="default-reportSchedule" class="baseBtn w-full">Cancel</button>
+            </div>
         </div>
     </div>
  

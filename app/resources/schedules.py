@@ -11,16 +11,20 @@ class SchedulesAPI(Resource):
     @validateRequest  # Apply middleware to GET requests
     def get(self, scheduleID=None, scheduleName=None):
         if scheduleID:
+
             schedule = mongo.db.Schedules.find_one({"_id": ObjectId(scheduleID)})
             if not schedule:
                 return {"error": "Not found"}, 404
             return jsonify(schedule)
+        
         elif scheduleName:
+
             schedule = mongo.db.Schedules.find_one({"name": scheduleName})
             schedule.pop('_id', None) # Remove the MongoDB ID as it wasn't requested and could be a security risk to return
             if not schedule:
                 return {"error": "Not found"}, 404
             return jsonify(schedule)
+        
         else:
             schedules = mongo.db.Schedules.find()
             
@@ -98,12 +102,10 @@ class SchedulesAPI(Resource):
 
         if scheduleID == "69c44bc4735131196e47244d":
             return {"error": "Cannot edit default schedule."}, 400
-
-        schedule = mongo.db.Schedules.find_one({"_id": ObjectId(scheduleID)})
-
-        if not schedule:
-            return {"error": "Schedule not found."}
-
+        
+        if not Schedules.checkSchedule(scheduleID):
+                return {"error": "Schedule not found"}, 404
+        
         data.pop("_id", None)  # Remove the ID from the data to avoid trying to update it
 
         print({"$set": data})

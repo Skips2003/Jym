@@ -59,6 +59,11 @@ class FollowsAPI(Resource):
             followerID=followerID
         )
         db.session.add(newFollow)
+
+        Users.query.filter_by(id=followedID).first().followers =+ 1
+
+        Users.query.filter_by(id=followerID).first().following =+ 1
+
         db.session.commit()
         return {"message": "newFollow added successfully!"}, 201
 
@@ -75,6 +80,10 @@ class FollowsAPI(Resource):
             followerID = data.get("followerID")
 
         follow = Follows.query.filter_by(followerID=followerID, followedID=followedID).first()
+
+        Users.query.filter_by(id=followedID).first().followers =- 1
+
+        Users.query.filter_by(id=followerID).first().following =- 1
 
         if not follow:
             return {"error": "Follow not found."}, 404

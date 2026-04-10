@@ -405,7 +405,10 @@
   // app/static/js/musclesWorked/diagram.ts
   var highlighterAnterior;
   var highlighterPosterior;
+  var newAnt;
+  var newPost;
   var currentData = [];
+  var newData = [];
   var initDiagram = () => {
     const containerAnterior = document.getElementById("musclesWorkedAnterior");
     const containerPosterior = document.getElementById("musclesWorkedPosterior");
@@ -520,10 +523,115 @@
     });
     return newScheduleExercises;
   };
+  var createWorkoutDiagram = (antString, postString, exercises) => {
+    const containerAnterior = document.getElementById(antString);
+    const containerPosterior = document.getElementById(postString);
+    const commonConfig = {
+      data: [],
+      highlightedColors: ["#d9c380", "#CC6C27", "#963c31"],
+      style: { width: "100px", padding: "8px" },
+      svgStyle: { borderRadius: "6px" }
+    };
+    if (containerAnterior) {
+      newAnt = K({
+        ...commonConfig,
+        container: containerAnterior,
+        type: "anterior",
+        bodyColor: "#56787a"
+      });
+    }
+    if (containerPosterior) {
+      newPost = K({
+        ...commonConfig,
+        container: containerPosterior,
+        type: "posterior",
+        bodyColor: "#56787a"
+      });
+    }
+    let newScheduleExercises = [];
+    exercises.forEach((exercise) => {
+      newScheduleExercises.push(exercise);
+    });
+    newData = [];
+    newScheduleExercises.forEach((exercise) => {
+      let muscleList = [];
+      if (Array.isArray(exercise.targetMuscles)) {
+        exercise.targetMuscles.forEach((muscle) => {
+          if (muscle.toLocaleLowerCase().includes("pectoralis")) {
+            newData.push({
+              name: exercise.name,
+              muscles: [e.CHEST],
+              frequency: 2
+            });
+          } else if (muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior") != true) {
+            newData.push({
+              name: exercise.name,
+              muscles: [e.FRONT_DELTOIDS],
+              frequency: 2
+            });
+          } else if (muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior")) {
+            newData.push({
+              name: exercise.name,
+              muscles: [e.BACK_DELTOIDS],
+              frequency: 2
+            });
+          } else {
+            muscleList = [muscle.toLowerCase()];
+            newData.push({
+              name: exercise.name,
+              muscles: muscleList,
+              frequency: 2
+            });
+          }
+        });
+      } else {
+        muscleList = [exercise.targetMuscles.toLowerCase()];
+        newData.push({
+          name: exercise.name,
+          muscles: muscleList
+        });
+      }
+      if (Array.isArray(exercise.secondaryMuscles)) {
+        exercise.secondaryMuscles.forEach((muscle) => {
+          if (muscle.toLocaleLowerCase().includes("pectoralis")) {
+            newData.push({
+              name: exercise.name,
+              muscles: [e.CHEST]
+            });
+          } else if (muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior") != true) {
+            newData.push({
+              name: exercise.name,
+              muscles: [e.FRONT_DELTOIDS]
+            });
+          } else if (muscle.toLocaleLowerCase().includes("deltoid") && muscle.toLocaleLowerCase().includes("posterior")) {
+            newData.push({
+              name: exercise.name,
+              muscles: [e.BACK_DELTOIDS]
+            });
+          } else {
+            muscleList = [muscle.toLowerCase()];
+            newData.push({
+              name: exercise.name,
+              muscles: muscleList
+            });
+          }
+        });
+      } else {
+        muscleList = [exercise.secondaryMuscles.toLowerCase()];
+        newData.push({
+          name: exercise.name,
+          muscles: muscleList
+        });
+      }
+    });
+    newAnt.update({ data: newData });
+    newPost.update({ data: newData });
+  };
   document.addEventListener("DOMContentLoaded", () => {
     initDiagram();
     changeDiagram(scheduleExercises);
   });
   window.changeDiagram = changeDiagram;
   window.prepareExercises = prepareExercises;
+  window.createWorkoutDiagram = createWorkoutDiagram;
 })();
