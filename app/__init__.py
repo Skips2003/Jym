@@ -1,3 +1,4 @@
+import secrets
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
@@ -15,7 +16,7 @@ api = Api()
 csrf = CSRFProtect()
 
 # adding API resources
-from app.resources import users, savedSchedules, savedWorkouts, schedules, sharedSchedules, sharedWorkouts, follows, reports
+from app.resources import users, savedSchedules, savedWorkouts, schedules, sharedSchedules, sharedWorkouts, follows, reports, CompletedWorkouts
 
 api.add_resource(users.UsersAPI, '/api/users', '/api/users/userID/<string:userID>', '/api/users/username/<string:username>', '/api/users/userID/<string:userID>/username/<string:username>')
 
@@ -33,6 +34,8 @@ api.add_resource(sharedSchedules.SharedSchedulesAPI, '/api/sharedschedules', '/a
 
 api.add_resource(reports.ReportsAPI, '/api/reports', '/api/reports/schedule/<string:scheduleID>', '/api/reports/user/<string:userID>', '/api/reports/workout/<string:workoutID>')
 
+api.add_resource(CompletedWorkouts.CompletedWorkoutsAPI, '/api/completedworkouts', '/api/completedworkouts/workoutID/<string:workoutID>', '/api/completedworkouts/userID/<string:userID>', '/api/completedworkouts/workoutID/<string:workoutID>/userID/<string:userID>')
+
 def createApp(configClass = Config):
     app = Flask(__name__)
     app.config.from_object(configClass)
@@ -41,7 +44,6 @@ def createApp(configClass = Config):
     mongo.init_app(app)
     api.init_app(app)
     csrf.init_app(app)
-
 
     loginManager.init_app(app)
     loginManager.login_view = "main.signIn"

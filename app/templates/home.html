@@ -41,20 +41,19 @@
         <!-- Recent Workouts -->
         <div class="lg:col-span-2 lg:row-span-5 baseCard flex flex-col gap-2">
             <h1>Recent Workouts</h1>
-            <div class="p-4 flex flex-col gap-2">
-                <button class="baseBtn w-full"><h3>Sun</h3><p>Workout Name</p></button>
-                <button class="baseBtn w-full"><h3>Sun</h3><p>Workout Name</p></button>
+            <div class="md:col-span-1 table-wrap max-h-[1300px]">
+                <h3 id="noneFoundWorkouts" class="col-span-1"></h3>
+                <table id="sharedWorkoutsTable"></table>
+                <script>
+                    getSharedWorkouts('{{ current_user.username }}', '{{ current_user.id }}');
+                </script>
             </div>
         </div>
  
         <!-- Quick Actions -->
         <div class="lg:col-span-2 lg:row-span-2 lg:col-start-3 baseCard">
             <h1>Quick Actions</h1>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 !p-4">
-                <button class="baseBtn !p-2">Start Workout</button>
-                <button class="baseBtn !p-2">History</button>
-                <button class="baseBtn !p-2">Stats</button>
-            </div>
+            <button data-modal-toggle="logWorkout-modal" data-modal-target="logWorkout-modal" class="darkBtn w-full p-4">Log Workout</button>
         </div>
  
         <!-- Muscles Worked -->
@@ -91,7 +90,7 @@
                 <table id="exerciseTable"></table>
             </div>
             <div class="p-4">
-                <button class="darkBtn w-full" onclick="shareSaveWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', false)">Share Workout</button>
+                <button class="darkBtn w-full" onclick="shareWorkout(currentSchedule.days[currentDay], '{{ current_user.username }}', false)">Share Workout</button>
             </div>
         </div>
     </div>
