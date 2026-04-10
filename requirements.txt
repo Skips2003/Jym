@@ -6,7 +6,3 @@ flask-bcrypt
 flask-pymongo
 flask-restful
 psycopg2-binary
-pytest
-pytest-mock
-mongomock
-testcontainers[postgres]
