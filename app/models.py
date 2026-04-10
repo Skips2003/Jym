@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from flask_login import UserMixin
 import sqlalchemy as sa
@@ -224,3 +225,11 @@ class Reports(TypedDict):
             return False
         
         return True
+    
+class CompletedWorkouts(TypedDict):
+    _id: ObjectId
+    userID: str
+    name: str
+    description: str
+    exercises: list[Exercise]
+    dateCompleted: datetime

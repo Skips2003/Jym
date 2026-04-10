@@ -71,4 +71,26 @@ function selectDayView(day) {
 
 }
 
+async function logWorkout(scheduleDay, userID) {
+    // 1. Prepare the payload from the current schedule state
+    const payload = {
+        userID: userID,
+        name: document.getElementById('logWorkoutName').innerText,
+        description: document.getElementById('logWorkoutDescription').innerText,
+        exercises: scheduleDay.exercises
+    };
+
+    const response = await fetch('/api/completed_workouts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    await getCompletedWorkouts(userID);
+
+    const modal = document.getElementById('logWorkout-modal');
+    modal.classList.add('hidden'); 
+
+}
+
 loadHomePage();

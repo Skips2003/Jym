@@ -6,3 +6,5 @@ pip install flask_bcrypt
 pip install flask-pymongo
 pip install flask-restful
 pip install psycopg2
+pip install -U pytest
+pip install pytest pytest-mock mongomock psycopg2-binary "testcontainers[postgres]"

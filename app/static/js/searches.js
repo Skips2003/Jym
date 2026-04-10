@@ -411,6 +411,54 @@ async function getSharedWorkouts(username, userID){
     initFlowbite();
 }
 
+
+async function getCompletedWorkouts(userID){
+
+    let workouts = await getString(apiString='/api/completedWorkouts/userID/',infoString=userID);
+
+    document.getElementById("noneFoundWorkouts").innerText = "No Workouts Posted...";
+
+    let table = document.getElementById("completedWorkoutsTable");
+    
+    table.innerHTML = ``;
+    
+    workouts.forEach(async workout => {
+
+        document.getElementById("noneFoundWorkouts").innerText = "";
+    
+        console.log("Workout found! name: " + workout.name)
+
+        antID = 'musclesWorkedAnterior' + workout._id["$oid"];
+        postID = 'musclesWorkedPosterior' + workout._id["$oid"];
+    
+        table.insertRow(-1).innerHTML = `
+        <td>
+            <div class="dayCard grid grid-cols-2 gap-4 p-4">
+                <div class="col-span-1">
+                    <h3>${workout.name}</h3>
+                    <p>${workout.description}</p>
+                    <p>By ${workout.authorUsername}</p>
+                </div>
+
+                <div class="col-span-1">
+                    <div class="grid grid-cols-2">
+                        <div id="${antID}"></div>
+                        <div id="${postID}"></div>
+                    </div>
+                </div>
+
+                <div class="col-span-2 flex gap-2 pt-2">
+                    <button class="darkBtn flex-1" onclick="showCompletedDetails('${workout._id["$oid"]}')">Save</button>
+                </div>
+            </div>
+        </td>`;
+        createWorkoutDiagram(antID, postID, workout.exercises);
+
+    });
+
+    initFlowbite();
+}
+
 async function saveWorkout(workoutID, UID){
     await postString(apiString='/api/savedworkouts/', infoString=workoutID, bodyInfo={"userID": UID})
 }
