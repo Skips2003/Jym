@@ -103,9 +103,6 @@ class SchedulesAPI(Resource):
         if scheduleID == "69c44bc4735131196e47244d":
             return {"error": "Cannot edit default schedule."}, 400
         
-        if not Schedules.checkSchedule(scheduleID):
-                return {"error": "Schedule not found"}, 404
-        
         data.pop("_id", None)  # Remove the ID from the data to avoid trying to update it
 
         print({"$set": data})

@@ -126,7 +126,11 @@ def signOut():
 @bp.route('/admin', methods=['GET', 'POST'])
 def admin():
     print("admin")
-    return render_template('admin.html')
+
+    if current_user.admin:
+        return render_template('admin.html')
+    
+    return redirect(url_for('main.home'))
 
 @bp.route('/manage', methods=['GET', 'POST'])
 def manage():
